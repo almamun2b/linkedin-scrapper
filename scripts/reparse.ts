@@ -25,7 +25,9 @@ async function main() {
     include: { lead: true },
   });
 
-  console.log(`Reparsing ${snapshots.length} snapshot(s)${apply ? " (applying changes)" : " (dry run)"}...`);
+  console.log(
+    `Reparsing ${snapshots.length} snapshot(s)${apply ? " (applying changes)" : " (dry run)"}...`,
+  );
 
   for (const snapshot of snapshots) {
     const html = gunzipSync(Buffer.from(snapshot.html)).toString("utf8");
@@ -33,7 +35,10 @@ async function main() {
     if (diff) {
       console.log(`Lead ${snapshot.lead.publicIdentifier} [${snapshot.kind}]:`, diff);
       if (apply) {
-        await prisma.lead.update({ where: { id: snapshot.leadId }, data: { ...diff, lastScrapedAt: new Date() } });
+        await prisma.lead.update({
+          where: { id: snapshot.leadId },
+          data: { ...diff, lastScrapedAt: new Date() },
+        });
       }
     }
   }
@@ -41,7 +46,11 @@ async function main() {
   console.log("Done.");
 }
 
-function reparseOne(kind: SnapshotKind, html: string, lead: { fullName: string | null; email: string | null }) {
+function reparseOne(
+  kind: SnapshotKind,
+  html: string,
+  lead: { fullName: string | null; email: string | null },
+) {
   if (kind === SnapshotKind.PROFILE) {
     const fields = extractProfileFields(html);
     return fields.fullName !== lead.fullName ? { fullName: fields.fullName } : null;
@@ -51,8 +60,8 @@ function reparseOne(kind: SnapshotKind, html: string, lead: { fullName: string |
     return info.email !== lead.email ? { email: info.email } : null;
   }
   if (kind === SnapshotKind.SEARCH_RESULT) {
-    const rows = extractSearchResults(html);
-    return rows.length > 0 && rows[0].fullName !== lead.fullName ? { fullName: rows[0].fullName } : null;
+    const [firstRow] = extractSearchResults(html);
+    return firstRow && firstRow.fullName !== lead.fullName ? { fullName: firstRow.fullName } : null;
   }
   return null;
 }
@@ -61,7 +70,7 @@ main()
   .then(async () => {
     await prisma.$disconnect();
   })
-  .catch(async (error) => {
+  .catch(async (error: unknown) => {
     console.error(error);
     await prisma.$disconnect();
     process.exit(1);

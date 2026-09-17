@@ -39,12 +39,20 @@ export async function requestCancel(id: string) {
 }
 
 export async function markRunning(id: string) {
-  return prisma.scrapeRun.update({ where: { id }, data: { status: RunStatus.RUNNING, startedAt: new Date() } });
+  return prisma.scrapeRun.update({
+    where: { id },
+    data: { status: RunStatus.RUNNING, startedAt: new Date() },
+  });
 }
 
 export async function incrementCounters(
   id: string,
-  delta: Partial<{ pagesDone: number; profilesDone: number; leadsNew: number; emailsFound: number }>,
+  delta: Partial<{
+    pagesDone: number;
+    profilesDone: number;
+    leadsNew: number;
+    emailsFound: number;
+  }>,
 ) {
   return prisma.scrapeRun.update({
     where: { id },

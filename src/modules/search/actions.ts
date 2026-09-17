@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { formString } from "@/lib/formData";
 import { requireRole } from "@/modules/auth/service/requireRole";
 import { createSearchDefinition } from "./service/createSearchDefinition";
 import { updateSearchDefinition } from "./service/updateSearchDefinition";
@@ -51,13 +52,15 @@ export async function updateSearchDefinitionAction(input: {
 
 export async function archiveSearchDefinitionAction(formData: FormData): Promise<void> {
   const actor = await requireRole("ADMIN");
-  await archiveSearchDefinition(String(formData.get("id") ?? ""), actor.id);
+  await archiveSearchDefinition(formString(formData, "id"), actor.id);
   revalidatePath("/searches");
 }
 
-export async function startRunAction(formData: FormData): Promise<{ error?: string; scrapeRunId?: string }> {
+export async function startRunAction(
+  formData: FormData,
+): Promise<{ error?: string; scrapeRunId?: string }> {
   const actor = await requireRole("OPERATOR");
-  const result = await startRun(String(formData.get("searchDefinitionId") ?? ""), actor.id);
+  const result = await startRun(formString(formData, "searchDefinitionId"), actor.id);
   if (!result.ok) {
     const message =
       result.error.kind === "account_not_scrapable"
@@ -71,7 +74,7 @@ export async function startRunAction(formData: FormData): Promise<{ error?: stri
 
 export async function cancelRunAction(formData: FormData): Promise<void> {
   const actor = await requireRole("OPERATOR");
-  await cancelRun(String(formData.get("runId") ?? ""), actor.id);
+  await cancelRun(formString(formData, "runId"), actor.id);
   revalidatePath("/runs");
 }
 

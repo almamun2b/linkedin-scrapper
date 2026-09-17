@@ -7,7 +7,8 @@ import { createUserSchema, type CreateUserInput } from "../domain/user.schema";
 
 const log = logger.child({ module: "user.createUser" });
 
-export type CreateUserError = { kind: "invalid_input"; issues: string[] } | { kind: "duplicate_email" };
+export type CreateUserError =
+  { kind: "invalid_input"; issues: string[] } | { kind: "duplicate_email" };
 
 const BCRYPT_COST = 12;
 

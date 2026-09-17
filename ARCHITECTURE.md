@@ -26,7 +26,7 @@ production. Three facts shape every decision in this document:
 1. **Automated collection violates the LinkedIn User Agreement.** It is not a technical
    question. The account used can be restricted or permanently closed at LinkedIn's sole
    discretion, at any time, regardless of how careful the client is. Risk can be reduced,
-   never eliminated. Design for *detection and containment*, not for invincibility.
+   never eliminated. Design for _detection and containment_, not for invincibility.
    Commercial/compliant alternatives, if the project ever needs them: LinkedIn Marketing
    and Talent Solutions APIs, or a licensed data provider.
 2. **Email addresses are mostly not on LinkedIn.** The contact-info panel exposes an
@@ -40,7 +40,7 @@ production. Three facts shape every decision in this document:
 3. **The account, not the code, is the scarce resource.** Throughput is capped by a daily
    human-plausible activity budget (low hundreds of profile views per day at the
    absolute most, and a fraction of that is safer), not by CPU, Playwright, or the
-   database. Every design choice below optimizes for *survivability per account*, and
+   database. Every design choice below optimizes for _survivability per account_, and
    throughput scales by adding accounts + proxies, never by adding concurrency to one
    account.
 
@@ -51,16 +51,16 @@ pipeline with a hard circuit breaker**, not a crawler.
 
 ## 1. Current state
 
-| Area | What exists |
-| --- | --- |
-| Framework | Next.js `16.2.9`, App Router, React `19.2.7`, `output: "standalone"`, Tailwind v4 |
-| Language | TypeScript `6.0.3`, `strict: true`, ESM (`"type": "module"`) |
-| ORM | Prisma `7.10`, `prisma-client` generator → `src/generated/prisma` (committed), driver adapter `@prisma/adapter-pg` |
-| Prisma config | `prisma.config.ts`; schema is a folder (`prisma/schema/*.prisma`), not one file; datasource URL via `env("DATABASE_URL")` |
-| DB | PostgreSQL, one migration (`init`) with the full domain model — see §4 |
-| Lint | ESLint `10` flat config (`eslint.config.mjs`) |
-| Package manager | pnpm `11.8.0`, Node `24` |
-| Agent tooling | `.mcp.json` (Prisma MCP, needs auth), `.claude/` + `.agents/` skills and harness — see AGENTS.md §9 |
+| Area            | What exists                                                                                                               |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Framework       | Next.js `16.2.9`, App Router, React `19.2.7`, `output: "standalone"`, Tailwind v4                                         |
+| Language        | TypeScript `6.0.3`, `strict: true`, ESM (`"type": "module"`)                                                              |
+| ORM             | Prisma `7.10`, `prisma-client` generator → `src/generated/prisma` (committed), driver adapter `@prisma/adapter-pg`        |
+| Prisma config   | `prisma.config.ts`; schema is a folder (`prisma/schema/*.prisma`), not one file; datasource URL via `env("DATABASE_URL")` |
+| DB              | PostgreSQL, one migration (`init`) with the full domain model — see §4                                                    |
+| Lint            | ESLint `10` flat config (`eslint.config.mjs`)                                                                             |
+| Package manager | pnpm `11.8.0`, Node `24`                                                                                                  |
+| Agent tooling   | `.mcp.json` (Prisma MCP, needs auth), `.claude/` + `.agents/` skills and harness — see AGENTS.md §9                       |
 
 Wired into application code: `playwright`, `zod`, `pg`, `pino`, `date-fns` + `@date-fns/tz`,
 `cheerio`, `next-auth@beta` + `@auth/prisma-adapter` + `bcryptjs` (see §11). `server/`, the
@@ -100,7 +100,7 @@ safely; scrape steps intentionally sleep for minutes, which nothing in an HTTP r
 path may ever do; and the worker needs the decryption key and proxy credentials while the
 web process does not, so keeping them apart shrinks the blast radius.
 
-**The one rule that follows from this:** the web app only ever *writes rows* to the
+**The one rule that follows from this:** the web app only ever _writes rows_ to the
 database. It never launches a browser, never calls LinkedIn, never decrypts a password.
 Pressing "Test connection" in the UI enqueues a job; it does not log in.
 
@@ -138,7 +138,7 @@ test framework — see §7). `modules` never imports `app`. Nothing imports `wor
 
 ## 3. Folder structure
 
-The layer skeleton from §2.1, realized as directories. Placement of any *specific* file —
+The layer skeleton from §2.1, realized as directories. Placement of any _specific_ file —
 "where does a new job handler go", "where does a Server Action live" — is answered by
 AGENTS.md §3 ("Where code goes"), not repeated here.
 
@@ -183,15 +183,15 @@ Postgres server, which runs `Asia/Dhaka`); leads outlive runs, so nothing cascad
 `Lead` or `LeadSnapshot` from a run/search deletion; every scraped fact carries
 provenance; the queue is a first-class table, not bolted on.
 
-| File | Models |
-| --- | --- |
-| `schema/schema.prisma` | `generator client`, `datasource db` |
-| `schema/auth.prisma` | `User` (incl. `disabledAt`, added when auth landed), `Account`, `Session`, `VerificationToken`, `enum Role` |
-| `schema/account.prisma` | `LinkedInAccount`, `Proxy`, `ScrapingPolicy` + 3 enums |
-| `schema/search.prisma` | `SearchDefinition`, `FilterRef`, `ScrapeRun`, 2 enums |
-| `schema/lead.prisma` | `Lead`, `LeadSnapshot`, `RunLead`, 2 enums |
-| `schema/jobs.prisma` | `Job`, `JobLog`, `RateBudget`, `WorkerHeartbeat`, 2 enums |
-| `schema/audit.prisma` | `AuditEvent` |
+| File                    | Models                                                                                                      |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `schema/schema.prisma`  | `generator client`, `datasource db`                                                                         |
+| `schema/auth.prisma`    | `User` (incl. `disabledAt`, added when auth landed), `Account`, `Session`, `VerificationToken`, `enum Role` |
+| `schema/account.prisma` | `LinkedInAccount`, `Proxy`, `ScrapingPolicy` + 3 enums                                                      |
+| `schema/search.prisma`  | `SearchDefinition`, `FilterRef`, `ScrapeRun`, 2 enums                                                       |
+| `schema/lead.prisma`    | `Lead`, `LeadSnapshot`, `RunLead`, 2 enums                                                                  |
+| `schema/jobs.prisma`    | `Job`, `JobLog`, `RateBudget`, `WorkerHeartbeat`, 2 enums                                                   |
+| `schema/audit.prisma`   | `AuditEvent`                                                                                                |
 
 Worth knowing before reading the schema files directly:
 
@@ -200,13 +200,13 @@ Worth knowing before reading the schema files directly:
   that collision is worse than the extra characters.
 - **`ScrapingPolicy.linkedInAccountId` is required**, not nullable. There is no "global
   default row" in this table — global pacing defaults live in `server/config/env.ts`
-  (§10); a `ScrapingPolicy` row exists only as a per-account *override*. A nullable
+  (§10); a `ScrapingPolicy` row exists only as a per-account _override_. A nullable
   unique column cannot enforce "exactly one default row" in Postgres (NULLs are
   distinct), so the ambiguity is deleted rather than guarded.
 - **`Lead.raw` does not exist.** The raw evidence lives in `LeadSnapshot` (1:N from
   `Lead`), not as a column on the hot `Lead` row — Prisma selects every scalar by
   default, so a blob column on `Lead` would drag HTML into the leads grid's `findMany`.
-  `LeadSnapshot` also keeps *history*, not just the latest capture, so a selector fix can
+  `LeadSnapshot` also keeps _history_, not just the latest capture, so a selector fix can
   be replayed over exactly the snapshots a broken extractor version produced (§7).
 - **`Job`'s queue index is `[queue, status, priority, runAt]`**, matching the claim
   query's equality predicate then its `ORDER BY` exactly — see §6.1 for why the column
@@ -220,7 +220,7 @@ Worth knowing before reading the schema files directly:
   from "not yet scraped."
 - CHECK constraints that Prisma's schema language cannot express declaratively
   (`emailConfidence` 0–100, `ScrapingPolicy`'s min<max delay pairs, a hard ceiling on
-  `maxProfilesPerDay`) were added by hand-editing the migration SQL *before* it was first
+  `maxProfilesPerDay`) were added by hand-editing the migration SQL _before_ it was first
   applied (`prisma migrate dev --create-only`) — not an edit of already-applied SQL.
 
 ---
@@ -255,7 +255,7 @@ actions (test connection, run now, cancel, retry) require `OPERATOR`; every dash
 is readable by any signed-in role, with mutation controls simply omitted below the
 required role rather than the page itself being blocked.
 
-Naming stays as originally planned: `User` = a person logging into *this app*;
+Naming stays as originally planned: `User` = a person logging into _this app_;
 `LinkedInAccount` = the scraped-from identity. Never conflate them.
 
 ---
@@ -352,7 +352,7 @@ SELECT pg_try_advisory_lock(hashtext('li:acct:' || $1));
 taken on the worker's dedicated connection for the lifetime of a browser-bound job, and
 released in a `finally`. If the lock is not acquired, the job is pushed back with a short
 delay — it is not an error. `WORKER_CONCURRENCY` then safely exceeds 1 only because jobs
-for *different* accounts (and non-browser jobs like `lead.enrich`) can interleave.
+for _different_ accounts (and non-browser jobs like `lead.enrich`) can interleave.
 
 ### 6.6 Scheduler process
 
@@ -393,16 +393,16 @@ run.start ─┬→ session.ensure ──→ search.page.fetch (page 1)
            └────────────────────────────→ run.finalize
 ```
 
-| Job type | Does | Notes |
-| --- | --- | --- |
-| `run.start` | validates policy, quota, active hours; creates `ScrapeRun`; enqueues `session.ensure` | cheap, no browser |
-| `session.ensure` | loads sealed `storageState`, opens context, hits a cheap authenticated URL (e.g. `/feed/`); if logged out, performs credential login; re-seals cookies | the **only** job that may use the password; rare by design |
-| `search.page.fetch` | one results page; extracts stubs (name, slug, headline, location); upserts `Lead` by `publicIdentifier`; enqueues `profile.scrape` per new lead + the next page | ~10 results per page |
-| `profile.scrape` | one profile; opens contact-info panel if present; extracts website/email; writes a `LeadSnapshot` | the quota-consuming unit |
-| `run.finalize` | aggregates counters, marks run `SUCCEEDED`, emits audit event; no-ops if the run is already terminal | avoids racing a `HALTED` run set by a risk signal |
-| `search.typeahead.resolve` | resolves a label to a URN for `FilterRef`, async (invariant #1 forbids a live LinkedIn call from a Server Action) | plumbing done, endpoint UNVERIFIED — see §1 |
-| `proxy.healthcheck` | periodic egress-IP check per proxy | no LinkedIn — **not yet implemented** |
-| `lead.enrich` | no LinkedIn at all: fetch the lead's website, look for `mailto:`/contact page; optionally MX-validate | **not yet implemented** — deliberately deferred, see §1 |
+| Job type                   | Does                                                                                                                                                            | Notes                                                      |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| `run.start`                | validates policy, quota, active hours; creates `ScrapeRun`; enqueues `session.ensure`                                                                           | cheap, no browser                                          |
+| `session.ensure`           | loads sealed `storageState`, opens context, hits a cheap authenticated URL (e.g. `/feed/`); if logged out, performs credential login; re-seals cookies          | the **only** job that may use the password; rare by design |
+| `search.page.fetch`        | one results page; extracts stubs (name, slug, headline, location); upserts `Lead` by `publicIdentifier`; enqueues `profile.scrape` per new lead + the next page | ~10 results per page                                       |
+| `profile.scrape`           | one profile; opens contact-info panel if present; extracts website/email; writes a `LeadSnapshot`                                                               | the quota-consuming unit                                   |
+| `run.finalize`             | aggregates counters, marks run `SUCCEEDED`, emits audit event; no-ops if the run is already terminal                                                            | avoids racing a `HALTED` run set by a risk signal          |
+| `search.typeahead.resolve` | resolves a label to a URN for `FilterRef`, async (invariant #1 forbids a live LinkedIn call from a Server Action)                                               | plumbing done, endpoint UNVERIFIED — see §1                |
+| `proxy.healthcheck`        | periodic egress-IP check per proxy                                                                                                                              | no LinkedIn — **not yet implemented**                      |
+| `lead.enrich`              | no LinkedIn at all: fetch the lead's website, look for `mailto:`/contact page; optionally MX-validate                                                           | **not yet implemented** — deliberately deferred, see §1    |
 
 Design notes:
 
@@ -413,7 +413,7 @@ Design notes:
   of re-scraping. This is the single highest-value decision in the pipeline — selector
   drift is constant, and re-scraping to fix a parser bug wastes irreplaceable quota.
 - **Natural key:** `publicIdentifier` (the vanity slug) for the upsert, with
-  `memberUrn` captured alongside it as the *stable* identity — members do change their
+  `memberUrn` captured alongside it as the _stable_ identity — members do change their
   vanity slug, and the URN is the only thing that survives that.
 - Page objects in `scraper/pages/` do navigation and waiting; extractors in
   `scraper/extract/` are pure functions over HTML/serialized DOM, which is what makes
@@ -433,8 +433,8 @@ Server Action, and the URL constructor all share that one schema.
 ```ts
 type SearchFilters = {
   keywords?: string;
-  titles?: string[];            // current title
-  locations?: GeoRef[];         // { label, urn } — urn resolved by a typeahead
+  titles?: string[]; // current title
+  locations?: GeoRef[]; // { label, urn } — urn resolved by a typeahead
   industries?: IndustryRef[];
   currentCompanies?: CompanyRef[];
   pastCompanies?: CompanyRef[];
@@ -475,7 +475,7 @@ Layered, and each layer is independently sufficient to stop work.
 `storageState`, reuse it for weeks, and re-login only when `session.ensure` proves the
 cookies are dead. Never log in at the start of every run.
 
-**2. Stable identity per account.** Generate a fingerprint *once* per `LinkedInAccount`
+**2. Stable identity per account.** Generate a fingerprint _once_ per `LinkedInAccount`
 (UA matched to the actual bundled Chromium version, viewport, `locale`, `timezoneId`,
 device scale) and persist it. A device that changes its screen size and timezone daily is
 more anomalous than one that never does. For the same reason, pin a **sticky** proxy per
@@ -500,7 +500,7 @@ are plain hour integers today and do not yet express an overnight wrap like 22�
 acceptable for now, worth revisiting before any account runs a night shift.)
 
 **4. Quotas (`quota.ts`, `rateLimiter.ts`).** DB-backed token buckets in `RateBudget`, so
-limits hold across restarts and across processes. Daily and weekly caps, checked *before*
+limits hold across restarts and across processes. Daily and weekly caps, checked _before_
 navigation. The decrement is **one atomic conditional `UPDATE`**
 (`SET consumed = consumed + 1 WHERE consumed < cap RETURNING consumed`, zero rows back
 means over budget) — a check-then-increment from two workers is a lost-update race
@@ -547,30 +547,27 @@ object. **Nothing else in the codebase reads `process.env`.** The process fails 
 loudly on a bad or missing variable — `dotenv` silently giving `undefined` to a browser
 launcher is a bad afternoon.
 
-| Variable | Where | Purpose |
-| --- | --- | --- |
-| `DATABASE_URL` | both | Postgres connection (present) |
-| `APP_URL`, `AUTH_URL`, `NEXTAUTH_URL` | web | base URLs (present) |
-| `AUTH_SECRET`, `AUTH_TRUST_HOST` | web | NextAuth (present) |
-| `ENCRYPTION_KEY` | both | base64 32 bytes, AES-256-GCM master key — optional at the schema level (queue-only code never seals anything) but `server/crypto/secretBox.ts` throws its own clear error the moment something tries to seal/unseal without it |
-| `LINKEDIN_EMAIL`, `LINKEDIN_PASSWORD` | worker | present in `.env`; **bootstrap/dev only** — see below |
-| `USE_PROXY` | worker | master on/off for proxying |
-| `PROXY_URL` | worker | single-proxy shortcut, e.g. `http://user:pass@host:port` |
-| `PROXY_COUNTRY` | worker | geo hint for pool selection |
-| `HEADLESS` | worker | `true` in prod; `false` for local debugging |
-| `WORKER_ID`, `WORKER_CONCURRENCY`, `WORKER_QUEUES` | worker | identity + parallelism — `WORKER_ID` defaults to `worker-<pid>` if unset, so a quick manual run doesn't need it, though a real deployment should set one explicitly per process |
-| `POLL_INTERVAL_MS`, `LEASE_SECONDS`, `LEASE_HEARTBEAT_MS`, `SHUTDOWN_GRACE_MS` | worker | queue timing |
-| `SCRAPER_*_DELAY_*_MS`, `MAX_PROFILES_PER_DAY`, `ACTIVE_HOURS_*` | worker | global pacing defaults — `ScrapingPolicy` rows are per-account overrides of these, never the other way around |
-| `LOG_LEVEL`, `NODE_ENV`, `TZ=UTC` | both | pin the process timezone explicitly, in addition to every `DateTime` column being `timestamptz` |
+| Variable                                                                       | Where  | Purpose                                                                                                                                                                                                                        |
+| ------------------------------------------------------------------------------ | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `DATABASE_URL`                                                                 | both   | Postgres connection (present)                                                                                                                                                                                                  |
+| `APP_URL`, `AUTH_URL`, `NEXTAUTH_URL`                                          | web    | base URLs (present)                                                                                                                                                                                                            |
+| `AUTH_SECRET`, `AUTH_TRUST_HOST`                                               | web    | NextAuth (present)                                                                                                                                                                                                             |
+| `ENCRYPTION_KEY`                                                               | both   | base64 32 bytes, AES-256-GCM master key — optional at the schema level (queue-only code never seals anything) but `server/crypto/secretBox.ts` throws its own clear error the moment something tries to seal/unseal without it |
+| `USE_PROXY`                                                                    | worker | master on/off for proxying                                                                                                                                                                                                     |
+| `PROXY_URL`                                                                    | worker | single-proxy shortcut, e.g. `http://user:pass@host:port`                                                                                                                                                                       |
+| `PROXY_COUNTRY`                                                                | worker | geo hint for pool selection                                                                                                                                                                                                    |
+| `HEADLESS`                                                                     | worker | `true` in prod; `false` for local debugging                                                                                                                                                                                    |
+| `WORKER_ID`, `WORKER_CONCURRENCY`, `WORKER_QUEUES`                             | worker | identity + parallelism — `WORKER_ID` defaults to `worker-<pid>` if unset, so a quick manual run doesn't need it, though a real deployment should set one explicitly per process                                                |
+| `POLL_INTERVAL_MS`, `LEASE_SECONDS`, `LEASE_HEARTBEAT_MS`, `SHUTDOWN_GRACE_MS` | worker | queue timing                                                                                                                                                                                                                   |
+| `SCRAPER_*_DELAY_*_MS`, `MAX_PROFILES_PER_DAY`, `ACTIVE_HOURS_*`               | worker | global pacing defaults — `ScrapingPolicy` rows are per-account overrides of these, never the other way around                                                                                                                  |
+| `LOG_LEVEL`, `NODE_ENV`, `TZ=UTC`                                              | both   | pin the process timezone explicitly, in addition to every `DateTime` column being `timestamptz`                                                                                                                                |
 
-**`.env` credentials vs. the config page.** `.env` holds `LINKEDIN_EMAIL` /
-`LINKEDIN_PASSWORD` today, which is the right way to bootstrap before the UI exists. It
-is not the production mechanism: the system must support multiple accounts, rotation,
-per-account status and fingerprint, and an audit trail — none of which fit in env vars.
-Target behavior: `db:seed` imports the `.env` pair into a `LinkedInAccount` row (sealed)
-if none exists, and from then on the **database is the only source of truth**, managed
-from `/config`. Keep the env vars as a dev convenience; do not read them from
-application code paths.
+**LinkedIn accounts have no env-based bootstrap.** The system must support multiple
+accounts, rotation, per-account status and fingerprint, and an audit trail — none of
+which fit in env vars. `/config/accounts` (`createAccount`, sealed on write via
+`server/crypto/secretBox.ts`) is the only way a `LinkedInAccount` row is created; the
+**database is the only source of truth**, and application code never reads a LinkedIn
+credential from `.env`.
 
 **`USE_PROXY` semantics.** `USE_PROXY=false` → `launch()` receives no `proxy` option at
 all (not an empty object). `USE_PROXY=true` → resolve in order: the account's assigned
@@ -588,7 +585,7 @@ Installed (`pnpm add`): `zod`, `pg`, `pino`, `croner`, `date-fns`, `@date-fns/tz
 `scraper/extract/profile.extract.ts` is a pure `(html: string) => fields` function per the
 write-extractor skill's "replayable offline against stored evidence" design, which is
 structurally impossible without an HTML-string parser; `page.evaluate()` only ever works
-against a *live* Playwright page). Installed as dev dependencies
+against a _live_ Playwright page). Installed as dev dependencies
 (`pnpm add -D`): `playwright` (worker-only — never imported by the web app, and the
 standalone build must not try to bundle it), `tailwindcss`, `@tailwindcss/postcss`,
 `postcss`, `@types/pg`, `pino-pretty`. After install: `pnpm exec playwright install
@@ -664,8 +661,8 @@ selector-failure spike.
    Tailwind wiring, and the agent harness are already done.)
 2. **Queue engine** — `enqueue`/`claim`/`complete`/`fail`; backoff; reaper;
    `workers/worker.ts` with a trivial `noop` handler; graceful shutdown; verify against
-   real Postgres. *Do not touch Playwright yet — a queue with browsers wired in is very
-   hard to debug.*
+   real Postgres. _Do not touch Playwright yet — a queue with browsers wired in is very
+   hard to debug._
 3. **Config surface** — `/config` pages with Server Actions; sealed writes; seed-import
    of the `.env` credentials into `LinkedInAccount`.
 4. **Session** — browser launch + proxy + fingerprint; `session.ensure` handler;

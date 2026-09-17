@@ -1,19 +1,29 @@
 import type { JobModel } from "@/generated/prisma/models/Job";
-import { Badge } from "@/ui/Badge";
-import { Button } from "@/ui/Button";
-import { Table, Thead, Tbody, Th, Td } from "@/ui/Table";
+import { Badge, type BadgeTone } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { Table, Thead, Tbody, Tr, Th, Td } from "@/components/ui/Table";
 import { retryDeadJobAction } from "../actions";
 
-const STATUS_TONE = {
+const STATUS_TONE: Record<JobModel["status"], BadgeTone> = {
   QUEUED: "neutral",
   RUNNING: "accent",
   SUCCEEDED: "success",
   FAILED: "danger",
   DEAD: "danger",
   CANCELLED: "neutral",
-} as const;
+};
 
 export function JobsTable({ jobs }: { jobs: JobModel[] }) {
+  if (jobs.length === 0) {
+    return (
+      <EmptyState
+        title="No jobs"
+        description="Jobs appear here once a run or a manual action enqueues one."
+      />
+    );
+  }
+
   return (
     <Table>
       <Thead>
@@ -28,15 +38,20 @@ export function JobsTable({ jobs }: { jobs: JobModel[] }) {
       </Thead>
       <Tbody>
         {jobs.map((job) => (
-          <tr key={job.id}>
-            <Td>{job.type}</Td>
+          <Tr key={job.id}>
+            <Td className="font-mono text-xs">{job.type}</Td>
             <Td>
               <Badge tone={STATUS_TONE[job.status]}>{job.status}</Badge>
             </Td>
             <Td>
               {job.attempts} / {job.maxAttempts}
             </Td>
-            <Td className="max-w-xs truncate text-xs text-[--color-muted]">{job.lastError ?? "—"}</Td>
+            <Td
+              className="max-w-xs truncate text-xs text-muted-foreground"
+              title={job.lastError ?? undefined}
+            >
+              {job.lastError ?? "—"}
+            </Td>
             <Td>{new Date(job.createdAt).toLocaleString()}</Td>
             <Td>
               {job.status === "DEAD" ? (
@@ -48,7 +63,7 @@ export function JobsTable({ jobs }: { jobs: JobModel[] }) {
                 </form>
               ) : null}
             </Td>
-          </tr>
+          </Tr>
         ))}
       </Tbody>
     </Table>

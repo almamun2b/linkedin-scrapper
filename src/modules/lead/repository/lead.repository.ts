@@ -83,7 +83,9 @@ export async function list(params: ListParams) {
     where: {
       stage: params.stage,
       email: params.hasEmail ? { not: null } : undefined,
-      currentCompany: params.companyContains ? { contains: params.companyContains, mode: "insensitive" } : undefined,
+      currentCompany: params.companyContains
+        ? { contains: params.companyContains, mode: "insensitive" }
+        : undefined,
     },
     orderBy: { createdAt: "desc" },
     take: params.take ?? 50,

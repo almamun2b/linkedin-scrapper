@@ -37,7 +37,12 @@ export const searchFiltersSchema = z.object({
 });
 export type SearchFilters = z.infer<typeof searchFiltersSchema>;
 
-export const WIRED_FILTER_KEYS = ["keywords", "connectionDegree", "locations", "currentCompanies"] as const;
+export const WIRED_FILTER_KEYS = [
+  "keywords",
+  "connectionDegree",
+  "locations",
+  "currentCompanies",
+] as const;
 
 export const COMING_SOON_FILTERS = [
   { key: "pastCompanies", label: "Past companies" },

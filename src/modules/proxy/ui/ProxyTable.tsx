@@ -1,12 +1,23 @@
 import type { ProxyListItem } from "../repository/proxy.repository";
-import { Badge } from "@/ui/Badge";
-import { Button } from "@/ui/Button";
-import { Table, Thead, Tbody, Th, Td } from "@/ui/Table";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { Table, Thead, Tbody, Tr, Th, Td } from "@/components/ui/Table";
 import { setProxyActiveAction } from "../actions";
 
-const HEALTH_TONE = { UNKNOWN: "neutral", HEALTHY: "success", DEGRADED: "accent", DEAD: "danger" } as const;
+const HEALTH_TONE = {
+  UNKNOWN: "neutral",
+  HEALTHY: "success",
+  DEGRADED: "accent",
+  DEAD: "danger",
+} as const;
 
-export function ProxyTable({ proxies, accountCounts }: { proxies: ProxyListItem[]; accountCounts: Record<string, number> }) {
+export function ProxyTable({
+  proxies,
+  accountCounts,
+}: {
+  proxies: ProxyListItem[];
+  accountCounts: Record<string, number>;
+}) {
   return (
     <Table>
       <Thead>
@@ -23,7 +34,7 @@ export function ProxyTable({ proxies, accountCounts }: { proxies: ProxyListItem[
       </Thead>
       <Tbody>
         {proxies.map((proxy) => (
-          <tr key={proxy.id}>
+          <Tr key={proxy.id}>
             <Td>{proxy.label}</Td>
             <Td>
               {proxy.host}:{proxy.port}
@@ -34,13 +45,18 @@ export function ProxyTable({ proxies, accountCounts }: { proxies: ProxyListItem[
               <Badge tone={HEALTH_TONE[proxy.health]}>{proxy.health}</Badge>
             </Td>
             <Td>
-              {accountCounts[proxy.id] > 1 ? (
-                <Badge tone="accent">{accountCounts[proxy.id]} accounts</Badge>
+              {(() => {
+                const count = accountCounts[proxy.id] ?? 0;
+                return count > 1 ? <Badge tone="accent">{count} accounts</Badge> : count;
+              })()}
+            </Td>
+            <Td>
+              {proxy.active ? (
+                <Badge tone="success">Active</Badge>
               ) : (
-                (accountCounts[proxy.id] ?? 0)
+                <Badge tone="danger">Inactive</Badge>
               )}
             </Td>
-            <Td>{proxy.active ? <Badge tone="success">Active</Badge> : <Badge tone="danger">Inactive</Badge>}</Td>
             <Td>
               <form action={setProxyActiveAction}>
                 <input type="hidden" name="id" value={proxy.id} />
@@ -50,7 +66,7 @@ export function ProxyTable({ proxies, accountCounts }: { proxies: ProxyListItem[
                 </Button>
               </form>
             </Td>
-          </tr>
+          </Tr>
         ))}
       </Tbody>
     </Table>

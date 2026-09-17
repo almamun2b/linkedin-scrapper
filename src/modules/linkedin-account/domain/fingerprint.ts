@@ -23,7 +23,11 @@ const TIMEZONES = ["America/New_York", "America/Chicago", "Europe/London", "Asia
 
 function pick<T>(items: readonly T[], seed: string): T {
   const hash = createHash("sha256").update(seed).digest();
-  return items[hash[0] % items.length];
+  const value = items[(hash[0] ?? 0) % items.length];
+  if (value === undefined) {
+    throw new Error("pick() called with an empty items array");
+  }
+  return value;
 }
 
 /**

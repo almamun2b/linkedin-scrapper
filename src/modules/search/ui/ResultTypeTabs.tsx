@@ -1,3 +1,5 @@
+import { cn } from "@/lib/cn";
+
 const TYPES = [
   { key: "people", label: "People", enabled: true },
   { key: "companies", label: "Companies", enabled: false },
@@ -6,16 +8,17 @@ const TYPES = [
 
 export function ResultTypeTabs() {
   return (
-    <div className="flex gap-1 rounded-md border border-[--color-border] p-1 w-fit">
+    <div className="flex w-fit gap-1 rounded-md border border-border p-1">
       {TYPES.map((type) => (
         <span
           key={type.key}
           title={type.enabled ? undefined : "Coming soon"}
-          className={
+          className={cn(
+            "rounded-sm px-3 py-1 text-sm font-medium",
             type.enabled
-              ? "rounded px-3 py-1 text-sm font-medium bg-[--color-accent] text-white"
-              : "rounded px-3 py-1 text-sm text-[--color-muted] opacity-50 cursor-not-allowed"
-          }
+              ? "bg-primary text-primary-foreground"
+              : "cursor-not-allowed text-muted-foreground opacity-50",
+          )}
         >
           {type.label}
         </span>

@@ -2,7 +2,8 @@
 
 import { useActionState } from "react";
 import type { ScrapingPolicyModel } from "@/generated/prisma/models/ScrapingPolicy";
-import { Button } from "@/ui/Button";
+import { Alert } from "@/components/ui/Alert";
+import { Button } from "@/components/ui/Button";
 import { updatePolicyAction } from "../actions";
 import { DelayFields } from "./policy/DelayFields";
 import { QuotaFields } from "./policy/QuotaFields";
@@ -19,10 +20,10 @@ export function PolicyForm({ policy }: { policy: ScrapingPolicyModel }) {
       <QuotaFields policy={policy} />
       <ActiveHoursFields policy={policy} />
       <TogglesFields policy={policy} />
-      <Button type="submit" disabled={pending} className="self-start">
+      <Button type="submit" loading={pending} className="self-start">
         {pending ? "Saving…" : "Save policy"}
       </Button>
-      {state?.error ? <p className="text-sm text-[--color-danger]">{state.error}</p> : null}
+      {state.error ? <Alert tone="error">{state.error}</Alert> : null}
     </form>
   );
 }

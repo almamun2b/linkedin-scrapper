@@ -16,7 +16,11 @@ function isWeekend(date: Date): boolean {
  * Does not yet express an overnight wrap (e.g. 22->06) — ARCHITECTURE.md §9 flags this as a
  * known gap, matched here on purpose rather than silently deciding it for this task.
  */
-export function isWithinActiveHours(now: Date, policy: ActiveHoursPolicy, timezoneId: string): boolean {
+export function isWithinActiveHours(
+  now: Date,
+  policy: ActiveHoursPolicy,
+  timezoneId: string,
+): boolean {
   const local = new TZDate(now, timezoneId);
   if (!policy.activeOnWeekends && isWeekend(local)) {
     return false;

@@ -10,7 +10,7 @@ export async function searchCached(kind: FilterRefKind, query: string, limit = 1
   });
 }
 
-export async function upsertMany(kind: FilterRefKind, pairs: Array<{ label: string; urn: string }>) {
+export async function upsertMany(kind: FilterRefKind, pairs: { label: string; urn: string }[]) {
   if (pairs.length === 0) return;
   await prisma.filterRef.createMany({
     data: pairs.map((p) => ({ kind, label: p.label, urn: p.urn })),

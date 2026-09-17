@@ -63,16 +63,31 @@ async function runScrape(
   }
   const { account, policy, fingerprint, proxy } = prepared.value;
   if (!account.storageStateSealed) {
-    throw new RescheduleError("No session yet — waiting for session.ensure", new Date(Date.now() + 60_000));
+    throw new RescheduleError(
+      "No session yet — waiting for session.ensure",
+      new Date(Date.now() + 60_000),
+    );
   }
 
-  const quota = await consumeDailyProfileBudget({ accountId, cap: policy.maxProfilesPerDay, now: new Date() });
+  const quota = await consumeDailyProfileBudget({
+    accountId,
+    cap: policy.maxProfilesPerDay,
+    now: new Date(),
+  });
   if (!quota.ok) {
     throw new RescheduleError("Daily profile quota exhausted", tomorrowUtc());
   }
 
-  const storageState = unsealStorageState(account.storageStateSealed, account.storageStateKeyVer ?? 1);
-  const { browser, context } = await launchContextForAccount({ headless: policy.headless, fingerprint, storageState, proxy });
+  const storageState = unsealStorageState(
+    account.storageStateSealed,
+    account.storageStateKeyVer ?? 1,
+  );
+  const { browser, context } = await launchContextForAccount({
+    headless: policy.headless,
+    fingerprint,
+    storageState,
+    proxy,
+  });
 
   try {
     await profileDelay({ min: policy.profileDelayMinMs, max: policy.profileDelayMaxMs }, signal);
@@ -98,9 +113,14 @@ async function runScrape(
     const sealed = await sealStorageState(context);
     await accountRepo.updateStorageState(accountId, sealed.sealed, sealed.keyVer);
     await touchActivity(accountId);
-    log.info({ accountId, publicIdentifier, hasEmail: Boolean(contactInfo?.email) }, "profile scraped");
+    log.info(
+      { accountId, publicIdentifier, hasEmail: Boolean(contactInfo?.email) },
+      "profile scraped",
+    );
   } finally {
-    await browser.close().catch((error: unknown) => log.error({ err: error }, "failed to close browser"));
+    await browser.close().catch((error: unknown) => {
+      log.error({ err: error }, "failed to close browser");
+    });
   }
 }
 

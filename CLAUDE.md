@@ -13,16 +13,16 @@ This file owns commands, Prisma 7 specifics, and the invariants. AGENTS.md and
 ARCHITECTURE.md are plain repo files, not auto-loaded — they cost tokens only when opened,
 so open the smallest thing that answers the question:
 
-| Task | Start with | Only if still unclear |
-| --- | --- | --- |
-| Queue / worker / job type | the `add-job-type` skill | ARCHITECTURE.md §6 (queue mechanics) |
-| Scraper, selectors, pacing | the `write-extractor` skill | ARCHITECTURE.md §7, §9 |
-| Schema / migration | the `schema-change` skill | ARCHITECTURE.md §4 (model inventory) |
-| New feature slice | AGENTS.md §3 (one table, no need to read further) | ARCHITECTURE.md §2 |
-| Config page / env | this file's Environment section above | ARCHITECTURE.md §10 |
+| Task                       | Start with                                        | Only if still unclear                |
+| -------------------------- | ------------------------------------------------- | ------------------------------------ |
+| Queue / worker / job type  | the `add-job-type` skill                          | ARCHITECTURE.md §6 (queue mechanics) |
+| Scraper, selectors, pacing | the `write-extractor` skill                       | ARCHITECTURE.md §7, §9               |
+| Schema / migration         | the `schema-change` skill                         | ARCHITECTURE.md §4 (model inventory) |
+| New feature slice          | AGENTS.md §3 (one table, no need to read further) | ARCHITECTURE.md §2                   |
+| Config page / env          | this file's Environment section above             | ARCHITECTURE.md §10                  |
 
 Skills are small and loaded on demand — they carry the how-to. The matching
-ARCHITECTURE.md section carries the *why*; read it when the skill doesn't cover the
+ARCHITECTURE.md section carries the _why_; read it when the skill doesn't cover the
 case, not as a matter of routine. Never read a whole doc to answer a question one
 `grep`/section answers.
 
@@ -53,9 +53,11 @@ Worker/scheduler scripts don't exist yet; when added: `worker`/`scheduler`
 ## Environment
 
 `.env` is gitignored, `.env.example` tracked and documents every variable the design
-needs (`DATABASE_URL`, NextAuth URLs/secret, `ENCRYPTION_KEY`, LinkedIn bootstrap pair,
-`USE_PROXY`/`PROXY_URL`, worker identity/concurrency, `HEADLESS`, `TZ=UTC`) — most are
-placeholders until the reading code exists. ARCHITECTURE.md §10 has the full table.
+needs (`DATABASE_URL`, NextAuth URLs/secret, `ENCRYPTION_KEY`, `ADMIN_EMAIL`/
+`ADMIN_PASSWORD` for the first admin user, `USE_PROXY`/`PROXY_URL`, worker
+identity/concurrency, `HEADLESS`, `TZ=UTC`) — most are placeholders until the reading code
+exists. LinkedIn accounts are never read from env — they're added from `/config/accounts`.
+ARCHITECTURE.md §10 has the full table.
 
 Once `server/config/env.ts` exists, **read env only through it** — no `process.env` access
 anywhere else, so a missing variable fails at boot instead of inside a browser launch.
@@ -86,7 +88,7 @@ anywhere else, so a missing variable fails at boot instead of inside a browser l
   everywhere) — prefer the local one unless the hosted one is already authenticated.
   `.mcp.json` also has `next-devtools` (`next-devtools-mcp`), which auto-connects to a
   running `pnpm dev` for live errors/routes/Server-Action introspection — it exists to
-  debug *this app's own* dev server, never to browse or test against linkedin.com.
+  debug _this app's own_ dev server, never to browse or test against linkedin.com.
 
 ## Non-negotiable invariants
 
@@ -135,7 +137,7 @@ Split recipes per layer and the exemption list (generated client, `selectors.ts`
 ## Context worth knowing
 
 - **Legality:** automated collection breaks LinkedIn's User Agreement; the account can be
-  restricted regardless of care taken. The architecture *reduces and contains* that risk,
+  restricted regardless of care taken. The architecture _reduces and contains_ that risk,
   never eliminates it — don't describe any configuration as "safe" or "zero risk."
 - **Email yield is inherently low** — only 1st-degree connections or members who published
   one; expect single-digit percentages from profiles alone. Most addresses come from

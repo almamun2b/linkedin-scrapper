@@ -47,7 +47,9 @@ export async function startHeartbeat(params: {
   const timer = setInterval(() => {
     prisma.workerHeartbeat
       .update({ where: { id: workerId }, data: { lastSeenAt: new Date() } })
-      .catch((error) => log.error({ err: error }, "heartbeat renewal failed"));
+      .catch((error: unknown) => {
+        log.error({ err: error }, "heartbeat renewal failed");
+      });
   }, intervalMs);
   timer.unref();
 
@@ -56,7 +58,9 @@ export async function startHeartbeat(params: {
       clearInterval(timer);
       await prisma.workerHeartbeat
         .update({ where: { id: workerId }, data: { stoppedAt: new Date() } })
-        .catch((error) => log.error({ err: error }, "heartbeat stop-mark failed"));
+        .catch((error: unknown) => {
+          log.error({ err: error }, "heartbeat stop-mark failed");
+        });
       log.info({ workerId }, "heartbeat stopped");
     },
   };

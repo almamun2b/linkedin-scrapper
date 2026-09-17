@@ -19,10 +19,17 @@ export async function requestTypeaheadResolution(params: {
   const normalized = params.query.trim().toLowerCase();
   const job = await enqueueJob({
     type: "search.typeahead.resolve",
-    payload: { linkedInAccountId: params.linkedInAccountId, kind: params.kind, query: params.query },
+    payload: {
+      linkedInAccountId: params.linkedInAccountId,
+      kind: params.kind,
+      query: params.query,
+    },
     linkedInAccountId: params.linkedInAccountId,
     idempotencyKey: `typeahead:${params.kind}:${normalized}`,
   });
-  log.info({ kind: params.kind, query: params.query, queued: Boolean(job) }, "typeahead resolution requested");
+  log.info(
+    { kind: params.kind, query: params.query, queued: Boolean(job) },
+    "typeahead resolution requested",
+  );
   return { queued: Boolean(job) };
 }

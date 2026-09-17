@@ -8,11 +8,14 @@ import { Role } from "@/generated/prisma/enums";
 const log = logger.child({ module: "user.bootstrapAdmin" });
 const BCRYPT_COST = 12;
 
-export type BootstrapAdminError = { kind: "invalid_input"; issues: string[] };
+export interface BootstrapAdminError {
+  kind: "invalid_input";
+  issues: string[];
+}
 
 /**
- * Idempotent by email, mirroring bootstrapAccountFromEnv: if ADMIN_EMAIL already has a User
- * row, it's left untouched (a repeat `db:seed` must never silently reset a rotated password).
+ * Idempotent by email: if ADMIN_EMAIL already has a User row, it's left untouched (a
+ * repeat `db:seed` must never silently reset a rotated password).
  */
 export async function bootstrapAdminUserFromEnv(input: {
   email: string;
@@ -22,7 +25,9 @@ export async function bootstrapAdminUserFromEnv(input: {
   if (!email.includes("@") || password.length < 8) {
     return err({
       kind: "invalid_input",
-      issues: ["ADMIN_EMAIL must be a valid email and ADMIN_PASSWORD must be at least 8 characters"],
+      issues: [
+        "ADMIN_EMAIL must be a valid email and ADMIN_PASSWORD must be at least 8 characters",
+      ],
     });
   }
 

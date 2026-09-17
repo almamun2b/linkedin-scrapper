@@ -3,35 +3,52 @@
 import { useActionState } from "react";
 import type { LinkedInAccountDetail } from "../repository/linkedInAccount.repository";
 import type { ProxyListItem } from "@/modules/proxy/repository/proxy.repository";
-import { Button } from "@/ui/Button";
+import { Alert } from "@/components/ui/Alert";
+import { Button } from "@/components/ui/Button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Field } from "@/components/ui/form/Field";
+import { Input } from "@/components/ui/form/Input";
+import { Select } from "@/components/ui/form/Select";
 import { updateAccountAction, rotatePasswordAction } from "../actions";
 
-export function AccountEditForm({ account, proxies }: { account: LinkedInAccountDetail; proxies: ProxyListItem[] }) {
+export function AccountEditForm({
+  account,
+  proxies,
+}: {
+  account: LinkedInAccountDetail;
+  proxies: ProxyListItem[];
+}) {
   return (
-    <div className="flex flex-col gap-6 max-w-md">
-      <form action={updateAccountAction} className="flex flex-col gap-3 rounded-[--radius-card] border border-[--color-border] bg-[--color-surface] p-4">
-        <input type="hidden" name="id" value={account.id} />
-        <label className="flex flex-col gap-1 text-xs text-[--color-muted]">
-          Label
-          <input name="label" defaultValue={account.label} className="rounded-md border border-[--color-border] bg-transparent px-2 py-1.5 text-sm" />
-        </label>
-        <label className="flex flex-col gap-1 text-xs text-[--color-muted]">
-          Timezone
-          <input name="timezone" defaultValue={account.timezone} className="rounded-md border border-[--color-border] bg-transparent px-2 py-1.5 text-sm" />
-        </label>
-        <label className="flex flex-col gap-1 text-xs text-[--color-muted]">
-          Proxy
-          <select name="proxyId" defaultValue={account.proxyId ?? "none"} className="rounded-md border border-[--color-border] bg-transparent px-2 py-1.5 text-sm">
-            <option value="none">None (direct connection)</option>
-            {proxies.map((proxy) => (
-              <option key={proxy.id} value={proxy.id}>
-                {proxy.label} ({proxy.host}:{proxy.port})
-              </option>
-            ))}
-          </select>
-        </label>
-        <Button type="submit">Save</Button>
-      </form>
+    <div className="flex max-w-md flex-col gap-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Account details</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form action={updateAccountAction} className="flex flex-col gap-3">
+            <input type="hidden" name="id" value={account.id} />
+            <Field label="Label">
+              <Input name="label" defaultValue={account.label} />
+            </Field>
+            <Field label="Timezone">
+              <Input name="timezone" defaultValue={account.timezone} />
+            </Field>
+            <Field label="Proxy">
+              <Select name="proxyId" defaultValue={account.proxyId ?? "none"}>
+                <option value="none">None (direct connection)</option>
+                {proxies.map((proxy) => (
+                  <option key={proxy.id} value={proxy.id}>
+                    {proxy.label} ({proxy.host}:{proxy.port})
+                  </option>
+                ))}
+              </Select>
+            </Field>
+            <Button type="submit" className="self-start">
+              Save
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
       <RotatePasswordForm accountId={account.id} />
     </div>
   );
@@ -40,16 +57,22 @@ export function AccountEditForm({ account, proxies }: { account: LinkedInAccount
 function RotatePasswordForm({ accountId }: { accountId: string }) {
   const [state, formAction, pending] = useActionState(rotatePasswordAction, {});
   return (
-    <form action={formAction} className="flex flex-col gap-3 rounded-[--radius-card] border border-[--color-border] bg-[--color-surface] p-4">
-      <input type="hidden" name="id" value={accountId} />
-      <label className="flex flex-col gap-1 text-xs text-[--color-muted]">
-        New LinkedIn password
-        <input name="password" type="password" required className="rounded-md border border-[--color-border] bg-transparent px-2 py-1.5 text-sm" />
-      </label>
-      <Button type="submit" variant="secondary" disabled={pending}>
-        {pending ? "Rotating…" : "Rotate password"}
-      </Button>
-      {state?.error ? <p className="text-sm text-[--color-danger]">{state.error}</p> : null}
-    </form>
+    <Card>
+      <CardHeader>
+        <CardTitle>Rotate password</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form action={formAction} className="flex flex-col gap-3">
+          <input type="hidden" name="id" value={accountId} />
+          <Field label="New LinkedIn password">
+            <Input name="password" type="password" required />
+          </Field>
+          <Button type="submit" variant="secondary" loading={pending} className="self-start">
+            {pending ? "Rotating…" : "Rotate password"}
+          </Button>
+          {state.error ? <Alert tone="error">{state.error}</Alert> : null}
+        </form>
+      </CardContent>
+    </Card>
   );
 }

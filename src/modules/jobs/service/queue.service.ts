@@ -13,7 +13,10 @@ export async function enqueueJob(input: EnqueueInput) {
   } catch (error) {
     // idempotencyKey is unique — a repeat enqueue with the same key is not a failure.
     if (isUniqueConstraintError(error)) {
-      log.info({ type: input.type, idempotencyKey: input.idempotencyKey }, "job already queued (idempotent)");
+      log.info(
+        { type: input.type, idempotencyKey: input.idempotencyKey },
+        "job already queued (idempotent)",
+      );
       return null;
     }
     throw error;
@@ -30,7 +33,10 @@ export async function claimBatch(params: {
 }
 
 /** Dispatches a handler's outcome to the right queue transition based on the classified error. */
-export async function finishJob(job: ClaimedJob, outcome: { ok: true } | { ok: false; error: Error }) {
+export async function finishJob(
+  job: ClaimedJob,
+  outcome: { ok: true } | { ok: false; error: Error },
+) {
   if (outcome.ok) {
     await repo.complete(job.id);
     log.info({ jobId: job.id, type: job.type }, "job succeeded");
@@ -39,12 +45,18 @@ export async function finishJob(job: ClaimedJob, outcome: { ok: true } | { ok: f
   const { error } = outcome;
   if (error instanceof RescheduleError) {
     await repo.rescheduleTo(job.id, error.runAt);
-    log.info({ jobId: job.id, type: job.type, runAt: error.runAt, reason: error.message }, "job rescheduled");
+    log.info(
+      { jobId: job.id, type: job.type, runAt: error.runAt, reason: error.message },
+      "job rescheduled",
+    );
     return;
   }
   if (error instanceof RiskSignalError) {
     await repo.failRiskSignal(job, error);
-    log.warn({ jobId: job.id, type: job.type, err: error.message }, "job hit a risk signal — breaker tripped");
+    log.warn(
+      { jobId: job.id, type: job.type, err: error.message },
+      "job hit a risk signal — breaker tripped",
+    );
     return;
   }
   if (error instanceof FatalError) {
@@ -54,11 +66,17 @@ export async function finishJob(job: ClaimedJob, outcome: { ok: true } | { ok: f
   }
   const isRetryable = error instanceof RetryableError;
   if (!isRetryable) {
-    log.warn({ jobId: job.id, type: job.type, err: error.message }, "unclassified error treated as retryable");
+    log.warn(
+      { jobId: job.id, type: job.type, err: error.message },
+      "unclassified error treated as retryable",
+    );
   }
   const delayMs = backoffDelayMs(job.attempts);
   await repo.failRetryable(job, error, new Date(Date.now() + delayMs));
-  log.warn({ jobId: job.id, type: job.type, err: error.message, delayMs }, "job requeued with backoff");
+  log.warn(
+    { jobId: job.id, type: job.type, err: error.message, delayMs },
+    "job requeued with backoff",
+  );
 }
 
 export async function cancelAccountJobs(linkedInAccountId: string) {
@@ -101,5 +119,7 @@ function backoffDelayMs(attempts: number): number {
 }
 
 function isUniqueConstraintError(error: unknown): boolean {
-  return typeof error === "object" && error !== null && (error as { code?: string }).code === "P2002";
+  return (
+    typeof error === "object" && error !== null && (error as { code?: string }).code === "P2002"
+  );
 }

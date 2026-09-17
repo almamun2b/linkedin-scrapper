@@ -4,17 +4,17 @@
     "prisma": {
       "type": "remote",
       "url": "https://mcp.prisma.io/mcp",
-      "enabled": true
+      "enabled": true,
     },
     "prisma-local": {
       "type": "local",
       "command": ["pnpm", "exec", "prisma", "mcp"],
-      "enabled": true
+      "enabled": true,
     },
     "next-devtools": {
       "type": "local",
       "command": ["npx", "-y", "next-devtools-mcp@latest"],
-      "enabled": true
-    }
-  }
+      "enabled": true,
+    },
+  },
 }

@@ -45,5 +45,8 @@ export async function updateRole(userId: string, role: Role) {
 }
 
 export async function setDisabled(userId: string, disabled: boolean) {
-  return prisma.user.update({ where: { id: userId }, data: { disabledAt: disabled ? new Date() : null } });
+  return prisma.user.update({
+    where: { id: userId },
+    data: { disabledAt: disabled ? new Date() : null },
+  });
 }

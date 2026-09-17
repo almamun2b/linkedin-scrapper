@@ -7,7 +7,10 @@ import { loginSchema } from "../domain/login.schema";
 import type { AppSessionUser } from "../domain/sessionUser";
 import * as userRepo from "@/modules/user/repository/user.repository";
 
-type TokenWithUser = { uid?: string; role?: AppSessionUser["role"] };
+interface TokenWithUser {
+  uid?: string;
+  role?: AppSessionUser["role"];
+}
 
 /**
  * `PrismaAdapter(prisma)` is the one narrow, named exception to "Prisma only in
@@ -35,7 +38,7 @@ export const authConfig: NextAuthConfig = {
         const { email, password } = parsed.data;
 
         const user = await userRepo.findByEmailForAuth(email);
-        if (!user || !user.passwordHash || user.disabledAt) return null;
+        if (!user?.passwordHash || user.disabledAt) return null;
 
         const valid = await bcrypt.compare(password, user.passwordHash);
         if (!valid) return null;
@@ -47,6 +50,11 @@ export const authConfig: NextAuthConfig = {
   callbacks: {
     async jwt({ token, user }) {
       const t = token as typeof token & TokenWithUser;
+      // next-auth v5's own JWT-callback type declares `user` as always-present (`User |
+      // AdapterUser`, no `undefined`) even though at runtime it's only set on the initial
+      // sign-in call and absent on every later token refresh — a real upstream type gap,
+      // not a redundant check.
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (user) {
         const u = user as unknown as AppSessionUser;
         t.uid = u.id;
@@ -68,7 +76,7 @@ export const authConfig: NextAuthConfig = {
       }
       return t;
     },
-    async session({ session, token }) {
+    session({ session, token }) {
       const t = token as typeof token & TokenWithUser;
       if (t.uid && t.role) {
         const sessionUser = session.user as unknown as AppSessionUser;

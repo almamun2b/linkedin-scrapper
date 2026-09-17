@@ -8,7 +8,12 @@ import type { ClaimedJob } from "@/modules/jobs/repository/jobs.repository";
 
 const log = logger.child({ handler: "run.finalize" });
 
-const TERMINAL: RunStatus[] = [RunStatus.SUCCEEDED, RunStatus.FAILED, RunStatus.HALTED, RunStatus.CANCELLED];
+const TERMINAL: RunStatus[] = [
+  RunStatus.SUCCEEDED,
+  RunStatus.FAILED,
+  RunStatus.HALTED,
+  RunStatus.CANCELLED,
+];
 
 /** No browser, no lock. No-ops if already terminal — avoids racing a HALTED run set by a
  * risk signal in the same run's last search.page.fetch. */
@@ -34,7 +39,12 @@ export async function handleRunFinalize(job: ClaimedJob, signal: AbortSignal): P
     action: "scrape_run.finalized",
     entity: "ScrapeRun",
     entityId: scrapeRunId,
-    data: { pagesDone: run.pagesDone, profilesDone: run.profilesDone, leadsNew: run.leadsNew, emailsFound: run.emailsFound },
+    data: {
+      pagesDone: run.pagesDone,
+      profilesDone: run.profilesDone,
+      leadsNew: run.leadsNew,
+      emailsFound: run.emailsFound,
+    },
   });
   log.info({ scrapeRunId }, "run finalized");
 }

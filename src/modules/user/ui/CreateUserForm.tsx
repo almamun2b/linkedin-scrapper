@@ -1,38 +1,45 @@
 "use client";
 
 import { useActionState } from "react";
-import { Button } from "@/ui/Button";
+import { Alert } from "@/components/ui/Alert";
+import { Button } from "@/components/ui/Button";
+import { Field } from "@/components/ui/form/Field";
+import { Input } from "@/components/ui/form/Input";
+import { Select } from "@/components/ui/form/Select";
 import { createUserAction } from "../actions";
 
 export function CreateUserForm() {
   const [state, formAction, pending] = useActionState(createUserAction, {});
 
   return (
-    <form action={formAction} className="flex flex-wrap items-end gap-3 rounded-[--radius-card] border border-[--color-border] bg-[--color-surface] p-4">
-      <label className="flex flex-col gap-1 text-xs text-[--color-muted]">
-        Email
-        <input name="email" type="email" required className="rounded-md border border-[--color-border] bg-transparent px-2 py-1.5 text-sm" />
-      </label>
-      <label className="flex flex-col gap-1 text-xs text-[--color-muted]">
-        Name
-        <input name="name" type="text" className="rounded-md border border-[--color-border] bg-transparent px-2 py-1.5 text-sm" />
-      </label>
-      <label className="flex flex-col gap-1 text-xs text-[--color-muted]">
-        Password
-        <input name="password" type="password" required minLength={8} className="rounded-md border border-[--color-border] bg-transparent px-2 py-1.5 text-sm" />
-      </label>
-      <label className="flex flex-col gap-1 text-xs text-[--color-muted]">
-        Role
-        <select name="role" defaultValue="VIEWER" className="rounded-md border border-[--color-border] bg-transparent px-2 py-1.5 text-sm">
+    <form
+      action={formAction}
+      className="flex flex-wrap items-end gap-3 rounded-lg border border-border bg-card p-4 shadow-card"
+    >
+      <Field label="Email">
+        <Input name="email" type="email" required />
+      </Field>
+      <Field label="Name">
+        <Input name="name" type="text" />
+      </Field>
+      <Field label="Password">
+        <Input name="password" type="password" required minLength={8} />
+      </Field>
+      <Field label="Role">
+        <Select name="role" defaultValue="VIEWER">
           <option value="VIEWER">VIEWER</option>
           <option value="OPERATOR">OPERATOR</option>
           <option value="ADMIN">ADMIN</option>
-        </select>
-      </label>
-      <Button type="submit" disabled={pending}>
+        </Select>
+      </Field>
+      <Button type="submit" loading={pending}>
         {pending ? "Creating…" : "Create user"}
       </Button>
-      {state?.error ? <p className="w-full text-sm text-[--color-danger]">{state.error}</p> : null}
+      {state.error ? (
+        <Alert tone="error" className="w-full">
+          {state.error}
+        </Alert>
+      ) : null}
     </form>
   );
 }

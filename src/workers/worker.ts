@@ -31,9 +31,11 @@ const handlers: Record<string, Handler> = {
 
 const log = logger.child({ module: "worker" });
 
-async function runJob(job: ClaimedJob, shutdown: ShutdownController, onSettle: () => void): Promise<void> {
+function runJob(job: ClaimedJob, shutdown: ShutdownController, onSettle: () => void): void {
   const localController = new AbortController();
-  const forwardShutdown = () => localController.abort();
+  const forwardShutdown = () => {
+    localController.abort();
+  };
   shutdown.signal.addEventListener("abort", forwardShutdown);
 
   // Job.cancelRequestedAt is the per-job cancellation flag (ScrapeRun cancel, /jobs "stop").
@@ -65,7 +67,9 @@ async function runJob(job: ClaimedJob, shutdown: ShutdownController, onSettle: (
     }
   })();
 
-  shutdown.trackJob(promise);
+  // Fire-and-forget by design (concurrent job processing) — every failure path inside the
+  // IIFE above is already caught and reported via queueService.finishJob.
+  void shutdown.trackJob(promise);
 }
 
 function sleep(ms: number): Promise<void> {
@@ -88,7 +92,10 @@ async function main(): Promise<void> {
     intervalMs: env.LEASE_HEARTBEAT_MS,
   });
 
-  log.info({ workerId: env.WORKER_ID, queues, concurrency: env.WORKER_CONCURRENCY }, "worker started");
+  log.info(
+    { workerId: env.WORKER_ID, queues, concurrency: env.WORKER_CONCURRENCY },
+    "worker started",
+  );
 
   let active = 0;
   while (!shutdown.isShuttingDown()) {
@@ -106,7 +113,7 @@ async function main(): Promise<void> {
         for (const job of jobs) {
           claimed++;
           active++;
-          void runJob(job, shutdown, () => {
+          runJob(job, shutdown, () => {
             active--;
           });
         }
@@ -125,7 +132,7 @@ async function main(): Promise<void> {
   process.exit(0);
 }
 
-main().catch((error) => {
+main().catch((error: unknown) => {
   log.error({ err: error }, "worker crashed");
   process.exit(1);
 });

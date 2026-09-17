@@ -18,7 +18,10 @@ export const createSearchDefinitionSchema = z.object({
 // required; callers (actions.ts) pass the pre-parse shape where it's still optional.
 export type CreateSearchDefinitionInput = z.input<typeof createSearchDefinitionSchema>;
 
-export type CreateSearchDefinitionError = { kind: "invalid_input"; issues: string[] };
+export interface CreateSearchDefinitionError {
+  kind: "invalid_input";
+  issues: string[];
+}
 
 export async function createSearchDefinition(
   input: CreateSearchDefinitionInput,

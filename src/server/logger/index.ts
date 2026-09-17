@@ -11,7 +11,6 @@ const REDACT_PATHS = [
   "*.*.storageStateSealed",
   "password",
   "*.password",
-  "LINKEDIN_PASSWORD",
   "ENCRYPTION_KEY",
   "AUTH_SECRET",
   "passwordHash",

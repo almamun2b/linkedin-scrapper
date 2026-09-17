@@ -140,7 +140,13 @@ export async function listByStatus(status?: JobStatus, take = 50) {
 export async function retryDeadJob(jobId: string) {
   return prisma.job.updateMany({
     where: { id: jobId, status: JobStatus.DEAD },
-    data: { status: JobStatus.QUEUED, attempts: 0, lastError: null, finishedAt: null, runAt: new Date() },
+    data: {
+      status: JobStatus.QUEUED,
+      attempts: 0,
+      lastError: null,
+      finishedAt: null,
+      runAt: new Date(),
+    },
   });
 }
 
@@ -152,7 +158,11 @@ export async function findExpiredRunning(limit: number) {
 }
 
 /** Reaper transition for one expired-lease job: back to QUEUED, or DEAD if attempts exhausted. */
-export async function resetExpiredLease(job: { id: string; attempts: number; maxAttempts: number }) {
+export async function resetExpiredLease(job: {
+  id: string;
+  attempts: number;
+  maxAttempts: number;
+}) {
   const dead = job.attempts >= job.maxAttempts;
   return prisma.job.update({
     where: { id: job.id },

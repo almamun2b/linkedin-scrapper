@@ -7,7 +7,10 @@ import { createProxySchema, type CreateProxyInput } from "../domain/proxy.schema
 
 const log = logger.child({ module: "proxy.createProxy" });
 
-export type CreateProxyError = { kind: "invalid_input"; issues: string[] };
+export interface CreateProxyError {
+  kind: "invalid_input";
+  issues: string[];
+}
 
 export async function createProxy(
   input: CreateProxyInput,

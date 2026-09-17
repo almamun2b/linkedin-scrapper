@@ -20,8 +20,9 @@ website. See [ARCHITECTURE.md](ARCHITECTURE.md) §0 before relying on either ass
 ```bash
 pnpm install
 cp .env.example .env
-# fill in DATABASE_URL, AUTH_SECRET, ENCRYPTION_KEY (32 random bytes, base64), and the
-# LinkedIn bootstrap credentials — see .env.example for the full list
+# fill in DATABASE_URL, AUTH_SECRET, ENCRYPTION_KEY (32 random bytes, base64), and
+# ADMIN_EMAIL/ADMIN_PASSWORD for the first admin user — see .env.example for the full list.
+# LinkedIn accounts are added afterwards from /config/accounts, not from .env.
 pnpm db:migrate
 pnpm db:seed
 pnpm dev
@@ -32,15 +33,15 @@ up; it is not required to run the web app.
 
 ## Scripts
 
-| Command | Does |
-| --- | --- |
-| `pnpm dev` | Next.js dev server |
-| `pnpm build` / `pnpm start` | production build / serve |
-| `pnpm lint` | ESLint |
-| `pnpm typecheck` | `tsc --noEmit` |
-| `pnpm db:generate` | regenerate the Prisma client |
-| `pnpm db:migrate` | `prisma migrate dev` |
-| `pnpm db:seed` | run `prisma/seed.ts` |
+| Command                     | Does                         |
+| --------------------------- | ---------------------------- |
+| `pnpm dev`                  | Next.js dev server           |
+| `pnpm build` / `pnpm start` | production build / serve     |
+| `pnpm lint`                 | ESLint                       |
+| `pnpm typecheck`            | `tsc --noEmit`               |
+| `pnpm db:generate`          | regenerate the Prisma client |
+| `pnpm db:migrate`           | `prisma migrate dev`         |
+| `pnpm db:seed`              | run `prisma/seed.ts`         |
 
 ## Runtime
 

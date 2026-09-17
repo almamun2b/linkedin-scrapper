@@ -2,7 +2,7 @@ import { z } from "zod";
 import { Role } from "@/generated/prisma/enums";
 
 export const createUserSchema = z.object({
-  email: z.string().email(),
+  email: z.email(),
   password: z.string().min(8, "Password must be at least 8 characters"),
   name: z.string().trim().min(1).optional(),
   role: z.enum(Role),

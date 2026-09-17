@@ -6,7 +6,10 @@
 
 /** Transient failure (network blip, proxy hiccup, timeout) — backoff and requeue. */
 export class RetryableError extends Error {
-  constructor(message: string, readonly context?: Record<string, unknown>) {
+  constructor(
+    message: string,
+    readonly context?: Record<string, unknown>,
+  ) {
     super(message);
     this.name = "RetryableError";
   }
@@ -14,7 +17,10 @@ export class RetryableError extends Error {
 
 /** Permanent failure for this payload (selector broke, malformed payload) — goes to DEAD immediately. */
 export class FatalError extends Error {
-  constructor(message: string, readonly context?: Record<string, unknown>) {
+  constructor(
+    message: string,
+    readonly context?: Record<string, unknown>,
+  ) {
     super(message);
     this.name = "FatalError";
   }
@@ -22,7 +28,10 @@ export class FatalError extends Error {
 
 /** Checkpoint/authwall/999/captcha — trips the circuit breaker. Never retried (CLAUDE.md invariant #3). */
 export class RiskSignalError extends Error {
-  constructor(message: string, readonly context?: Record<string, unknown>) {
+  constructor(
+    message: string,
+    readonly context?: Record<string, unknown>,
+  ) {
     super(message);
     this.name = "RiskSignalError";
   }
@@ -34,7 +43,10 @@ export class RiskSignalError extends Error {
  * retry would (ARCHITECTURE.md §9: "rescheduled ... not retried").
  */
 export class RescheduleError extends Error {
-  constructor(message: string, readonly runAt: Date) {
+  constructor(
+    message: string,
+    readonly runAt: Date,
+  ) {
     super(message);
     this.name = "RescheduleError";
   }

@@ -59,7 +59,7 @@ export function sealSecret(plaintext: string): SealedSecret {
  * Prisma 7 returns `Bytes` columns as Uint8Array, not Buffer — wrap explicitly rather than
  * assuming a Buffer-shaped input.
  */
-export function unsealSecret(sealed: Uint8Array<ArrayBufferLike>, keyVer: number): string {
+export function unsealSecret(sealed: Uint8Array, keyVer: number): string {
   if (keyVer !== 1) {
     throw new Error(`Unsupported key version ${keyVer} — only keyVer 1 is implemented`);
   }

@@ -3,8 +3,11 @@
 import { useState, useTransition } from "react";
 import type { FilterRefKind } from "@/generated/prisma/enums";
 import type { FilterRefValue } from "../domain/filters";
-import { Button } from "@/ui/Button";
-import { Badge } from "@/ui/Badge";
+import { Alert } from "@/components/ui/Alert";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { Field } from "@/components/ui/form/Field";
+import { Input } from "@/components/ui/form/Input";
 import { searchFilterRefAction, requestTypeaheadResolutionAction } from "../actions";
 
 export function TypeaheadPicker({
@@ -44,30 +47,45 @@ export function TypeaheadPicker({
   }
 
   return (
-    <div className="flex flex-col gap-1.5">
-      <label className="text-xs text-[--color-muted]">{label}</label>
-      <div className="flex flex-wrap gap-1.5">
-        {values.map((v) => (
-          <Badge key={v.urn} tone="accent">
-            {v.label}
-            <button type="button" onClick={() => remove(v.urn)} className="ml-1 opacity-70 hover:opacity-100">
-              ×
-            </button>
-          </Badge>
-        ))}
-      </div>
+    <Field label={label}>
+      {values.length > 0 ? (
+        <div className="flex flex-wrap gap-1.5">
+          {values.map((v) => (
+            <Badge key={v.urn} tone="accent">
+              {v.label}
+              <button
+                type="button"
+                onClick={() => {
+                  remove(v.urn);
+                }}
+                aria-label={`Remove ${v.label}`}
+                className="opacity-70 hover:opacity-100"
+              >
+                ×
+              </button>
+            </Badge>
+          ))}
+        </div>
+      ) : null}
       <div className="relative">
-        <input
+        <Input
           value={query}
-          onChange={(e) => search(e.target.value)}
+          onChange={(e) => {
+            search(e.target.value);
+          }}
           placeholder={`Search cached ${label.toLowerCase()}…`}
-          className="w-full rounded-md border border-[--color-border] bg-transparent px-2 py-1.5 text-sm"
         />
         {matches.length > 0 ? (
-          <ul className="absolute z-10 mt-1 w-full rounded-md border border-[--color-border] bg-[--color-surface] shadow-sm">
+          <ul className="absolute z-10 mt-1 w-full rounded-md border border-border bg-popover py-1 shadow-popover">
             {matches.map((m) => (
               <li key={m.urn}>
-                <button type="button" onClick={() => add(m)} className="block w-full px-2 py-1.5 text-left text-sm hover:bg-[--color-bg]">
+                <button
+                  type="button"
+                  onClick={() => {
+                    add(m);
+                  }}
+                  className="block w-full px-2.5 py-1.5 text-left text-sm hover:bg-surface-muted"
+                >
                   {m.label}
                 </button>
               </li>
@@ -81,21 +99,25 @@ export function TypeaheadPicker({
           variant="ghost"
           size="sm"
           className="self-start"
-          onClick={() =>
+          onClick={() => {
             startTransition(async () => {
-              const result = await requestTypeaheadResolutionAction({ linkedInAccountId, kind, query });
+              const result = await requestTypeaheadResolutionAction({
+                linkedInAccountId,
+                kind,
+                query,
+              });
               setNote(
                 result.queued
                   ? "Queued — the worker will resolve this against LinkedIn; search again shortly."
                   : "Already queued this hour.",
               );
-            })
-          }
+            });
+          }}
         >
           Search LinkedIn for &quot;{query}&quot;
         </Button>
       ) : null}
-      {note ? <p className="text-xs text-[--color-muted]">{note}</p> : null}
-    </div>
+      {note ? <Alert tone="info">{note}</Alert> : null}
+    </Field>
   );
 }

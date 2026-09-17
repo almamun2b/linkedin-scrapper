@@ -18,6 +18,10 @@ export class UnauthorizedError extends Error {
  */
 export async function requireRole(minRole: keyof typeof Role): Promise<{ id: string; role: Role }> {
   const session = await auth();
+  // next-auth's own `Session["user"]` type has no `role` — tsc genuinely needs this cast
+  // (dropping it is a real TS2339 on `.role`) even though typescript-eslint's type-aware
+  // no-unnecessary-type-assertion misflags it here.
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
   const user = session?.user as Partial<AppSessionUser> | undefined;
   if (!user?.id || !user.role) {
     throw new UnauthorizedError("Not signed in");

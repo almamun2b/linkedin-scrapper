@@ -1,14 +1,14 @@
 import { z } from "zod";
 
 export const bootstrapInputSchema = z.object({
-  email: z.string().email(),
+  email: z.email(),
   password: z.string().min(1),
   label: z.string().default("primary"),
 });
 export type BootstrapInput = z.infer<typeof bootstrapInputSchema>;
 
 export const createAccountSchema = z.object({
-  email: z.string().email(),
+  email: z.email(),
   password: z.string().min(1),
   label: z.string().trim().min(1).default("primary"),
   timezone: z.string().trim().min(1).default("UTC"),

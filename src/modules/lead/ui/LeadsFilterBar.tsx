@@ -1,27 +1,46 @@
-export function LeadsFilterBar({ stage, hasEmail, company }: { stage?: string; hasEmail?: string; company?: string }) {
+import { Button } from "@/components/ui/Button";
+import { Checkbox } from "@/components/ui/form/Checkbox";
+import { Field } from "@/components/ui/form/Field";
+import { Input } from "@/components/ui/form/Input";
+import { Select } from "@/components/ui/form/Select";
+
+export function LeadsFilterBar({
+  stage,
+  hasEmail,
+  company,
+}: {
+  stage?: string;
+  hasEmail?: string;
+  company?: string;
+}) {
   return (
-    <form method="get" className="flex flex-wrap items-end gap-3 rounded-[--radius-card] border border-[--color-border] bg-[--color-surface] p-3">
-      <label className="flex flex-col gap-1 text-xs text-[--color-muted]">
-        Stage
-        <select name="stage" defaultValue={stage ?? ""} className="rounded-md border border-[--color-border] bg-transparent px-2 py-1.5 text-sm">
+    <form
+      method="get"
+      className="flex flex-wrap items-end gap-3 rounded-lg border border-border bg-card p-3 shadow-card"
+    >
+      <Field label="Stage" className="w-36">
+        <Select name="stage" defaultValue={stage ?? ""}>
           <option value="">Any</option>
           <option value="STUB">Stub</option>
           <option value="SCRAPED">Scraped</option>
           <option value="ENRICHED">Enriched</option>
           <option value="FAILED">Failed</option>
-        </select>
-      </label>
-      <label className="flex flex-col gap-1 text-xs text-[--color-muted]">
-        Company contains
-        <input name="company" defaultValue={company ?? ""} className="rounded-md border border-[--color-border] bg-transparent px-2 py-1.5 text-sm" />
-      </label>
-      <label className="flex items-center gap-1.5 pb-1.5 text-xs text-[--color-muted]">
-        <input type="checkbox" name="hasEmail" value="true" defaultChecked={hasEmail === "true"} />
-        Has email only
-      </label>
-      <button type="submit" className="rounded-md border border-[--color-border] px-3 py-1.5 text-sm text-[--color-fg] hover:bg-[--color-bg]">
+        </Select>
+      </Field>
+      <Field label="Company contains" className="w-48">
+        <Input name="company" defaultValue={company ?? ""} />
+      </Field>
+      <div className="pb-1.5">
+        <Checkbox
+          name="hasEmail"
+          value="true"
+          defaultChecked={hasEmail === "true"}
+          label="Has email only"
+        />
+      </div>
+      <Button type="submit" variant="secondary" size="sm">
         Filter
-      </button>
+      </Button>
     </form>
   );
 }

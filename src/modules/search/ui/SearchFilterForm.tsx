@@ -3,7 +3,12 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import type { LinkedInAccountListItem } from "@/modules/linkedin-account/repository/linkedInAccount.repository";
-import { Button } from "@/ui/Button";
+import { Alert } from "@/components/ui/Alert";
+import { Button } from "@/components/ui/Button";
+import { Card, CardContent } from "@/components/ui/Card";
+import { Field } from "@/components/ui/form/Field";
+import { Input } from "@/components/ui/form/Input";
+import { Select } from "@/components/ui/form/Select";
 import type { ConnectionDegree, FilterRefValue, SearchFilters } from "../domain/filters";
 import { createSearchDefinitionAction } from "../actions";
 import { ResultTypeTabs } from "./ResultTypeTabs";
@@ -28,7 +33,12 @@ export function SearchFilterForm({ accounts }: { accounts: LinkedInAccountListIt
     setError(null);
     const filters: SearchFilters = { keywords, connectionDegree, locations, currentCompanies };
     startTransition(async () => {
-      const result = await createSearchDefinitionAction({ name, linkedInAccountId, keywords, filters });
+      const result = await createSearchDefinitionAction({
+        name,
+        linkedInAccountId,
+        keywords,
+        filters,
+      });
       if (result.error) {
         setError(result.error);
         return;
@@ -38,40 +48,56 @@ export function SearchFilterForm({ accounts }: { accounts: LinkedInAccountListIt
   }
 
   return (
-    <div className="flex max-w-2xl flex-col gap-4 rounded-[--radius-card] border border-[--color-border] bg-[--color-surface] p-4">
-      <ResultTypeTabs />
-      <label className="flex flex-col gap-1 text-xs text-[--color-muted]">
-        Search name
-        <input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="e.g. NYC product managers"
-          className="rounded-md border border-[--color-border] bg-transparent px-2 py-1.5 text-sm"
+    <Card className="max-w-2xl">
+      <CardContent className="flex flex-col gap-4">
+        <ResultTypeTabs />
+        <Field label="Search name">
+          <Input
+            value={name}
+            onChange={(e) => {
+              setName(e.target.value);
+            }}
+            placeholder="e.g. NYC product managers"
+          />
+        </Field>
+        <Field label="LinkedIn account">
+          <Select
+            value={linkedInAccountId}
+            onChange={(e) => {
+              setLinkedInAccountId(e.target.value);
+            }}
+          >
+            {accounts.map((account) => (
+              <option key={account.id} value={account.id}>
+                {account.label} ({account.email})
+              </option>
+            ))}
+          </Select>
+        </Field>
+        <KeywordsField value={keywords} onChange={setKeywords} />
+        <ConnectionDegreeField value={connectionDegree} onChange={setConnectionDegree} />
+        <LocationsField
+          linkedInAccountId={linkedInAccountId}
+          values={locations}
+          onChange={setLocations}
         />
-      </label>
-      <label className="flex flex-col gap-1 text-xs text-[--color-muted]">
-        LinkedIn account
-        <select
-          value={linkedInAccountId}
-          onChange={(e) => setLinkedInAccountId(e.target.value)}
-          className="rounded-md border border-[--color-border] bg-transparent px-2 py-1.5 text-sm"
+        <CurrentCompaniesField
+          linkedInAccountId={linkedInAccountId}
+          values={currentCompanies}
+          onChange={setCurrentCompanies}
+        />
+        <AllFiltersDrawer />
+        <Button
+          type="button"
+          onClick={submit}
+          loading={pending}
+          disabled={!name || !linkedInAccountId}
+          className="self-start"
         >
-          {accounts.map((account) => (
-            <option key={account.id} value={account.id}>
-              {account.label} ({account.email})
-            </option>
-          ))}
-        </select>
-      </label>
-      <KeywordsField value={keywords} onChange={setKeywords} />
-      <ConnectionDegreeField value={connectionDegree} onChange={setConnectionDegree} />
-      <LocationsField linkedInAccountId={linkedInAccountId} values={locations} onChange={setLocations} />
-      <CurrentCompaniesField linkedInAccountId={linkedInAccountId} values={currentCompanies} onChange={setCurrentCompanies} />
-      <AllFiltersDrawer />
-      <Button type="button" onClick={submit} disabled={pending || !name || !linkedInAccountId} className="self-start">
-        {pending ? "Creating…" : "Create search"}
-      </Button>
-      {error ? <p className="text-sm text-[--color-danger]">{error}</p> : null}
-    </div>
+          {pending ? "Creating…" : "Create search"}
+        </Button>
+        {error ? <Alert tone="error">{error}</Alert> : null}
+      </CardContent>
+    </Card>
   );
 }

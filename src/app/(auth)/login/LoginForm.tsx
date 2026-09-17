@@ -1,15 +1,21 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState, type SyntheticEvent } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import { Eye, EyeOff } from "lucide-react";
+import { Alert } from "@/components/ui/Alert";
+import { Button } from "@/components/ui/Button";
+import { Field } from "@/components/ui/form/Field";
+import { Input } from "@/components/ui/form/Input";
 
 export function LoginForm() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-  async function onSubmit(event: FormEvent<HTMLFormElement>) {
+  async function onSubmit(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
     setPending(true);
@@ -20,7 +26,7 @@ export function LoginForm() {
       redirect: false,
     });
     setPending(false);
-    if (result?.error) {
+    if (result.error) {
       setError("Invalid email or password.");
       return;
     }
@@ -29,35 +35,39 @@ export function LoginForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col gap-4">
-      <label className="flex flex-col gap-1 text-sm text-[--color-fg]">
-        Email
-        <input
-          type="email"
-          name="email"
-          required
-          autoComplete="email"
-          className="rounded-md border border-[--color-border] bg-transparent px-3 py-2 text-sm outline-none focus:border-[--color-accent]"
-        />
-      </label>
-      <label className="flex flex-col gap-1 text-sm text-[--color-fg]">
-        Password
-        <input
-          type="password"
-          name="password"
-          required
-          autoComplete="current-password"
-          className="rounded-md border border-[--color-border] bg-transparent px-3 py-2 text-sm outline-none focus:border-[--color-accent]"
-        />
-      </label>
-      {error ? <p className="text-sm text-[--color-danger]">{error}</p> : null}
-      <button
-        type="submit"
-        disabled={pending}
-        className="mt-2 rounded-md bg-[--color-accent] px-3 py-2 text-sm font-medium text-white disabled:opacity-60"
-      >
+    <form onSubmit={(event) => void onSubmit(event)} className="flex flex-col gap-4">
+      <Field label="Email">
+        <Input type="email" name="email" required autoComplete="email" />
+      </Field>
+      <Field label="Password">
+        <div className="relative">
+          <Input
+            type={showPassword ? "text" : "password"}
+            name="password"
+            required
+            autoComplete="current-password"
+            className="pr-9"
+          />
+          <button
+            type="button"
+            onClick={() => {
+              setShowPassword((prev) => !prev);
+            }}
+            aria-label={showPassword ? "Hide password" : "Show password"}
+            className="absolute top-1/2 right-2.5 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+          >
+            {showPassword ? (
+              <EyeOff aria-hidden="true" className="size-4" />
+            ) : (
+              <Eye aria-hidden="true" className="size-4" />
+            )}
+          </button>
+        </div>
+      </Field>
+      {error ? <Alert tone="error">{error}</Alert> : null}
+      <Button type="submit" loading={pending} className="mt-1 w-full">
         {pending ? "Signing in…" : "Sign in"}
-      </button>
+      </Button>
     </form>
   );
 }

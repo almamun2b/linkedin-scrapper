@@ -1,17 +1,19 @@
 import type { ScrapingPolicyModel } from "@/generated/prisma/models/ScrapingPolicy";
+import { Checkbox } from "@/components/ui/form/Checkbox";
+import { FormSection } from "@/components/ui/form/FormSection";
 
 export function TogglesFields({ policy }: { policy: ScrapingPolicyModel }) {
   return (
-    <fieldset className="flex gap-6 rounded-[--radius-card] border border-[--color-border] p-4">
-      <legend className="px-1 text-xs font-semibold text-[--color-muted]">Toggles</legend>
-      <label className="flex items-center gap-2 text-xs text-[--color-muted]">
-        <input type="checkbox" name="useProxy" defaultChecked={policy.useProxy} />
-        Use proxy (fails the job if none resolvable — never falls back to direct IP)
-      </label>
-      <label className="flex items-center gap-2 text-xs text-[--color-muted]">
-        <input type="checkbox" name="headless" defaultChecked={policy.headless} />
-        Headless browser
-      </label>
-    </fieldset>
+    <FormSection title="Toggles">
+      <div className="flex flex-col gap-3 sm:flex-row sm:gap-6">
+        <Checkbox
+          name="useProxy"
+          defaultChecked={policy.useProxy}
+          label="Use proxy"
+          hint="Fails the job if none resolvable — never falls back to direct IP"
+        />
+        <Checkbox name="headless" defaultChecked={policy.headless} label="Headless browser" />
+      </div>
+    </FormSection>
   );
 }

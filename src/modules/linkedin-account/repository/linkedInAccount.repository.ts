@@ -70,7 +70,11 @@ export async function updateStatus(id: string, status: AccountStatus, statusReas
   });
 }
 
-export async function updatePasswordSealed(id: string, sealed: Uint8Array<ArrayBuffer>, keyVer: number) {
+export async function updatePasswordSealed(
+  id: string,
+  sealed: Uint8Array<ArrayBuffer>,
+  keyVer: number,
+) {
   return prisma.linkedInAccount.update({
     where: { id },
     data: { passwordSealed: sealed, passwordKeyVer: keyVer },
@@ -81,7 +85,11 @@ export async function updateFingerprint(id: string, fingerprint: AccountFingerpr
   return prisma.linkedInAccount.update({ where: { id }, data: { fingerprint } });
 }
 
-export async function updateStorageState(id: string, sealed: Uint8Array<ArrayBuffer>, keyVer: number) {
+export async function updateStorageState(
+  id: string,
+  sealed: Uint8Array<ArrayBuffer>,
+  keyVer: number,
+) {
   return prisma.linkedInAccount.update({
     where: { id },
     data: { storageStateSealed: sealed, storageStateKeyVer: keyVer, storageStateAt: new Date() },

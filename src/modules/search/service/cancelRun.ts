@@ -19,6 +19,11 @@ export async function cancelRun(runId: string, actorId: string | null): Promise<
   if (run && (run.status === RunStatus.QUEUED || run.status === RunStatus.PAUSED)) {
     await runRepo.finalize(runId, RunStatus.CANCELLED);
   }
-  await auditRepo.record({ actorId, action: "scrape_run.cancel_requested", entity: "ScrapeRun", entityId: runId });
+  await auditRepo.record({
+    actorId,
+    action: "scrape_run.cancel_requested",
+    entity: "ScrapeRun",
+    entityId: runId,
+  });
   log.info({ scrapeRunId: runId }, "run cancel requested");
 }

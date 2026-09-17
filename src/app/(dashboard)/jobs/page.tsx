@@ -1,10 +1,18 @@
-import Link from "next/link";
 import * as jobsRepo from "@/modules/jobs/repository/jobs.repository";
 import { JobsTable } from "@/modules/jobs/ui/JobsTable";
-import { cn } from "@/ui/cn";
+import { FilterChips } from "@/components/ui/FilterChips";
+import { PageHeader } from "@/components/ui/PageHeader";
 import type { JobStatus } from "@/generated/prisma/enums";
 
-const STATUSES: Array<JobStatus | undefined> = [undefined, "QUEUED", "RUNNING", "FAILED", "DEAD", "SUCCEEDED", "CANCELLED"];
+const STATUSES: (JobStatus | undefined)[] = [
+  undefined,
+  "QUEUED",
+  "RUNNING",
+  "FAILED",
+  "DEAD",
+  "SUCCEEDED",
+  "CANCELLED",
+];
 
 export default async function JobsPage({
   searchParams,
@@ -16,23 +24,16 @@ export default async function JobsPage({
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-lg font-semibold text-[--color-fg]">Jobs</h1>
-      <div className="flex flex-wrap gap-2">
-        {STATUSES.map((s) => (
-          <Link
-            key={s ?? "all"}
-            href={s ? `/jobs?status=${s}` : "/jobs"}
-            className={cn(
-              "rounded-full border border-[--color-border] px-3 py-1 text-xs",
-              (status ?? undefined) === s ? "bg-[--color-accent] text-white" : "text-[--color-muted]",
-            )}
-          >
-            {s ?? "All"}
-          </Link>
-        ))}
-      </div>
+      <PageHeader title="Jobs" description="The Postgres-backed queue — every step a run takes." />
+      <FilterChips
+        items={STATUSES.map((s) => ({
+          key: s ?? "all",
+          label: s ?? "All",
+          href: s ? `/jobs?status=${s}` : "/jobs",
+          active: (status ?? undefined) === s,
+        }))}
+      />
       <JobsTable jobs={jobs} />
-      {jobs.length === 0 ? <p className="text-sm text-[--color-muted]">No jobs.</p> : null}
     </div>
   );
 }

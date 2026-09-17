@@ -1,7 +1,10 @@
 import { err, ok, type Result } from "@/server/result";
 import { consumeRateBudget } from "@/server/db/raw/consumeRateBudget.sql.ts";
 
-export type QuotaExceededError = { kind: "quota_exceeded"; metric: string };
+export interface QuotaExceededError {
+  kind: "quota_exceeded";
+  metric: string;
+}
 
 /** Charged before navigation, atomically, via server/db/raw (ARCHITECTURE.md §9 layer 4). */
 export async function consumeDailyProfileBudget(params: {

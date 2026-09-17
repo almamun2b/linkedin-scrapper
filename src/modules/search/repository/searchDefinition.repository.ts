@@ -50,5 +50,8 @@ export async function update(id: string, patch: UpdateSearchDefinitionPatch) {
 }
 
 export async function archive(id: string) {
-  return prisma.searchDefinition.update({ where: { id }, data: { archivedAt: new Date(), enabled: false } });
+  return prisma.searchDefinition.update({
+    where: { id },
+    data: { archivedAt: new Date(), enabled: false },
+  });
 }

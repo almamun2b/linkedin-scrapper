@@ -6,7 +6,10 @@ import { updatePolicySchema, type UpdatePolicyInput } from "../domain/scrapingPo
 
 const log = logger.child({ module: "linkedin-account.updatePolicy" });
 
-export type UpdatePolicyError = { kind: "invalid_input"; issues: string[] };
+export interface UpdatePolicyError {
+  kind: "invalid_input";
+  issues: string[];
+}
 
 export async function updatePolicy(
   input: UpdatePolicyInput,

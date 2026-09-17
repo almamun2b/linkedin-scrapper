@@ -30,7 +30,9 @@ export async function handleSearchPageFetch(job: ClaimedJob, signal: AbortSignal
   const run = await runRepo.findById(scrapeRunId);
   if (!run) throw new FatalError(`ScrapeRun ${scrapeRunId} not found`);
 
-  const lockResult = await withAccountLock(run.linkedInAccountId, () => runFetch(run, page, signal));
+  const lockResult = await withAccountLock(run.linkedInAccountId, () =>
+    runFetch(run, page, signal),
+  );
   if (!lockResult.ok) {
     throw new RescheduleError("Account lock unavailable", new Date(Date.now() + 15_000));
   }
@@ -47,15 +49,30 @@ async function runFetch(run: ScrapeRunModel, page: number, signal: AbortSignal):
   }
   const { account, policy, fingerprint, proxy } = prepared.value;
   if (!account.storageStateSealed) {
-    throw new RescheduleError("No session yet — waiting for session.ensure", new Date(Date.now() + 60_000));
+    throw new RescheduleError(
+      "No session yet — waiting for session.ensure",
+      new Date(Date.now() + 60_000),
+    );
   }
-  const quota = await consumeSearchPageBudget({ accountId, cap: policy.maxSearchPagesPerDay, now: new Date() });
+  const quota = await consumeSearchPageBudget({
+    accountId,
+    cap: policy.maxSearchPagesPerDay,
+    now: new Date(),
+  });
   if (!quota.ok) {
     throw new RescheduleError("Daily search-page quota exhausted", tomorrowUtc());
   }
 
-  const storageState = unsealStorageState(account.storageStateSealed, account.storageStateKeyVer ?? 1);
-  const { browser, context } = await launchContextForAccount({ headless: policy.headless, fingerprint, storageState, proxy });
+  const storageState = unsealStorageState(
+    account.storageStateSealed,
+    account.storageStateKeyVer ?? 1,
+  );
+  const { browser, context } = await launchContextForAccount({
+    headless: policy.headless,
+    fingerprint,
+    storageState,
+    proxy,
+  });
 
   try {
     await pageDelay({ min: policy.pageDelayMinMs, max: policy.pageDelayMaxMs }, signal);
@@ -66,21 +83,27 @@ async function runFetch(run: ScrapeRunModel, page: number, signal: AbortSignal):
     const risk = await classifyResponse(pw);
     if (risk) {
       await runRepo.finalize(run.id, "HALTED", `risk signal: ${risk.kind}`);
-      await handleRiskSignal({ accountId, browser, context, risk, handlerName: "search.page.fetch" });
+      await handleRiskSignal({
+        accountId,
+        browser,
+        context,
+        risk,
+        handlerName: "search.page.fetch",
+      });
     }
 
     const rows = extractSearchResults(await pw.content());
     let leadsNew = 0;
-    for (let i = 0; i < rows.length; i++) {
-      const result = await upsertLeadFromSearchResult({ row: rows[i], runId: run.id, page, position: i });
+    for (const [i, row] of rows.entries()) {
+      const result = await upsertLeadFromSearchResult({ row, runId: run.id, page, position: i });
       if (!result) continue;
       if (result.isNew) leadsNew++;
       await enqueueJob({
         type: "profile.scrape",
-        payload: { scrapeRunId: run.id, leadId: result.leadId, profileUrl: rows[i].profileUrl },
+        payload: { scrapeRunId: run.id, leadId: result.leadId, profileUrl: row.profileUrl },
         runId: run.id,
         linkedInAccountId: accountId,
-        idempotencyKey: `profile:${run.id}:${rows[i].profileUrl}`,
+        idempotencyKey: `profile:${run.id}:${row.profileUrl}`,
       });
     }
     await runRepo.incrementCounters(run.id, { pagesDone: 1, leadsNew });
@@ -90,7 +113,9 @@ async function runFetch(run: ScrapeRunModel, page: number, signal: AbortSignal):
     await accountRepo.updateStorageState(accountId, sealed.sealed, sealed.keyVer);
     log.info({ scrapeRunId: run.id, page, rows: rows.length, leadsNew }, "search page fetched");
   } finally {
-    await browser.close().catch((error: unknown) => log.error({ err: error }, "failed to close browser"));
+    await browser.close().catch((error: unknown) => {
+      log.error({ err: error }, "failed to close browser");
+    });
   }
 }
 

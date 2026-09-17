@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Button } from "@/ui/Button";
+import { Button } from "@/components/ui/Button";
 import { testConnectionAction } from "../actions";
 
 export function TestConnectionButton({ accountId }: { accountId: string }) {
@@ -14,8 +14,8 @@ export function TestConnectionButton({ accountId }: { accountId: string }) {
         type="button"
         variant="secondary"
         size="sm"
-        disabled={pending}
-        onClick={() =>
+        loading={pending}
+        onClick={() => {
           startTransition(async () => {
             const result = await testConnectionAction(accountId);
             setMessage(
@@ -23,12 +23,12 @@ export function TestConnectionButton({ accountId }: { accountId: string }) {
                 ? "Queued — the worker will process this on its own pace. Check /jobs for progress."
                 : "Already queued this hour.",
             );
-          })
-        }
+          });
+        }}
       >
         {pending ? "Queuing…" : "Test connection"}
       </Button>
-      {message ? <p className="text-xs text-[--color-muted]">{message}</p> : null}
+      {message ? <p className="text-xs text-muted-foreground">{message}</p> : null}
     </div>
   );
 }

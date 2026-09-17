@@ -12,8 +12,7 @@ import { buildSearchUrl } from "../domain/buildSearchUrl";
 const log = logger.child({ module: "search.startRun" });
 
 export type StartRunError =
-  | { kind: "not_found" }
-  | { kind: "account_not_scrapable"; status: AccountStatus };
+  { kind: "not_found" } | { kind: "account_not_scrapable"; status: AccountStatus };
 
 /**
  * Preflight only — a soft check. The `run.start` job handler enforces the hard truth (it
@@ -29,7 +28,11 @@ export async function startRun(
 
   const account = await accountRepo.findById(definition.linkedInAccountId);
   if (!account) return err({ kind: "not_found" });
-  const blocked: AccountStatus[] = [AccountStatus.RESTRICTED, AccountStatus.DISABLED, AccountStatus.CHALLENGED];
+  const blocked: AccountStatus[] = [
+    AccountStatus.RESTRICTED,
+    AccountStatus.DISABLED,
+    AccountStatus.CHALLENGED,
+  ];
   if (blocked.includes(account.status)) {
     return err({ kind: "account_not_scrapable", status: account.status });
   }

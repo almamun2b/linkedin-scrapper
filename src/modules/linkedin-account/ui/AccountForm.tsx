@@ -1,34 +1,38 @@
 "use client";
 
 import { useActionState } from "react";
-import { Button } from "@/ui/Button";
+import { Alert } from "@/components/ui/Alert";
+import { Button } from "@/components/ui/Button";
+import { Card, CardContent } from "@/components/ui/Card";
+import { Field } from "@/components/ui/form/Field";
+import { Input } from "@/components/ui/form/Input";
 import { createAccountAction } from "../actions";
 
 export function AccountForm() {
   const [state, formAction, pending] = useActionState(createAccountAction, {});
 
   return (
-    <form action={formAction} className="flex flex-col gap-3 rounded-[--radius-card] border border-[--color-border] bg-[--color-surface] p-4 max-w-md">
-      <label className="flex flex-col gap-1 text-xs text-[--color-muted]">
-        Label
-        <input name="label" defaultValue="primary" required className="rounded-md border border-[--color-border] bg-transparent px-2 py-1.5 text-sm" />
-      </label>
-      <label className="flex flex-col gap-1 text-xs text-[--color-muted]">
-        LinkedIn email
-        <input name="email" type="email" required className="rounded-md border border-[--color-border] bg-transparent px-2 py-1.5 text-sm" />
-      </label>
-      <label className="flex flex-col gap-1 text-xs text-[--color-muted]">
-        LinkedIn password
-        <input name="password" type="password" required className="rounded-md border border-[--color-border] bg-transparent px-2 py-1.5 text-sm" />
-      </label>
-      <label className="flex flex-col gap-1 text-xs text-[--color-muted]">
-        Timezone (IANA id)
-        <input name="timezone" defaultValue="UTC" required className="rounded-md border border-[--color-border] bg-transparent px-2 py-1.5 text-sm" />
-      </label>
-      <Button type="submit" disabled={pending}>
-        {pending ? "Adding…" : "Add LinkedIn account"}
-      </Button>
-      {state?.error ? <p className="text-sm text-[--color-danger]">{state.error}</p> : null}
-    </form>
+    <Card className="max-w-md">
+      <CardContent>
+        <form action={formAction} className="flex flex-col gap-3">
+          <Field label="Label">
+            <Input name="label" defaultValue="primary" required />
+          </Field>
+          <Field label="LinkedIn email">
+            <Input name="email" type="email" required />
+          </Field>
+          <Field label="LinkedIn password">
+            <Input name="password" type="password" required />
+          </Field>
+          <Field label="Timezone (IANA id)">
+            <Input name="timezone" defaultValue="UTC" required />
+          </Field>
+          <Button type="submit" loading={pending} className="self-start">
+            {pending ? "Adding…" : "Add LinkedIn account"}
+          </Button>
+          {state.error ? <Alert tone="error">{state.error}</Alert> : null}
+        </form>
+      </CardContent>
+    </Card>
   );
 }

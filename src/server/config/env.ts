@@ -15,7 +15,9 @@ function booleanString(defaultValue: boolean) {
   return z
     .string()
     .optional()
-    .transform((value) => (value === undefined ? defaultValue : value.trim().toLowerCase() === "true"));
+    .transform((value) =>
+      value === undefined ? defaultValue : value.trim().toLowerCase() === "true",
+    );
 }
 
 const schema = z.object({
@@ -24,7 +26,7 @@ const schema = z.object({
   DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
 
   // NextAuth / Auth.js — app login (ARCHITECTURE.md §13 stage 8, pulled forward).
-  APP_URL: z.string().url().default("http://localhost:3000"),
+  APP_URL: z.url().default("http://localhost:3000"),
   AUTH_URL: z.string().optional(),
   NEXTAUTH_URL: z.string().optional(),
   AUTH_SECRET: z.string().optional().default(""),
@@ -40,11 +42,6 @@ const schema = z.object({
   // never seals/unseals anything) doesn't require it; server/crypto/secretBox.ts throws its
   // own clear error the moment something actually tries to seal or unseal without it.
   ENCRYPTION_KEY: z.string().optional().default(""),
-
-  // Bootstrap-only: read by prisma/seed.ts to create the sealed LinkedInAccount row. Not
-  // read anywhere else — the database is the source of truth once that row exists.
-  LINKEDIN_EMAIL: z.string().optional().default(""),
-  LINKEDIN_PASSWORD: z.string().optional().default(""),
 
   // USE_PROXY=true with no resolvable proxy fails the job — never falls back to the direct
   // IP (CLAUDE.md invariant #9). Enforced in scraper/browser/proxy.ts, not here.
@@ -89,7 +86,7 @@ if (!parsed.success) {
   const details = parsed.error.issues
     .map((issue) => `  ${issue.path.join(".") || "(root)"}: ${issue.message}`)
     .join("\n");
-   
+
   console.error(`Invalid environment configuration:\n${details}`);
   throw new Error("Environment validation failed — see errors above");
 }

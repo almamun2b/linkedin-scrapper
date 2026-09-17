@@ -10,7 +10,7 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
 
   return (
     <div>
-      <h2 className="mb-4 text-base font-semibold text-[--color-fg]">{account.label}</h2>
+      <h2 className="mb-4 text-base font-semibold text-foreground">{account.label}</h2>
       <AccountEditForm account={account} proxies={proxies} />
     </div>
   );

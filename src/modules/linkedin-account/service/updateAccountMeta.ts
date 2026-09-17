@@ -7,7 +7,10 @@ import { updateAccountMetaSchema, type UpdateAccountMetaInput } from "../domain/
 
 const log = logger.child({ module: "linkedin-account.updateAccountMeta" });
 
-export type UpdateAccountMetaError = { kind: "invalid_input"; issues: string[] };
+export interface UpdateAccountMetaError {
+  kind: "invalid_input";
+  issues: string[];
+}
 
 /**
  * Assigning a proxy already used by another account is allowed (the schema permits sharing

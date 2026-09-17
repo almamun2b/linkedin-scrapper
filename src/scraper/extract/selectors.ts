@@ -16,7 +16,11 @@ export const SELECTORS_VERSION = "2026-09-14-unverified";
 export const SELECTORS = {
   login: {
     username: ["#username", "input[name='session_key']", "input[autocomplete='username']"],
-    password: ["#password", "input[name='session_password']", "input[autocomplete='current-password']"],
+    password: [
+      "#password",
+      "input[name='session_password']",
+      "input[autocomplete='current-password']",
+    ],
     submit: ["button[type='submit']", "button[data-litms-control-urn='login-submit']"],
   },
   feed: {
@@ -44,7 +48,10 @@ export const SELECTORS = {
   search: {
     resultRow: ["li.reusable-search__result-container", "[data-view-name='search-entity-result']"],
     resultProfileLink: ["a.app-aware-link[href*='/in/']", "a[href*='/in/']"],
-    resultName: [".entity-result__title-text span[aria-hidden='true']", "span.entity-result__title-text"],
+    resultName: [
+      ".entity-result__title-text span[aria-hidden='true']",
+      "span.entity-result__title-text",
+    ],
     resultHeadline: [".entity-result__primary-subtitle", ".entity-result__summary"],
     resultLocation: [".entity-result__secondary-subtitle"],
   },

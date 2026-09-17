@@ -13,6 +13,6 @@ export async function sealStorageState(context: BrowserContext): Promise<SealedS
   return sealSecret(JSON.stringify(state));
 }
 
-export function unsealStorageState(sealed: Uint8Array<ArrayBufferLike>, keyVer: number): StorageState {
+export function unsealStorageState(sealed: Uint8Array, keyVer: number): StorageState {
   return JSON.parse(unsealSecret(sealed, keyVer)) as StorageState;
 }

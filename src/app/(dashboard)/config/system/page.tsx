@@ -1,10 +1,18 @@
+import { Lock } from "lucide-react";
 import { env } from "@/server/config/env";
+import { Alert } from "@/components/ui/Alert";
+import { DescriptionList } from "@/components/ui/DescriptionList";
 
-function mask(value: string): string {
-  return value ? "•••• (set)" : "(not set)";
+function mask(): React.ReactNode {
+  return (
+    <span className="inline-flex items-center gap-1 text-muted-foreground">
+      <Lock aria-hidden="true" className="size-3" />
+      set
+    </span>
+  );
 }
 
-const ROWS: Array<{ label: string; value: string; secret?: boolean }> = [
+const ROWS: { label: string; value: string; secret?: boolean }[] = [
   { label: "NODE_ENV", value: env.NODE_ENV },
   { label: "WORKER_ID", value: env.WORKER_ID },
   { label: "WORKER_CONCURRENCY", value: String(env.WORKER_CONCURRENCY) },
@@ -23,20 +31,19 @@ const ROWS: Array<{ label: string; value: string; secret?: boolean }> = [
 
 export default function SystemPage() {
   return (
-    <div className="max-w-xl">
-      <p className="mb-4 text-sm text-[--color-muted]">
+    <div className="flex max-w-xl flex-col gap-4">
+      <Alert tone="info">
         These are process-boot settings read once from <code>.env</code> at startup — there is no
         write path here. Changing one means editing <code>.env</code> and restarting the worker
         and/or web process; a value shown here cannot be hot-applied from this page.
-      </p>
-      <dl className="divide-y divide-[--color-border] rounded-[--radius-card] border border-[--color-border] bg-[--color-surface]">
-        {ROWS.map((row) => (
-          <div key={row.label} className="flex items-center justify-between px-4 py-2 text-sm">
-            <dt className="text-[--color-muted]">{row.label}</dt>
-            <dd className="font-mono text-xs text-[--color-fg]">{row.secret ? mask(row.value) : row.value}</dd>
-          </div>
-        ))}
-      </dl>
+      </Alert>
+      <DescriptionList
+        items={ROWS.map((row) => ({
+          key: row.label,
+          label: row.label,
+          value: row.secret ? mask() : row.value,
+        }))}
+      />
     </div>
   );
 }

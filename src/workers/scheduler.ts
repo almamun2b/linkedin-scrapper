@@ -60,8 +60,13 @@ async function main(): Promise<void> {
     running = false;
   });
 
+  // `running` is flipped to false only inside the SIGTERM/SIGINT handlers above — TS's control
+  // flow analysis can't see that closure-driven mutation and narrows this to a literal `true`.
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   while (running) {
-    await tick(client).catch((error: unknown) => log.error({ err: error }, "scheduler tick failed"));
+    await tick(client).catch((error: unknown) => {
+      log.error({ err: error }, "scheduler tick failed");
+    });
     await sleep(TICK_MS);
   }
 

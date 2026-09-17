@@ -4,7 +4,10 @@ import { ok, err, type Result } from "@/server/result";
 import * as accountRepo from "@/modules/linkedin-account/repository/linkedInAccount.repository";
 import * as policyRepo from "@/modules/linkedin-account/repository/scrapingPolicy.repository";
 import * as proxyRepo from "@/modules/proxy/repository/proxy.repository";
-import { fingerprintSchema, type AccountFingerprint } from "@/modules/linkedin-account/domain/fingerprint";
+import {
+  fingerprintSchema,
+  type AccountFingerprint,
+} from "@/modules/linkedin-account/domain/fingerprint";
 import { isWithinActiveHours, nextWindowStart } from "@/scraper/guards/activeHours";
 import { resolveProxy, type ScraperProxy, type ProxyCandidate } from "@/scraper/browser/proxy";
 

@@ -30,7 +30,11 @@ export async function handleRunStart(job: ClaimedJob, signal: AbortSignal): Prom
     throw new FatalError(`Account or policy missing for ScrapeRun ${scrapeRunId}`);
   }
 
-  const blocked: AccountStatus[] = [AccountStatus.RESTRICTED, AccountStatus.DISABLED, AccountStatus.CHALLENGED];
+  const blocked: AccountStatus[] = [
+    AccountStatus.RESTRICTED,
+    AccountStatus.DISABLED,
+    AccountStatus.CHALLENGED,
+  ];
   if (blocked.includes(account.status)) {
     await runRepo.finalize(scrapeRunId, "HALTED", `account status is ${account.status}`);
     throw new FatalError(`Account ${account.id} is ${account.status} — cannot run`);
@@ -43,7 +47,10 @@ export async function handleRunStart(job: ClaimedJob, signal: AbortSignal): Prom
   };
   const now = new Date();
   if (!isWithinActiveHours(now, activeHoursPolicy, account.timezone)) {
-    throw new RescheduleError("Outside active hours", nextWindowStart(now, activeHoursPolicy, account.timezone));
+    throw new RescheduleError(
+      "Outside active hours",
+      nextWindowStart(now, activeHoursPolicy, account.timezone),
+    );
   }
 
   await runRepo.markRunning(scrapeRunId);

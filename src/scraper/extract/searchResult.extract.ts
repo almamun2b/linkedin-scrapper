@@ -11,7 +11,7 @@ export interface SearchResultRow {
 
 type CheerioAPI = cheerio.CheerioAPI;
 
-function firstText($: CheerioAPI, row: ReturnType<CheerioAPI>, selectors: readonly string[]): string | null {
+function firstText(row: ReturnType<CheerioAPI>, selectors: readonly string[]): string | null {
   for (const selector of selectors) {
     const text = row.find(selector).first().text().trim();
     if (text) return text;
@@ -41,10 +41,10 @@ export function extractSearchResults(html: string): SearchResultRow[] {
       const href = firstHref(row, SELECTORS.search.resultProfileLink);
       if (!href) return;
       rows.push({
-        profileUrl: href.split("?")[0],
-        fullName: firstText($, row, SELECTORS.search.resultName),
-        headline: firstText($, row, SELECTORS.search.resultHeadline),
-        location: firstText($, row, SELECTORS.search.resultLocation),
+        profileUrl: href.split("?")[0] ?? href,
+        fullName: firstText(row, SELECTORS.search.resultName),
+        headline: firstText(row, SELECTORS.search.resultHeadline),
+        location: firstText(row, SELECTORS.search.resultLocation),
         rowHtml: $.html(el),
       });
     });

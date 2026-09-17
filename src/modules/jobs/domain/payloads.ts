@@ -14,7 +14,7 @@ export type SessionEnsurePayload = z.infer<typeof sessionEnsurePayloadSchema>;
 
 export const profileSelfScrapePayloadSchema = z.object({
   linkedInAccountId: z.string().min(1),
-  profileUrl: z.string().url(),
+  profileUrl: z.url(),
 });
 export type ProfileSelfScrapePayload = z.infer<typeof profileSelfScrapePayloadSchema>;
 
@@ -32,7 +32,7 @@ export type SearchPageFetchPayload = z.infer<typeof searchPageFetchPayloadSchema
 export const profileScrapePayloadSchema = z.object({
   scrapeRunId: z.string().min(1),
   leadId: z.string().min(1),
-  profileUrl: z.string().url(),
+  profileUrl: z.url(),
 });
 export type ProfileScrapePayload = z.infer<typeof profileScrapePayloadSchema>;
 
@@ -69,4 +69,4 @@ export const payloadSchemaByType = {
   "profile.scrape": profileScrapePayloadSchema,
   "run.finalize": runFinalizePayloadSchema,
   "search.typeahead.resolve": searchTypeaheadResolvePayloadSchema,
-} as const satisfies Record<JobType, z.ZodTypeAny>;
+} as const satisfies Record<JobType, z.ZodType>;

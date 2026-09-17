@@ -9,12 +9,14 @@ import { deriveInitialFingerprint } from "../domain/fingerprint";
 
 const log = logger.child({ module: "linkedin-account.createAccount" });
 
-export type CreateAccountError = { kind: "invalid_input"; issues: string[] } | { kind: "duplicate_email" };
+export type CreateAccountError =
+  { kind: "invalid_input"; issues: string[] } | { kind: "duplicate_email" };
 
 /**
- * UI-triggered equivalent of bootstrapAccountFromEnv, but NOT silently idempotent — a genuine
- * duplicate email from an admin filling out a form is a validation error to surface, not a
- * no-op to swallow the way a repeat `db:seed` run should be.
+ * The only way a LinkedInAccount row gets created — there is no env-based bootstrap path
+ * (ARCHITECTURE.md §10: the database is the source of truth, managed from /config). NOT
+ * silently idempotent: a genuine duplicate email from an admin filling out this form is a
+ * validation error to surface, not a no-op to swallow.
  */
 export async function createAccount(
   input: CreateAccountInput,

@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { formString } from "@/lib/formData";
 import { requireRole } from "@/modules/auth/service/requireRole";
 import { createAccount } from "./service/createAccount";
 import { updateAccountMeta } from "./service/updateAccountMeta";
@@ -15,16 +16,18 @@ export async function createAccountAction(
   const actor = await requireRole("ADMIN");
   const result = await createAccount(
     {
-      email: String(formData.get("email") ?? ""),
-      password: String(formData.get("password") ?? ""),
-      label: String(formData.get("label") ?? "primary"),
-      timezone: String(formData.get("timezone") ?? "UTC"),
+      email: formString(formData, "email"),
+      password: formString(formData, "password"),
+      label: formString(formData, "label", "primary"),
+      timezone: formString(formData, "timezone", "UTC"),
     },
     actor.id,
   );
   if (!result.ok) {
     const message =
-      result.error.kind === "duplicate_email" ? "An account with that email already exists" : result.error.issues.join(", ");
+      result.error.kind === "duplicate_email"
+        ? "An account with that email already exists"
+        : result.error.issues.join(", ");
     return { error: message };
   }
   revalidatePath("/config/accounts");
@@ -33,12 +36,12 @@ export async function createAccountAction(
 
 export async function updateAccountAction(formData: FormData): Promise<void> {
   const actor = await requireRole("ADMIN");
-  const proxyIdRaw = String(formData.get("proxyId") ?? "");
+  const proxyIdRaw = formString(formData, "proxyId");
   await updateAccountMeta(
     {
-      id: String(formData.get("id") ?? ""),
-      label: String(formData.get("label") ?? "") || undefined,
-      timezone: String(formData.get("timezone") ?? "") || undefined,
+      id: formString(formData, "id"),
+      label: formString(formData, "label") || undefined,
+      timezone: formString(formData, "timezone") || undefined,
       proxyId: proxyIdRaw === "" ? undefined : proxyIdRaw === "none" ? null : proxyIdRaw,
     },
     actor.id,
@@ -52,7 +55,7 @@ export async function rotatePasswordAction(
 ): Promise<{ error?: string }> {
   const actor = await requireRole("ADMIN");
   const result = await rotatePassword(
-    { id: String(formData.get("id") ?? ""), password: String(formData.get("password") ?? "") },
+    { id: formString(formData, "id"), password: formString(formData, "password") },
     actor.id,
   );
   if (!result.ok) {
@@ -80,7 +83,7 @@ export async function updatePolicyAction(
   // rather than spreading formData.entries() into the schema.
   const result = await updatePolicy(
     {
-      linkedInAccountId: String(formData.get("linkedInAccountId") ?? ""),
+      linkedInAccountId: formString(formData, "linkedInAccountId"),
       stepDelayMinMs: num(formData, "stepDelayMinMs"),
       stepDelayMaxMs: num(formData, "stepDelayMaxMs"),
       profileDelayMinMs: num(formData, "profileDelayMinMs"),

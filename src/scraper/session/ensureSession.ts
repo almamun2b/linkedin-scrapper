@@ -13,8 +13,7 @@ export interface EnsureSessionParams {
 }
 
 export type EnsureSessionResult =
-  | { loggedIn: true; profileUrl: string | null }
-  | { loggedIn: false; risk: RiskSignal };
+  { loggedIn: true; profileUrl: string | null } | { loggedIn: false; risk: RiskSignal };
 
 const FEED_URL = "https://www.linkedin.com/feed/";
 

@@ -46,6 +46,10 @@ export async function login(page: Page, params: LoginParams): Promise<void> {
     throw new Error("Login submit button not found — selectors may be stale");
   }
   await Promise.all([
+    // `waitForNavigation` is deprecated in favor of `waitForURL`, but the post-submit
+    // destination is intentionally unknown here (feed, a checkpoint/authwall, or an error
+    // state the circuit breaker must see) — there is no URL pattern to wait for instead.
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     page.waitForNavigation({ waitUntil: "domcontentloaded" }).catch(() => undefined),
     submitButton.click(),
   ]);

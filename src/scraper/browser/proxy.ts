@@ -14,7 +14,9 @@ export interface ProxyCandidate {
   password: string | null;
 }
 
-export type ProxyResolutionError = { kind: "unresolvable" };
+export interface ProxyResolutionError {
+  kind: "unresolvable";
+}
 
 /**
  * `useProxy: false` -> ok(null): launch.ts must omit the `proxy` launch option entirely,

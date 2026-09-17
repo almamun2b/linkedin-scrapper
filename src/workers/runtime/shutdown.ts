@@ -33,8 +33,12 @@ export function createShutdownController(gracefulMs: number): ShutdownController
     hardExit.unref();
   }
 
-  process.once("SIGTERM", () => requestShutdown("SIGTERM"));
-  process.once("SIGINT", () => requestShutdown("SIGINT"));
+  process.once("SIGTERM", () => {
+    requestShutdown("SIGTERM");
+  });
+  process.once("SIGINT", () => {
+    requestShutdown("SIGINT");
+  });
 
   return {
     signal: controller.signal,

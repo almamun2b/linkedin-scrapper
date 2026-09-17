@@ -21,8 +21,8 @@ export async function containBreach(params: {
   } catch (error) {
     log.error({ err: error }, "failed to seal storageState during breach containment");
   }
-  await browser
-    .close()
-    .catch((error: unknown) => log.error({ err: error }, "failed to close browser during breach containment"));
+  await browser.close().catch((error: unknown) => {
+    log.error({ err: error }, "failed to close browser during breach containment");
+  });
   return sealed;
 }

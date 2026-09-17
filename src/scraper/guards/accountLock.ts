@@ -5,7 +5,9 @@ import { err, ok, type Result } from "@/server/result";
 
 const log = logger.child({ module: "accountLock" });
 
-export type LockUnavailableError = { kind: "lock_unavailable" };
+export interface LockUnavailableError {
+  kind: "lock_unavailable";
+}
 
 /**
  * `pg_try_advisory_lock` is session-scoped, exactly like LISTEN (ARCHITECTURE.md §6.3's

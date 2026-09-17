@@ -1,0 +1,11 @@
+src/generated
+.next
+out
+build
+pnpm-lock.yaml
+.agents
+.claude
+.opencode
+.impeccable
+skills-lock.json
+tsconfig.tsbuildinfo

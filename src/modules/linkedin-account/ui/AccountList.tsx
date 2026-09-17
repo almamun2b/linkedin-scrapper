@@ -1,19 +1,29 @@
 import Link from "next/link";
 import type { LinkedInAccountListItem } from "../repository/linkedInAccount.repository";
-import { Badge } from "@/ui/Badge";
-import { Table, Thead, Tbody, Th, Td } from "@/ui/Table";
+import { Badge, type BadgeTone } from "@/components/ui/Badge";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { Table, Thead, Tbody, Tr, Th, Td } from "@/components/ui/Table";
 import { TestConnectionButton } from "./TestConnectionButton";
 
-const STATUS_TONE = {
+const STATUS_TONE: Record<LinkedInAccountListItem["status"], BadgeTone> = {
   UNVERIFIED: "neutral",
   ACTIVE: "success",
-  COOLING_DOWN: "accent",
+  COOLING_DOWN: "warning",
   CHALLENGED: "danger",
   RESTRICTED: "danger",
   DISABLED: "neutral",
-} as const;
+};
 
 export function AccountList({ accounts }: { accounts: LinkedInAccountListItem[] }) {
+  if (accounts.length === 0) {
+    return (
+      <EmptyState
+        title="No LinkedIn accounts yet"
+        description="Add the account the worker will log in and scrape as."
+      />
+    );
+  }
+
   return (
     <Table>
       <Thead>
@@ -27,22 +37,29 @@ export function AccountList({ accounts }: { accounts: LinkedInAccountListItem[] 
       </Thead>
       <Tbody>
         {accounts.map((account) => (
-          <tr key={account.id}>
+          <Tr key={account.id}>
             <Td>
-              <Link href={`/config/accounts/${account.id}`} className="text-[--color-accent] hover:underline">
+              <Link
+                href={`/config/accounts/${account.id}`}
+                className="font-medium text-primary hover:underline"
+              >
                 {account.label}
               </Link>
             </Td>
             <Td>{account.email}</Td>
             <Td>
               <Badge tone={STATUS_TONE[account.status]}>{account.status}</Badge>
-              {account.statusReason ? <p className="mt-0.5 text-xs text-[--color-muted]">{account.statusReason}</p> : null}
+              {account.statusReason ? (
+                <p className="mt-0.5 text-xs text-muted-foreground">{account.statusReason}</p>
+              ) : null}
             </Td>
-            <Td>{account.lastLoginAt ? new Date(account.lastLoginAt).toLocaleString() : "never"}</Td>
+            <Td>
+              {account.lastLoginAt ? new Date(account.lastLoginAt).toLocaleString() : "never"}
+            </Td>
             <Td>
               <TestConnectionButton accountId={account.id} />
             </Td>
-          </tr>
+          </Tr>
         ))}
       </Tbody>
     </Table>

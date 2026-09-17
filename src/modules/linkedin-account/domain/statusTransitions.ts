@@ -25,5 +25,5 @@ const ALLOWED: Record<AccountStatus, readonly AccountStatus[]> = {
 };
 
 export function canTransition(from: AccountStatus, to: AccountStatus): boolean {
-  return ALLOWED[from]?.includes(to) ?? false;
+  return ALLOWED[from].includes(to);
 }

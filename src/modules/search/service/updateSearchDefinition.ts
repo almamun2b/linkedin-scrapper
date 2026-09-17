@@ -17,7 +17,10 @@ export const updateSearchDefinitionSchema = z.object({
 });
 export type UpdateSearchDefinitionInput = z.infer<typeof updateSearchDefinitionSchema>;
 
-export type UpdateSearchDefinitionError = { kind: "invalid_input"; issues: string[] };
+export interface UpdateSearchDefinitionError {
+  kind: "invalid_input";
+  issues: string[];
+}
 
 export async function updateSearchDefinition(
   input: UpdateSearchDefinitionInput,
@@ -30,7 +33,13 @@ export async function updateSearchDefinition(
   const { id, ...patch } = parsed.data;
 
   await searchRepo.update(id, patch);
-  await auditRepo.record({ actorId, action: "search_definition.updated", entity: "SearchDefinition", entityId: id, data: patch });
+  await auditRepo.record({
+    actorId,
+    action: "search_definition.updated",
+    entity: "SearchDefinition",
+    entityId: id,
+    data: patch,
+  });
 
   log.info({ searchDefinitionId: id }, "search definition updated");
   return ok({ id });

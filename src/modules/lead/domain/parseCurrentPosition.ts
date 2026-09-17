@@ -10,7 +10,7 @@ export interface ParsedPosition {
  */
 export function parseCurrentPosition(raw: string | null): ParsedPosition {
   if (!raw) return { title: null, company: null };
-  const match = raw.match(/^(.*?)\s+at\s+(.+)$/i);
+  const match = /^(.*?)\s+at\s+(.+)$/i.exec(raw);
   if (!match) return { title: raw.trim(), company: null };
-  return { title: match[1].trim(), company: match[2].trim() };
+  return { title: (match[1] ?? "").trim(), company: (match[2] ?? "").trim() };
 }

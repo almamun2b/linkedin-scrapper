@@ -29,7 +29,9 @@ export async function handleSessionEnsure(job: ClaimedJob, signal: AbortSignal):
   }
   const { linkedInAccountId } = parsed.data;
 
-  const lockResult = await withAccountLock(linkedInAccountId, () => runSession(linkedInAccountId, signal));
+  const lockResult = await withAccountLock(linkedInAccountId, () =>
+    runSession(linkedInAccountId, signal),
+  );
   if (!lockResult.ok) {
     throw new RescheduleError("Account lock unavailable", new Date(Date.now() + 15_000));
   }
@@ -69,7 +71,10 @@ async function runSession(accountId: string, signal: AbortSignal): Promise<void>
     if (!result.loggedIn) {
       const sealed = await containBreach({ browser, context });
       if (sealed) await accountRepo.updateStorageState(accountId, sealed.sealed, sealed.keyVer);
-      await markChallenged(accountId, `session.ensure risk: ${result.risk.kind} (${result.risk.details})`);
+      await markChallenged(
+        accountId,
+        `session.ensure risk: ${result.risk.kind} (${result.risk.details})`,
+      );
       await auditRepo.record({
         action: "linkedin_account.challenged",
         entity: "LinkedInAccount",
@@ -95,6 +100,8 @@ async function runSession(accountId: string, signal: AbortSignal): Promise<void>
       log.warn({ accountId }, "logged in but could not discover own profile URL");
     }
   } finally {
-    await browser.close().catch((error: unknown) => log.error({ err: error }, "failed to close browser"));
+    await browser.close().catch((error: unknown) => {
+      log.error({ err: error }, "failed to close browser");
+    });
   }
 }

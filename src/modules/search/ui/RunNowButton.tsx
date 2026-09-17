@@ -2,7 +2,8 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/ui/Button";
+import { Alert } from "@/components/ui/Alert";
+import { Button } from "@/components/ui/Button";
 import { startRunAction } from "../actions";
 
 export function RunNowButton({ searchDefinitionId }: { searchDefinitionId: string }) {
@@ -14,7 +15,7 @@ export function RunNowButton({ searchDefinitionId }: { searchDefinitionId: strin
     <div className="flex flex-col items-start gap-1">
       <Button
         type="button"
-        disabled={pending}
+        loading={pending}
         onClick={() => {
           setError(null);
           const formData = new FormData();
@@ -31,7 +32,7 @@ export function RunNowButton({ searchDefinitionId }: { searchDefinitionId: strin
       >
         {pending ? "Starting…" : "Run now"}
       </Button>
-      {error ? <p className="text-xs text-[--color-danger]">{error}</p> : null}
+      {error ? <Alert tone="error">{error}</Alert> : null}
     </div>
   );
 }

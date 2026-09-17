@@ -5,7 +5,10 @@ import { profileSelfScrapePayloadSchema } from "@/modules/jobs/domain/payloads";
 import * as accountRepo from "@/modules/linkedin-account/repository/linkedInAccount.repository";
 import * as auditRepo from "@/modules/audit/repository/auditEvent.repository";
 import * as jobsRepo from "@/modules/jobs/repository/jobs.repository";
-import { markChallenged, touchActivity } from "@/modules/linkedin-account/service/statusTransitions";
+import {
+  markChallenged,
+  touchActivity,
+} from "@/modules/linkedin-account/service/statusTransitions";
 import { withAccountLock } from "@/scraper/guards/accountLock";
 import { containBreach } from "@/scraper/guards/circuitBreaker";
 import { consumeDailyProfileBudget } from "@/scraper/guards/quota";
@@ -40,7 +43,12 @@ export async function handleProfileSelfScrape(job: ClaimedJob, signal: AbortSign
   }
 }
 
-async function runScrape(jobId: string, accountId: string, profileUrl: string, signal: AbortSignal): Promise<void> {
+async function runScrape(
+  jobId: string,
+  accountId: string,
+  profileUrl: string,
+  signal: AbortSignal,
+): Promise<void> {
   void signal; // no in-page cancellation checkpoints yet — a single navigation is quick
   const prepared = await prepareAccountSession(accountId, new Date());
   if (!prepared.ok) {
@@ -51,7 +59,11 @@ async function runScrape(jobId: string, accountId: string, profileUrl: string, s
   }
   const { account, policy, fingerprint, proxy } = prepared.value;
 
-  const quota = await consumeDailyProfileBudget({ accountId, cap: policy.maxProfilesPerDay, now: new Date() });
+  const quota = await consumeDailyProfileBudget({
+    accountId,
+    cap: policy.maxProfilesPerDay,
+    now: new Date(),
+  });
   if (!quota.ok) {
     throw new RescheduleError("Daily profile quota exhausted", tomorrowUtc());
   }
@@ -59,7 +71,10 @@ async function runScrape(jobId: string, accountId: string, profileUrl: string, s
     throw new FatalError("No session yet — session.ensure must run first");
   }
 
-  const storageState = unsealStorageState(account.storageStateSealed, account.storageStateKeyVer ?? 1);
+  const storageState = unsealStorageState(
+    account.storageStateSealed,
+    account.storageStateKeyVer ?? 1,
+  );
   const { browser, context } = await launchContextForAccount({
     headless: policy.headless,
     fingerprint,
@@ -90,7 +105,10 @@ async function runScrape(jobId: string, accountId: string, profileUrl: string, s
       message: "profile.self.captured",
       data: {
         parsed: fields,
-        raw: { encoding: "gzip+base64", html: gzipSync(Buffer.from(html, "utf8")).toString("base64") },
+        raw: {
+          encoding: "gzip+base64",
+          html: gzipSync(Buffer.from(html, "utf8")).toString("base64"),
+        },
       },
     });
 
@@ -99,7 +117,9 @@ async function runScrape(jobId: string, accountId: string, profileUrl: string, s
     await touchActivity(accountId);
     log.info({ accountId, fullName: fields.fullName }, "self profile captured");
   } finally {
-    await browser.close().catch((error: unknown) => log.error({ err: error }, "failed to close browser"));
+    await browser.close().catch((error: unknown) => {
+      log.error({ err: error }, "failed to close browser");
+    });
   }
 }
 

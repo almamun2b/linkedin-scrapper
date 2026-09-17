@@ -5,7 +5,7 @@ repository. Human contributors should follow it too.
 
 Companion docs: **[CLAUDE.md](CLAUDE.md)** (commands, Prisma specifics, invariants) and
 **[ARCHITECTURE.md](ARCHITECTURE.md)** (the design this repo is being built toward).
-This file is about *process*: how to pick up a task, where code goes, what "done" means.
+This file is about _process_: how to pick up a task, where code goes, what "done" means.
 
 Unlike CLAUDE.md, this file is **not auto-loaded** — it costs nothing until something
 reads it. Jump to the `## N.` section the task actually needs rather than reading start
@@ -22,7 +22,7 @@ to finish; the numbered headers below are there so a `grep`/section jump is chea
   queue (no Redis, by design).
 - **Maturity:** foundations landed (dependencies, full schema + migration, agent harness —
   §9). Everything under `src/modules/`, `src/server/`, `src/scraper/`, `src/workers/` does
-  not exist yet. You are usually *creating* a slice, not editing one — which makes
+  not exist yet. You are usually _creating_ a slice, not editing one — which makes
   structural discipline the main thing that matters.
 
 Before writing code, skim: `ARCHITECTURE.md` §2 (layers), §3 (folders), and the section
@@ -40,7 +40,7 @@ for the slice you are touching.
    exists produces code that cannot run. If a prerequisite is missing, say so and propose
    building it first rather than stubbing around it.
 3. **Model first.** Schema change → `pnpm db:migrate` with a descriptive migration name →
-   `pnpm db:generate`. Never hand-edit an *already-applied* migration or
+   `pnpm db:generate`. Never hand-edit an _already-applied_ migration or
    `src/generated/prisma/*`; SQL Prisma can't express (a `CHECK` constraint, say) goes into
    a migration via `prisma migrate dev --create-only` before it's ever applied, not into one
    that already ran.
@@ -59,20 +59,21 @@ for the slice you are touching.
 
 ## 3. Where code goes
 
-| Adding | Put it in |
-| --- | --- |
-| A page or route | `src/app/(dashboard)/<area>/page.tsx` — rendering and form wiring only |
-| A mutation | `src/modules/<slice>/actions.ts` (`"use server"`): authorize → zod-parse → call service → `revalidatePath` |
-| Business rule / use case | `src/modules/<slice>/service/` |
-| A database query | `src/modules/<slice>/repository/` — the only place `prisma` is imported |
-| A type / validation schema | `src/modules/<slice>/domain/` — pure, no I/O, unit-testable |
-| A job type | `src/workers/handlers/<type>.ts` + register it + define its payload schema in `modules/jobs/domain/` |
-| A Playwright interaction | `src/scraper/pages/*.page.ts` (navigation/waiting) |
-| Parsing of scraped HTML | `src/scraper/extract/` — pure function, checked with `pnpm reparse` (§9) |
-| A CSS selector | `src/scraper/extract/selectors.ts` only, with a `// verified YYYY-MM-DD` comment and a fallback chain |
-| Cross-cutting infra (crypto, logger, env, clock) | `src/server/` |
-| Raw SQL | `src/server/db/raw/` and nowhere else |
-| Shared UI primitive | `src/ui/` |
+| Adding                                           | Put it in                                                                                                  |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| A page or route                                  | `src/app/(dashboard)/<area>/page.tsx` — rendering and form wiring only                                     |
+| A mutation                                       | `src/modules/<slice>/actions.ts` (`"use server"`): authorize → zod-parse → call service → `revalidatePath` |
+| Business rule / use case                         | `src/modules/<slice>/service/`                                                                             |
+| A database query                                 | `src/modules/<slice>/repository/` — the only place `prisma` is imported                                    |
+| A type / validation schema                       | `src/modules/<slice>/domain/` — pure, no I/O, unit-testable                                                |
+| A job type                                       | `src/workers/handlers/<type>.ts` + register it + define its payload schema in `modules/jobs/domain/`       |
+| A Playwright interaction                         | `src/scraper/pages/*.page.ts` (navigation/waiting)                                                         |
+| Parsing of scraped HTML                          | `src/scraper/extract/` — pure function, checked with `pnpm reparse` (§9)                                   |
+| A CSS selector                                   | `src/scraper/extract/selectors.ts` only, with a `// verified YYYY-MM-DD` comment and a fallback chain      |
+| Cross-cutting infra (crypto, logger, env, clock) | `src/server/`                                                                                              |
+| Raw SQL                                          | `src/server/db/raw/` and nowhere else                                                                      |
+| Shared UI primitive                              | `src/components/ui/`                                                                                       |
+| App-shell chrome (header, sidebar, user menu)    | `src/components/shared/app-shell/`                                                                         |
 
 Direction of dependencies: `app → modules → server`; `workers → modules + scraper + server`.
 `scraper` must not import `modules`; `modules` must not import `app`. If a change needs an
@@ -88,7 +89,7 @@ upward import, the abstraction is in the wrong place — move it to `server/` or
   `search.page.fetch`.
 - **Errors:** services return `Result<T, E>` (`server/result.ts`) for expected failures;
   `throw` only for programmer errors and for job failures the queue should classify.
-  Job handlers must throw a *classified* error (`RetryableError`, `FatalError`,
+  Job handlers must throw a _classified_ error (`RetryableError`, `FatalError`,
   `RiskSignalError`) — the queue's retry decision depends on the class, and a blanket
   retry on a parsing bug burns five irreplaceable page views.
 - **No `any`**, no non-null `!` on values from the database or the network, no `as` to
@@ -99,12 +100,12 @@ upward import, the abstraction is in the wrong place — move it to `server/` or
 - **Logging:** `logger.info({ jobId, accountId, runId }, "message")` — structured fields,
   never string concatenation, never a secret in the payload. One log line per job
   transition is the baseline.
-- **Comments:** explain *why*, especially for every timing/anti-detection decision (those
+- **Comments:** explain _why_, especially for every timing/anti-detection decision (those
   look arbitrary and will otherwise be "optimized" away by the next contributor). Do not
   narrate what the code plainly does.
 - **Migrations:** additive and reversible where possible; no destructive change to a table
   holding scraped leads without an explicit note in the PR description. A reset of the
-  *entire* local dev database is sometimes the right call early on (no lead data exists
+  _entire_ local dev database is sometimes the right call early on (no lead data exists
   yet) but always needs the same explicit human consent Prisma's own agent-safety gate
   requires — never assume it from an earlier, unrelated approval.
 - **Do not** add a dependency not listed in ARCHITECTURE.md §11 without flagging it and
@@ -116,12 +117,12 @@ upward import, the abstraction is in the wrong place — move it to `server/` or
 Hard ceilings. They are not style preferences — in this codebase an oversized file is
 almost always a layer violation that has not been noticed yet.
 
-| Unit | Limit | Measured as |
-| --- | --- | --- |
-| Function / method | **100 lines** | signature to closing brace, excluding its doc comment |
-| Server Action, route handler, job handler | **100 lines** | the exported function body |
-| React component | **150 lines** | the whole `.tsx` file when it exports one component |
-| Any other module (service, repository, page object, extractor, util) | **300 lines** | the whole file |
+| Unit                                                                 | Limit         | Measured as                                           |
+| -------------------------------------------------------------------- | ------------- | ----------------------------------------------------- |
+| Function / method                                                    | **100 lines** | signature to closing brace, excluding its doc comment |
+| Server Action, route handler, job handler                            | **100 lines** | the exported function body                            |
+| React component                                                      | **150 lines** | the whole `.tsx` file when it exports one component   |
+| Any other module (service, repository, page object, extractor, util) | **300 lines** | the whole file                                        |
 
 Applies to code you write and to code you edit: if an edit pushes a file past its ceiling,
 split it in the same change rather than leaving it over budget.
@@ -135,7 +136,7 @@ split it in the same change rather than leaving it over budget.
   use case, one exported function per file (`service/startRun.ts`, `service/pauseRun.ts`),
   and pull branch-free rules down into `domain/` as pure functions.
 - **Job handler over 100 lines** → the job is doing too much, which also makes it
-  expensive to retry. Split the *job*, not just the file: a narrower job type that
+  expensive to retry. Split the _job_, not just the file: a narrower job type that
   enqueues a follow-up is both smaller and more resumable (ARCHITECTURE.md §7).
 - **Component over 150 lines** → extract the sub-sections it renders into sibling
   components, and move any `useState`/`useEffect` cluster into a `use*` hook. Prefer
@@ -147,7 +148,7 @@ split it in the same change rather than leaving it over budget.
 - **Extractor over 300 lines** → one extractor per entity, with field-level parsers as
   small pure functions beside it.
 
-Exempt from the 300-line ceiling, because splitting them makes them *harder* to review:
+Exempt from the 300-line ceiling, because splitting them makes them _harder_ to review:
 `src/generated/prisma/**` (generated), `prisma/schema/**`, `src/scraper/extract/selectors.ts`
 (the point is that every selector is in one auditable place), and lockfiles.
 
@@ -168,9 +169,10 @@ CLAUDE.md's "Non-negotiable invariants" — they are binding. In addition, as an
 - **Never write a script, example, or debug utility that hits linkedin.com.** Check
   extractor changes with `pnpm reparse` against stored `LeadSnapshot` rows (§9) instead —
   there is no fixture corpus and no test suite to put one in.
-- **Never print, log, or echo** `LINKEDIN_PASSWORD`, `ENCRYPTION_KEY`, `AUTH_SECRET`,
-  cookie values (`li_at`, `JSESSIONID`), or proxy credentials — not in output, not in a
-  comment, not in a test fixture. Do not `cat .env`.
+- **Never print, log, or echo** a LinkedIn account's plaintext password (or its sealed
+  `passwordSealed` bytes), `ENCRYPTION_KEY`, `AUTH_SECRET`, cookie values (`li_at`,
+  `JSESSIONID`), or proxy credentials — not in output, not in a comment, not in a test
+  fixture. Do not `cat .env`.
 - **Never commit** `.env`, captured cookies, a `storageState` file, scraped lead data, or
   a browser profile directory.
 - **Surface risk honestly.** When asked whether the setup is safe, the accurate answer is
@@ -241,7 +243,7 @@ test fixture, or a client component's props? a new secret missing from the logge
 redaction list?
 
 **Correctness** — unknown input parsed with zod at the boundary? job handlers idempotent
-(the reaper *will* re-run them)? an `idempotencyKey` on every enqueue? errors classified
+(the reaper _will_ re-run them)? an `idempotencyKey` on every enqueue? errors classified
 rather than blanket-retried? cancellation checked between steps? `storageState` saved
 before the browser closes on every exit path, including the error path?
 
@@ -271,7 +273,7 @@ the same layout: real files under `.agents/skills/`, a relative symlink
 - `.claude/settings.json` hooks — `.claude/hooks/secret-guard.sh` (PreToolUse/Bash: denies
   reading/leaking `.env`, dumping the environment, echoing the three core secret names),
   `.claude/hooks/generated-file-guard.sh` (PreToolUse/Write|Edit: denies edits to
-  `src/generated/prisma/**` and to any *already-committed* migration — a fresh,
+  `src/generated/prisma/**` and to any _already-committed_ migration — a fresh,
   not-yet-committed `--create-only` migration is deliberately left editable, since the
   `schema-change` skill requires that), `.claude/hooks/schema-validate.sh`
   (PostToolUse/Write|Edit on `prisma/schema/*.prisma`: runs `prisma validate` immediately

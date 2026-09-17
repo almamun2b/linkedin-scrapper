@@ -21,7 +21,7 @@ rows that the operator can act on directly (outreach), not a general research co
 
 ## Positioning
 
-Self-hosted LinkedIn extraction built around *survivability*, not raw throughput: a
+Self-hosted LinkedIn extraction built around _survivability_, not raw throughput: a
 Postgres-backed job queue, one live session per LinkedIn account enforced by an advisory
 lock, and a hard circuit breaker on any challenge/authwall — instead of a naive scraper
 that maximizes short-term volume and burns the account. A neighboring "just scrape fast"
@@ -36,7 +36,7 @@ speed) is the throughput ceiling by design (see ARCHITECTURE.md §0).
   scheduler (cron ticks, lease reaping, quota rollover).
 - The operator's actual workflow: configure a LinkedIn account + proxy in `/config`,
   define a search with filters, let the queue run `session.ensure → search.page.fetch →
-  profile.scrape → run.finalize` over time (deliberately slow, paced across
+profile.scrape → run.finalize` over time (deliberately slow, paced across
   minutes/hours, not a batch job that finishes in one sitting), then review results in
   `/leads`, `/runs`, and `/jobs`.
 - Throughput is capped by the LinkedIn account's daily human-plausible activity budget,
@@ -56,7 +56,7 @@ speed) is the throughput ceiling by design (see ARCHITECTURE.md §0).
   bootstrap, `/config` UI (accounts, proxies, scraping policy, read-only system tab),
   auth (NextAuth, login page, dashboard layout), the search module (filter builder,
   `SearchDefinition`/`ScrapeRun`/`FilterRef`), the `run.start → session.ensure →
-  search.page.fetch → profile.scrape → run.finalize` job chain, the `lead` module, and
+search.page.fetch → profile.scrape → run.finalize` job chain, the `lead` module, and
   the `/jobs` dashboard.
 - Not yet implemented: `croner`-based cron scheduling (currently reaper-only),
   `lead.enrich` (website-visit email enrichment), and a confirmed

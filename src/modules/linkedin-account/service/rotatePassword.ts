@@ -7,7 +7,10 @@ import { rotatePasswordSchema, type RotatePasswordInput } from "../domain/schema
 
 const log = logger.child({ module: "linkedin-account.rotatePassword" });
 
-export type RotatePasswordError = { kind: "invalid_input"; issues: string[] };
+export interface RotatePasswordError {
+  kind: "invalid_input";
+  issues: string[];
+}
 
 /**
  * Reseals the password only — does NOT touch storageState. A stale session still needs

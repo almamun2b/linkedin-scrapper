@@ -1,8 +1,8 @@
-import Link from "next/link";
 import * as accountRepo from "@/modules/linkedin-account/repository/linkedInAccount.repository";
 import * as policyRepo from "@/modules/linkedin-account/repository/scrapingPolicy.repository";
 import { PolicyForm } from "@/modules/linkedin-account/ui/PolicyForm";
-import { cn } from "@/ui/cn";
+import { Alert } from "@/components/ui/Alert";
+import { FilterChips } from "@/components/ui/FilterChips";
 
 export default async function PolicyPage({
   searchParams,
@@ -16,24 +16,18 @@ export default async function PolicyPage({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap gap-2">
-        {accounts.map((account) => (
-          <Link
-            key={account.id}
-            href={`/config/policy?accountId=${account.id}`}
-            className={cn(
-              "rounded-full border border-[--color-border] px-3 py-1 text-xs",
-              account.id === selected ? "bg-[--color-accent] text-white" : "text-[--color-muted]",
-            )}
-          >
-            {account.label}
-          </Link>
-        ))}
-      </div>
+      <FilterChips
+        items={accounts.map((account) => ({
+          key: account.id,
+          label: account.label,
+          href: `/config/policy?accountId=${account.id}`,
+          active: account.id === selected,
+        }))}
+      />
       {policy ? (
         <PolicyForm policy={policy} />
       ) : (
-        <p className="text-sm text-[--color-muted]">No LinkedIn account yet — add one under Accounts first.</p>
+        <Alert tone="info">No LinkedIn account yet — add one under Accounts first.</Alert>
       )}
     </div>
   );
