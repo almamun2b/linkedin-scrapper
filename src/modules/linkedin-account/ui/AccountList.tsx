@@ -4,6 +4,7 @@ import { Badge, type BadgeTone } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Table, Thead, Tbody, Tr, Th, Td } from "@/components/ui/Table";
 import { TestConnectionButton } from "./TestConnectionButton";
+import { DeleteAccountButton } from "./DeleteAccountButton";
 
 const STATUS_TONE: Record<LinkedInAccountListItem["status"], BadgeTone> = {
   UNVERIFIED: "neutral",
@@ -14,7 +15,13 @@ const STATUS_TONE: Record<LinkedInAccountListItem["status"], BadgeTone> = {
   DISABLED: "neutral",
 };
 
-export function AccountList({ accounts }: { accounts: LinkedInAccountListItem[] }) {
+export function AccountList({
+  accounts,
+  canDelete,
+}: {
+  accounts: LinkedInAccountListItem[];
+  canDelete: boolean;
+}) {
   if (accounts.length === 0) {
     return (
       <EmptyState
@@ -57,7 +64,10 @@ export function AccountList({ accounts }: { accounts: LinkedInAccountListItem[] 
               {account.lastLoginAt ? new Date(account.lastLoginAt).toLocaleString() : "never"}
             </Td>
             <Td>
-              <TestConnectionButton accountId={account.id} />
+              <div className="flex items-start gap-2">
+                <TestConnectionButton accountId={account.id} />
+                {canDelete ? <DeleteAccountButton id={account.id} label={account.label} /> : null}
+              </div>
             </Td>
           </Tr>
         ))}

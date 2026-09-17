@@ -103,3 +103,12 @@ export async function updateLastLogin(id: string) {
 export async function updateLastActivity(id: string) {
   return prisma.linkedInAccount.update({ where: { id }, data: { lastActivityAt: new Date() } });
 }
+
+/**
+ * Hard delete. ScrapingPolicy cascades, Job rows detach (SetNull); SearchDefinition and
+ * ScrapeRun are Restrict — the service pre-checks them and maps the FK race to a
+ * blocked error instead of leaking a P2003.
+ */
+export async function remove(id: string) {
+  return prisma.linkedInAccount.delete({ where: { id } });
+}

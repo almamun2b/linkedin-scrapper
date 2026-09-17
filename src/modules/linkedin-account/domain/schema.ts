@@ -28,3 +28,8 @@ export const rotatePasswordSchema = z.object({
   password: z.string().min(1),
 });
 export type RotatePasswordInput = z.infer<typeof rotatePasswordSchema>;
+
+export const deleteAccountSchema = z.object({
+  id: z.string().min(1),
+});
+export type DeleteAccountInput = z.infer<typeof deleteAccountSchema>;

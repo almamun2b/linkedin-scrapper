@@ -50,3 +50,17 @@ export async function setDisabled(userId: string, disabled: boolean) {
     data: { disabledAt: disabled ? new Date() : null },
   });
 }
+
+export async function countAdmins() {
+  return prisma.user.count({ where: { role: "ADMIN" } });
+}
+
+/**
+ * Hard delete. FK-safe by design: Account/Session cascade, while
+ * SearchDefinition.createdById and AuditEvent.actorId are SetNull so history
+ * survives with a null actor. Prefer Disable for normal offboarding —
+ * delete is for never-used / mistaken accounts.
+ */
+export async function remove(id: string) {
+  return prisma.user.delete({ where: { id } });
+}

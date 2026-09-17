@@ -71,3 +71,7 @@ export async function finalize(id: string, status: RunStatus, haltReason?: strin
     data: { status, finishedAt: new Date(), haltReason: haltReason ?? null },
   });
 }
+
+export async function countByAccount(linkedInAccountId: string) {
+  return prisma.scrapeRun.count({ where: { linkedInAccountId } });
+}

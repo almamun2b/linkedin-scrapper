@@ -55,3 +55,7 @@ export async function archive(id: string) {
     data: { archivedAt: new Date(), enabled: false },
   });
 }
+
+export async function countByAccount(linkedInAccountId: string) {
+  return prisma.searchDefinition.count({ where: { linkedInAccountId } });
+}

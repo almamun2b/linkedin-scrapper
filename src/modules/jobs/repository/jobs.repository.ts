@@ -116,6 +116,13 @@ export async function cancelQueuedForAccount(linkedInAccountId: string) {
   });
 }
 
+/** Removes orphaned quota rows for a deleted account — RateBudget has no FK, so nothing cascades. */
+export async function deleteRateBudgetsForAccount(linkedInAccountId: string) {
+  return prisma.rateBudget.deleteMany({
+    where: { scope: "linkedInAccount", scopeId: linkedInAccountId },
+  });
+}
+
 export async function cancelQueuedForRun(runId: string) {
   return prisma.job.updateMany({
     where: { runId, status: JobStatus.QUEUED },

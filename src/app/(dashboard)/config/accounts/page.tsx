@@ -1,10 +1,11 @@
 import { Plus } from "lucide-react";
 import * as accountRepo from "@/modules/linkedin-account/repository/linkedInAccount.repository";
+import { getCurrentUser } from "@/modules/auth/service/getCurrentUser";
 import { AccountList } from "@/modules/linkedin-account/ui/AccountList";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 
 export default async function AccountsPage() {
-  const accounts = await accountRepo.list();
+  const [accounts, user] = await Promise.all([accountRepo.list(), getCurrentUser()]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -15,7 +16,7 @@ export default async function AccountsPage() {
           Add account
         </ButtonLink>
       </div>
-      <AccountList accounts={accounts} />
+      <AccountList accounts={accounts} canDelete={user?.role === "ADMIN"} />
     </div>
   );
 }

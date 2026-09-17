@@ -20,3 +20,8 @@ export const setDisabledSchema = z.object({
   disabled: z.coerce.boolean(),
 });
 export type SetDisabledInput = z.infer<typeof setDisabledSchema>;
+
+export const deleteUserSchema = z.object({
+  userId: z.string().min(1),
+});
+export type DeleteUserInput = z.infer<typeof deleteUserSchema>;

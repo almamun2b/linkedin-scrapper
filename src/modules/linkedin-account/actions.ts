@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { formString } from "@/lib/formData";
 import { requireRole } from "@/modules/auth/service/requireRole";
 import { createAccount } from "./service/createAccount";
+import { deleteAccount } from "./service/deleteAccount";
 import { updateAccountMeta } from "./service/updateAccountMeta";
 import { rotatePassword } from "./service/rotatePassword";
 import { requestTestConnection } from "./service/requestTestConnection";
@@ -68,6 +69,28 @@ export async function rotatePasswordAction(
 export async function testConnectionAction(accountId: string): Promise<{ queued: boolean }> {
   await requireRole("OPERATOR");
   return requestTestConnection(accountId);
+}
+
+export async function deleteAccountAction(
+  _prevState: { error?: string } | undefined,
+  formData: FormData,
+): Promise<{ error?: string }> {
+  const actor = await requireRole("ADMIN");
+  const result = await deleteAccount({ id: formString(formData, "id") }, actor.id);
+  if (!result.ok) {
+    if (result.error.kind === "not_found") {
+      return { error: "Account not found — it may have been deleted already" };
+    }
+    if (result.error.kind === "blocked_by_history") {
+      const { searches, runs } = result.error;
+      return {
+        error: `Cannot delete — ${searches} search(es) and ${runs} run(s) still reference this account`,
+      };
+    }
+    return { error: result.error.issues.join(", ") };
+  }
+  revalidatePath("/config/accounts");
+  return {};
 }
 
 function num(formData: FormData, name: string): number {

@@ -15,7 +15,7 @@ export default async function UsersPage() {
         description="People who can sign in to this dashboard — not the LinkedIn accounts the scraper logs in as (see Config)."
       />
       {canManage ? <CreateUserForm /> : null}
-      <UsersTable users={users} canManage={canManage} />
+      <UsersTable users={users} canManage={canManage} currentUserId={me?.id} />
     </div>
   );
 }

@@ -6,10 +6,20 @@ import { Button } from "@/components/ui/Button";
 import { Select } from "@/components/ui/form/Select";
 import { Table, Thead, Tbody, Tr, Th, Td } from "@/components/ui/Table";
 import { updateUserRoleAction, setUserDisabledAction } from "../actions";
+import { DeleteUserButton } from "./DeleteUserButton";
 
 const ROLES = ["VIEWER", "OPERATOR", "ADMIN"] as const;
 
-export function UsersTable({ users, canManage }: { users: UserListItem[]; canManage: boolean }) {
+export function UsersTable({
+  users,
+  canManage,
+  currentUserId,
+}: {
+  users: UserListItem[];
+  canManage: boolean;
+  currentUserId?: string;
+}) {
+  const adminCount = users.filter((user) => user.role === "ADMIN").length;
   return (
     <Table>
       <Thead>
@@ -58,17 +68,32 @@ export function UsersTable({ users, canManage }: { users: UserListItem[]; canMan
             </Td>
             {canManage ? (
               <Td>
-                <form action={setUserDisabledAction}>
-                  <input type="hidden" name="userId" value={user.id} />
-                  <input type="hidden" name="disabled" value={user.disabledAt ? "false" : "true"} />
-                  <Button
-                    type="submit"
-                    variant={user.disabledAt ? "secondary" : "danger"}
-                    size="sm"
-                  >
-                    {user.disabledAt ? "Enable" : "Disable"}
-                  </Button>
-                </form>
+                <div className="flex items-start gap-2">
+                  <form action={setUserDisabledAction}>
+                    <input type="hidden" name="userId" value={user.id} />
+                    <input type="hidden" name="disabled" value={user.disabledAt ? "false" : "true"} />
+                    <Button
+                      type="submit"
+                      variant={user.disabledAt ? "secondary" : "danger"}
+                      size="sm"
+                    >
+                      {user.disabledAt ? "Enable" : "Disable"}
+                    </Button>
+                  </form>
+                  <DeleteUserButton
+                    id={user.id}
+                    email={user.email}
+                    disabled={
+                      user.id === currentUserId ||
+                      (user.role === "ADMIN" && adminCount <= 1)
+                    }
+                    disabledReason={
+                      user.id === currentUserId
+                        ? "You cannot delete your own account"
+                        : "Cannot delete the last admin user"
+                    }
+                  />
+                </div>
               </Td>
             ) : null}
           </Tr>
