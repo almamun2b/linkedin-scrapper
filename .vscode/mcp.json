@@ -3,6 +3,16 @@
     "prisma": {
       "type": "http",
       "url": "https://mcp.prisma.io/mcp"
+    },
+    "prisma-local": {
+      "type": "stdio",
+      "command": "pnpm",
+      "args": ["exec", "prisma", "mcp"]
+    },
+    "next-devtools": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "next-devtools-mcp@latest"]
     }
   }
 }

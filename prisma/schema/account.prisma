@@ -1,0 +1,117 @@
+// The scraping identity: the LinkedIn account(s) this system logs in as, the proxies assigned to
+// them, and per-account pacing/quota policy. See ARCHITECTURE.md §4 and §9 (account safety).
+
+enum AccountStatus {
+  UNVERIFIED
+  ACTIVE
+  COOLING_DOWN
+  CHALLENGED
+  RESTRICTED
+  DISABLED
+}
+
+enum ProxyProtocol {
+  HTTP
+  HTTPS
+  SOCKS5
+}
+
+enum ProxyHealth {
+  UNKNOWN
+  HEALTHY
+  DEGRADED
+  DEAD
+}
+
+model LinkedInAccount {
+  id    String @id @default(cuid())
+  label String
+  email String @unique
+
+  // Sealed secrets: AES-256-GCM, packed iv+tag+ciphertext. Never selected by web-process code —
+  // enforced via a client-level `omit` in src/lib/prisma.ts. keyVer enables key rotation.
+  passwordSealed     Bytes
+  passwordKeyVer     Int       @default(1)
+  storageStateSealed Bytes?
+  storageStateKeyVer Int?
+  storageStateAt     DateTime? @db.Timestamptz(3)
+
+  // Stable per-account fingerprint (UA, viewport, locale) — generated once, never rotated.
+  fingerprint Json
+  timezone    String @default("UTC") // IANA id, validated at the application boundary
+
+  proxyId String?
+  proxy   Proxy?  @relation(fields: [proxyId], references: [id], onDelete: SetNull)
+
+  status         AccountStatus @default(UNVERIFIED)
+  statusReason   String?
+  cooldownUntil  DateTime?     @db.Timestamptz(3)
+  lastLoginAt    DateTime?     @db.Timestamptz(3)
+  lastActivityAt DateTime?     @db.Timestamptz(3)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  policy            ScrapingPolicy?
+  searchDefinitions SearchDefinition[]
+  scrapeRuns        ScrapeRun[]
+  jobs              Job[]
+}
+
+model Proxy {
+  id       String        @id @default(cuid())
+  label    String
+  protocol ProxyProtocol
+  host     String
+  port     Int
+  username String?
+
+  passwordSealed Bytes?
+  passwordKeyVer Int?
+
+  country       String?
+  sticky        Boolean     @default(true) // one account per proxy, enforced in the assignment service
+  active        Boolean     @default(true)
+  health        ProxyHealth @default(UNKNOWN)
+  failureCount  Int         @default(0)
+  lastCheckedAt DateTime?   @db.Timestamptz(3)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  accounts LinkedInAccount[]
+}
+
+// One row per account: an override of the env-config pacing/quota defaults (server/config/env.ts).
+// There is no "global default" row in this table by design — accountId is required, so the
+// singleton-row ambiguity that a nullable unique column would create never arises.
+model ScrapingPolicy {
+  id                String          @id @default(cuid())
+  linkedInAccountId String          @unique
+  linkedInAccount   LinkedInAccount @relation(fields: [linkedInAccountId], references: [id], onDelete: Cascade)
+
+  stepDelayMinMs    Int @default(4000)
+  stepDelayMaxMs    Int @default(11000)
+  profileDelayMinMs Int @default(25000)
+  profileDelayMaxMs Int @default(90000)
+  pageDelayMinMs    Int @default(45000)
+  pageDelayMaxMs    Int @default(150000)
+
+  sessionBreakAfter Int @default(12) // profiles
+  sessionBreakMinMs Int @default(600000) // 10 min
+  sessionBreakMaxMs Int @default(2700000) // 45 min
+
+  maxProfilesPerDay    Int @default(80)
+  maxSearchPagesPerDay Int @default(15)
+  maxProfilesPerWeek   Int @default(350)
+
+  activeHoursStart Int     @default(9) // account-local hour; does not yet express an overnight wrap
+  activeHoursEnd   Int     @default(18)
+  activeOnWeekends Boolean @default(false)
+
+  useProxy Boolean @default(false)
+  headless Boolean @default(true)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+}

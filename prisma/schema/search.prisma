@@ -1,0 +1,99 @@
+// What to look for on LinkedIn, and the history of each attempt to look. See ARCHITECTURE.md §8
+// (search filters) and §7 (the scraping pipeline).
+
+enum RunStatus {
+  QUEUED
+  RUNNING
+  PAUSED
+  SUCCEEDED
+  FAILED
+  HALTED
+  CANCELLED
+}
+
+enum FilterRefKind {
+  GEO
+  INDUSTRY
+  COMPANY
+  SCHOOL
+  TITLE
+  LANGUAGE
+  SERVICE_CATEGORY
+  OTHER
+}
+
+model SearchDefinition {
+  id                String          @id @default(cuid())
+  name              String
+  linkedInAccountId String
+  linkedInAccount   LinkedInAccount @relation(fields: [linkedInAccountId], references: [id], onDelete: Restrict)
+
+  keywords String?
+  filters  Json // validated by the zod SearchFilters schema at the boundary — see §8
+  maxPages Int     @default(5)
+  cron     String? // evaluated by the scheduler
+
+  enabled    Boolean   @default(true)
+  archivedAt DateTime? @db.Timestamptz(3) // prefer archiving over deletion, to keep run history meaningful
+
+  createdById String?
+  createdBy   User?   @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  runs ScrapeRun[]
+
+  @@index([linkedInAccountId])
+}
+
+model ScrapeRun {
+  id                 String           @id @default(cuid())
+  searchDefinitionId String
+  searchDefinition   SearchDefinition @relation(fields: [searchDefinitionId], references: [id], onDelete: Cascade)
+  linkedInAccountId  String
+  linkedInAccount    LinkedInAccount  @relation(fields: [linkedInAccountId], references: [id], onDelete: Restrict)
+
+  status            RunStatus @default(QUEUED)
+  startedAt         DateTime? @db.Timestamptz(3)
+  finishedAt        DateTime? @db.Timestamptz(3)
+  cancelRequestedAt DateTime? @db.Timestamptz(3)
+
+  // Provenance: what this run actually executed, independent of later edits to the SearchDefinition.
+  filtersSnapshot  Json
+  searchUrl        String?
+  maxPages         Int
+  selectorsVersion String?
+
+  pagesDone    Int     @default(0)
+  profilesDone Int     @default(0)
+  leadsNew     Int     @default(0)
+  emailsFound  Int     @default(0)
+  haltReason   String?
+  stats        Json?
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  runLeads       RunLead[]
+  firstSeenLeads Lead[]         @relation("LeadFirstSeenRun")
+  jobs           Job[]
+  snapshots      LeadSnapshot[]
+
+  @@index([linkedInAccountId, status])
+  @@index([searchDefinitionId, startedAt])
+  @@index([status])
+}
+
+// Cache of label -> URN resolutions from LinkedIn's filter typeahead (§8).
+model FilterRef {
+  id         String        @id @default(cuid())
+  kind       FilterRefKind
+  label      String
+  urn        String
+  lastUsedAt DateTime?     @db.Timestamptz(3)
+  createdAt  DateTime      @default(now()) @db.Timestamptz(3)
+
+  @@unique([kind, urn])
+  @@index([kind, label])
+}

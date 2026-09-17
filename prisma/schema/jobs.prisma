@@ -1,0 +1,110 @@
+// The job queue, implemented entirely on Postgres — no Redis. See ARCHITECTURE.md §6 for the
+// claim query (FOR UPDATE SKIP LOCKED), lease/reaper mechanics, and the LISTEN/NOTIFY wakeup.
+
+enum JobStatus {
+  QUEUED
+  RUNNING
+  SUCCEEDED
+  FAILED
+  DEAD
+  CANCELLED
+}
+
+enum LogLevel {
+  DEBUG
+  INFO
+  WARN
+  ERROR
+}
+
+enum RateMetric {
+  PROFILES_PER_DAY
+  SEARCH_PAGES_PER_DAY
+  PROFILES_PER_WEEK
+}
+
+model Job {
+  id       String    @id @default(cuid())
+  queue    String    @default("default")
+  type     String // dotted + namespaced, e.g. "profile.scrape" — validated against a zod union, not an enum
+  payload  Json
+  status   JobStatus @default(QUEUED)
+  priority Int       @default(100) // lower runs first
+  runAt    DateTime  @default(now()) @db.Timestamptz(3) // visibility / delay
+
+  attempts    Int @default(0)
+  maxAttempts Int @default(5)
+
+  lockedBy          String?
+  lockedAt          DateTime? @db.Timestamptz(3)
+  leaseExpiresAt    DateTime? @db.Timestamptz(3)
+  cancelRequestedAt DateTime? @db.Timestamptz(3)
+
+  idempotencyKey String? @unique // NULL is distinct per-row in Postgres, so unkeyed jobs never collide
+
+  runId String?
+  run   ScrapeRun? @relation(fields: [runId], references: [id], onDelete: SetNull)
+
+  linkedInAccountId String?
+  linkedInAccount   LinkedInAccount? @relation(fields: [linkedInAccountId], references: [id], onDelete: SetNull)
+
+  lastError  String?
+  createdAt  DateTime  @default(now()) @db.Timestamptz(3)
+  finishedAt DateTime? @db.Timestamptz(3)
+
+  logs JobLog[]
+
+  // Column order matches the claim query's predicate (queue, status equality) then its
+  // ORDER BY (priority, runAt) exactly, so the scan needs no Sort node before LIMIT applies.
+  @@index([queue, status, priority, runAt])
+  // leaseExpiresAt is not cleared on completion, so it must not be indexed alone — status first
+  // keeps the live-lease region the reaper scans small.
+  @@index([status, leaseExpiresAt])
+  @@index([linkedInAccountId, status])
+  @@index([runId])
+}
+
+model JobLog {
+  id      String   @id @default(cuid())
+  jobId   String
+  job     Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  level   LogLevel @default(INFO)
+  message String
+  data    Json?
+  at      DateTime @default(now()) @db.Timestamptz(3)
+
+  @@index([jobId, at])
+}
+
+// DB-backed token buckets (§9.4). Decrement MUST be one atomic
+//   UPDATE "RateBudget" SET consumed = consumed + 1 WHERE ... AND consumed < cap RETURNING consumed
+// in server/db/raw/ — check-then-increment across workers is a lost-update race against the one
+// number that protects the account from being over-used.
+model RateBudget {
+  id          String     @id @default(cuid())
+  scope       String // e.g. "linkedInAccount"
+  scopeId     String
+  metric      RateMetric
+  windowStart DateTime   @db.Timestamptz(3)
+  windowEnd   DateTime   @db.Timestamptz(3)
+  consumed    Int        @default(0)
+  cap         Int // not "limit" — a reserved SQL word
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  @@unique([scope, scopeId, metric, windowStart])
+  @@index([windowEnd])
+}
+
+model WorkerHeartbeat {
+  id          String    @id // the WORKER_ID string; no @default — the worker owns its identity
+  pid         Int
+  host        String
+  queues      String[]
+  concurrency Int
+  startedAt   DateTime  @db.Timestamptz(3)
+  lastSeenAt  DateTime  @db.Timestamptz(3)
+  stoppedAt   DateTime? @db.Timestamptz(3) // distinguishes a graceful drain from a crash
+  version     String
+}

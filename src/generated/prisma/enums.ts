@@ -9,7 +9,130 @@
 * 🟢 You can import this file directly.
 */
 
+export const AccountStatus = {
+  UNVERIFIED: 'UNVERIFIED',
+  ACTIVE: 'ACTIVE',
+  COOLING_DOWN: 'COOLING_DOWN',
+  CHALLENGED: 'CHALLENGED',
+  RESTRICTED: 'RESTRICTED',
+  DISABLED: 'DISABLED'
+} as const
+
+export type AccountStatus = (typeof AccountStatus)[keyof typeof AccountStatus]
 
 
-// This file is empty because there are no enums in the schema.
-export {}
+export const ProxyProtocol = {
+  HTTP: 'HTTP',
+  HTTPS: 'HTTPS',
+  SOCKS5: 'SOCKS5'
+} as const
+
+export type ProxyProtocol = (typeof ProxyProtocol)[keyof typeof ProxyProtocol]
+
+
+export const ProxyHealth = {
+  UNKNOWN: 'UNKNOWN',
+  HEALTHY: 'HEALTHY',
+  DEGRADED: 'DEGRADED',
+  DEAD: 'DEAD'
+} as const
+
+export type ProxyHealth = (typeof ProxyHealth)[keyof typeof ProxyHealth]
+
+
+export const Role = {
+  ADMIN: 'ADMIN',
+  OPERATOR: 'OPERATOR',
+  VIEWER: 'VIEWER'
+} as const
+
+export type Role = (typeof Role)[keyof typeof Role]
+
+
+export const JobStatus = {
+  QUEUED: 'QUEUED',
+  RUNNING: 'RUNNING',
+  SUCCEEDED: 'SUCCEEDED',
+  FAILED: 'FAILED',
+  DEAD: 'DEAD',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type JobStatus = (typeof JobStatus)[keyof typeof JobStatus]
+
+
+export const LogLevel = {
+  DEBUG: 'DEBUG',
+  INFO: 'INFO',
+  WARN: 'WARN',
+  ERROR: 'ERROR'
+} as const
+
+export type LogLevel = (typeof LogLevel)[keyof typeof LogLevel]
+
+
+export const RateMetric = {
+  PROFILES_PER_DAY: 'PROFILES_PER_DAY',
+  SEARCH_PAGES_PER_DAY: 'SEARCH_PAGES_PER_DAY',
+  PROFILES_PER_WEEK: 'PROFILES_PER_WEEK'
+} as const
+
+export type RateMetric = (typeof RateMetric)[keyof typeof RateMetric]
+
+
+export const EmailSource = {
+  LINKEDIN_CONTACT_INFO: 'LINKEDIN_CONTACT_INFO',
+  WEBSITE_SCRAPE: 'WEBSITE_SCRAPE',
+  PATTERN_GUESS: 'PATTERN_GUESS',
+  MANUAL: 'MANUAL',
+  IMPORT: 'IMPORT'
+} as const
+
+export type EmailSource = (typeof EmailSource)[keyof typeof EmailSource]
+
+
+export const LeadStage = {
+  STUB: 'STUB',
+  SCRAPED: 'SCRAPED',
+  ENRICHED: 'ENRICHED',
+  FAILED: 'FAILED'
+} as const
+
+export type LeadStage = (typeof LeadStage)[keyof typeof LeadStage]
+
+
+export const SnapshotKind = {
+  SEARCH_RESULT: 'SEARCH_RESULT',
+  PROFILE: 'PROFILE',
+  CONTACT_INFO: 'CONTACT_INFO',
+  WEBSITE: 'WEBSITE'
+} as const
+
+export type SnapshotKind = (typeof SnapshotKind)[keyof typeof SnapshotKind]
+
+
+export const RunStatus = {
+  QUEUED: 'QUEUED',
+  RUNNING: 'RUNNING',
+  PAUSED: 'PAUSED',
+  SUCCEEDED: 'SUCCEEDED',
+  FAILED: 'FAILED',
+  HALTED: 'HALTED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type RunStatus = (typeof RunStatus)[keyof typeof RunStatus]
+
+
+export const FilterRefKind = {
+  GEO: 'GEO',
+  INDUSTRY: 'INDUSTRY',
+  COMPANY: 'COMPANY',
+  SCHOOL: 'SCHOOL',
+  TITLE: 'TITLE',
+  LANGUAGE: 'LANGUAGE',
+  SERVICE_CATEGORY: 'SERVICE_CATEGORY',
+  OTHER: 'OTHER'
+} as const
+
+export type FilterRefKind = (typeof FilterRefKind)[keyof typeof FilterRefKind]

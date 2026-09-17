@@ -51,7 +51,24 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
-  User: 'User'
+  LinkedInAccount: 'LinkedInAccount',
+  Proxy: 'Proxy',
+  ScrapingPolicy: 'ScrapingPolicy',
+  AuditEvent: 'AuditEvent',
+  User: 'User',
+  Account: 'Account',
+  Session: 'Session',
+  VerificationToken: 'VerificationToken',
+  Job: 'Job',
+  JobLog: 'JobLog',
+  RateBudget: 'RateBudget',
+  WorkerHeartbeat: 'WorkerHeartbeat',
+  Lead: 'Lead',
+  LeadSnapshot: 'LeadSnapshot',
+  RunLead: 'RunLead',
+  SearchDefinition: 'SearchDefinition',
+  ScrapeRun: 'ScrapeRun',
+  FilterRef: 'FilterRef'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -70,15 +87,322 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+export const LinkedInAccountScalarFieldEnum = {
+  id: 'id',
+  label: 'label',
+  email: 'email',
+  passwordSealed: 'passwordSealed',
+  passwordKeyVer: 'passwordKeyVer',
+  storageStateSealed: 'storageStateSealed',
+  storageStateKeyVer: 'storageStateKeyVer',
+  storageStateAt: 'storageStateAt',
+  fingerprint: 'fingerprint',
+  timezone: 'timezone',
+  proxyId: 'proxyId',
+  status: 'status',
+  statusReason: 'statusReason',
+  cooldownUntil: 'cooldownUntil',
+  lastLoginAt: 'lastLoginAt',
+  lastActivityAt: 'lastActivityAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LinkedInAccountScalarFieldEnum = (typeof LinkedInAccountScalarFieldEnum)[keyof typeof LinkedInAccountScalarFieldEnum]
+
+
+export const ProxyScalarFieldEnum = {
+  id: 'id',
+  label: 'label',
+  protocol: 'protocol',
+  host: 'host',
+  port: 'port',
+  username: 'username',
+  passwordSealed: 'passwordSealed',
+  passwordKeyVer: 'passwordKeyVer',
+  country: 'country',
+  sticky: 'sticky',
+  active: 'active',
+  health: 'health',
+  failureCount: 'failureCount',
+  lastCheckedAt: 'lastCheckedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ProxyScalarFieldEnum = (typeof ProxyScalarFieldEnum)[keyof typeof ProxyScalarFieldEnum]
+
+
+export const ScrapingPolicyScalarFieldEnum = {
+  id: 'id',
+  linkedInAccountId: 'linkedInAccountId',
+  stepDelayMinMs: 'stepDelayMinMs',
+  stepDelayMaxMs: 'stepDelayMaxMs',
+  profileDelayMinMs: 'profileDelayMinMs',
+  profileDelayMaxMs: 'profileDelayMaxMs',
+  pageDelayMinMs: 'pageDelayMinMs',
+  pageDelayMaxMs: 'pageDelayMaxMs',
+  sessionBreakAfter: 'sessionBreakAfter',
+  sessionBreakMinMs: 'sessionBreakMinMs',
+  sessionBreakMaxMs: 'sessionBreakMaxMs',
+  maxProfilesPerDay: 'maxProfilesPerDay',
+  maxSearchPagesPerDay: 'maxSearchPagesPerDay',
+  maxProfilesPerWeek: 'maxProfilesPerWeek',
+  activeHoursStart: 'activeHoursStart',
+  activeHoursEnd: 'activeHoursEnd',
+  activeOnWeekends: 'activeOnWeekends',
+  useProxy: 'useProxy',
+  headless: 'headless',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ScrapingPolicyScalarFieldEnum = (typeof ScrapingPolicyScalarFieldEnum)[keyof typeof ScrapingPolicyScalarFieldEnum]
+
+
+export const AuditEventScalarFieldEnum = {
+  id: 'id',
+  actorId: 'actorId',
+  action: 'action',
+  entity: 'entity',
+  entityId: 'entityId',
+  data: 'data',
+  at: 'at'
+} as const
+
+export type AuditEventScalarFieldEnum = (typeof AuditEventScalarFieldEnum)[keyof typeof AuditEventScalarFieldEnum]
+
+
 export const UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
+  emailVerified: 'emailVerified',
   name: 'name',
+  image: 'image',
+  passwordHash: 'passwordHash',
+  role: 'role',
+  disabledAt: 'disabledAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const AccountScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  provider: 'provider',
+  providerAccountId: 'providerAccountId',
+  refresh_token: 'refresh_token',
+  access_token: 'access_token',
+  expires_at: 'expires_at',
+  token_type: 'token_type',
+  scope: 'scope',
+  id_token: 'id_token',
+  session_state: 'session_state'
+} as const
+
+export type AccountScalarFieldEnum = (typeof AccountScalarFieldEnum)[keyof typeof AccountScalarFieldEnum]
+
+
+export const SessionScalarFieldEnum = {
+  id: 'id',
+  sessionToken: 'sessionToken',
+  userId: 'userId',
+  expires: 'expires'
+} as const
+
+export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
+
+
+export const VerificationTokenScalarFieldEnum = {
+  identifier: 'identifier',
+  token: 'token',
+  expires: 'expires'
+} as const
+
+export type VerificationTokenScalarFieldEnum = (typeof VerificationTokenScalarFieldEnum)[keyof typeof VerificationTokenScalarFieldEnum]
+
+
+export const JobScalarFieldEnum = {
+  id: 'id',
+  queue: 'queue',
+  type: 'type',
+  payload: 'payload',
+  status: 'status',
+  priority: 'priority',
+  runAt: 'runAt',
+  attempts: 'attempts',
+  maxAttempts: 'maxAttempts',
+  lockedBy: 'lockedBy',
+  lockedAt: 'lockedAt',
+  leaseExpiresAt: 'leaseExpiresAt',
+  cancelRequestedAt: 'cancelRequestedAt',
+  idempotencyKey: 'idempotencyKey',
+  runId: 'runId',
+  linkedInAccountId: 'linkedInAccountId',
+  lastError: 'lastError',
+  createdAt: 'createdAt',
+  finishedAt: 'finishedAt'
+} as const
+
+export type JobScalarFieldEnum = (typeof JobScalarFieldEnum)[keyof typeof JobScalarFieldEnum]
+
+
+export const JobLogScalarFieldEnum = {
+  id: 'id',
+  jobId: 'jobId',
+  level: 'level',
+  message: 'message',
+  data: 'data',
+  at: 'at'
+} as const
+
+export type JobLogScalarFieldEnum = (typeof JobLogScalarFieldEnum)[keyof typeof JobLogScalarFieldEnum]
+
+
+export const RateBudgetScalarFieldEnum = {
+  id: 'id',
+  scope: 'scope',
+  scopeId: 'scopeId',
+  metric: 'metric',
+  windowStart: 'windowStart',
+  windowEnd: 'windowEnd',
+  consumed: 'consumed',
+  cap: 'cap',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RateBudgetScalarFieldEnum = (typeof RateBudgetScalarFieldEnum)[keyof typeof RateBudgetScalarFieldEnum]
+
+
+export const WorkerHeartbeatScalarFieldEnum = {
+  id: 'id',
+  pid: 'pid',
+  host: 'host',
+  queues: 'queues',
+  concurrency: 'concurrency',
+  startedAt: 'startedAt',
+  lastSeenAt: 'lastSeenAt',
+  stoppedAt: 'stoppedAt',
+  version: 'version'
+} as const
+
+export type WorkerHeartbeatScalarFieldEnum = (typeof WorkerHeartbeatScalarFieldEnum)[keyof typeof WorkerHeartbeatScalarFieldEnum]
+
+
+export const LeadScalarFieldEnum = {
+  id: 'id',
+  publicIdentifier: 'publicIdentifier',
+  memberUrn: 'memberUrn',
+  profileUrl: 'profileUrl',
+  fullName: 'fullName',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  headline: 'headline',
+  location: 'location',
+  currentTitle: 'currentTitle',
+  currentCompany: 'currentCompany',
+  companyDomain: 'companyDomain',
+  websiteUrl: 'websiteUrl',
+  email: 'email',
+  emailSource: 'emailSource',
+  emailConfidence: 'emailConfidence',
+  stage: 'stage',
+  firstSeenRunId: 'firstSeenRunId',
+  scrapedAt: 'scrapedAt',
+  enrichedAt: 'enrichedAt',
+  lastScrapedAt: 'lastScrapedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LeadScalarFieldEnum = (typeof LeadScalarFieldEnum)[keyof typeof LeadScalarFieldEnum]
+
+
+export const LeadSnapshotScalarFieldEnum = {
+  id: 'id',
+  leadId: 'leadId',
+  runId: 'runId',
+  kind: 'kind',
+  capturedAt: 'capturedAt',
+  selectorsVersion: 'selectorsVersion',
+  html: 'html',
+  encoding: 'encoding',
+  byteSize: 'byteSize',
+  parsed: 'parsed'
+} as const
+
+export type LeadSnapshotScalarFieldEnum = (typeof LeadSnapshotScalarFieldEnum)[keyof typeof LeadSnapshotScalarFieldEnum]
+
+
+export const RunLeadScalarFieldEnum = {
+  runId: 'runId',
+  leadId: 'leadId',
+  page: 'page',
+  position: 'position',
+  firstSeenAt: 'firstSeenAt'
+} as const
+
+export type RunLeadScalarFieldEnum = (typeof RunLeadScalarFieldEnum)[keyof typeof RunLeadScalarFieldEnum]
+
+
+export const SearchDefinitionScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  linkedInAccountId: 'linkedInAccountId',
+  keywords: 'keywords',
+  filters: 'filters',
+  maxPages: 'maxPages',
+  cron: 'cron',
+  enabled: 'enabled',
+  archivedAt: 'archivedAt',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SearchDefinitionScalarFieldEnum = (typeof SearchDefinitionScalarFieldEnum)[keyof typeof SearchDefinitionScalarFieldEnum]
+
+
+export const ScrapeRunScalarFieldEnum = {
+  id: 'id',
+  searchDefinitionId: 'searchDefinitionId',
+  linkedInAccountId: 'linkedInAccountId',
+  status: 'status',
+  startedAt: 'startedAt',
+  finishedAt: 'finishedAt',
+  cancelRequestedAt: 'cancelRequestedAt',
+  filtersSnapshot: 'filtersSnapshot',
+  searchUrl: 'searchUrl',
+  maxPages: 'maxPages',
+  selectorsVersion: 'selectorsVersion',
+  pagesDone: 'pagesDone',
+  profilesDone: 'profilesDone',
+  leadsNew: 'leadsNew',
+  emailsFound: 'emailsFound',
+  haltReason: 'haltReason',
+  stats: 'stats',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ScrapeRunScalarFieldEnum = (typeof ScrapeRunScalarFieldEnum)[keyof typeof ScrapeRunScalarFieldEnum]
+
+
+export const FilterRefScalarFieldEnum = {
+  id: 'id',
+  kind: 'kind',
+  label: 'label',
+  urn: 'urn',
+  lastUsedAt: 'lastUsedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type FilterRefScalarFieldEnum = (typeof FilterRefScalarFieldEnum)[keyof typeof FilterRefScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -89,12 +413,36 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
 export const NullsOrder = {

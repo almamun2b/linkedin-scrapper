@@ -8,5 +8,22 @@
  *
  * 🟢 You can import this file directly.
  */
+export type * from './models/LinkedInAccount.ts'
+export type * from './models/Proxy.ts'
+export type * from './models/ScrapingPolicy.ts'
+export type * from './models/AuditEvent.ts'
 export type * from './models/User.ts'
+export type * from './models/Account.ts'
+export type * from './models/Session.ts'
+export type * from './models/VerificationToken.ts'
+export type * from './models/Job.ts'
+export type * from './models/JobLog.ts'
+export type * from './models/RateBudget.ts'
+export type * from './models/WorkerHeartbeat.ts'
+export type * from './models/Lead.ts'
+export type * from './models/LeadSnapshot.ts'
+export type * from './models/RunLead.ts'
+export type * from './models/SearchDefinition.ts'
+export type * from './models/ScrapeRun.ts'
+export type * from './models/FilterRef.ts'
 export type * from './commonInputTypes.ts'

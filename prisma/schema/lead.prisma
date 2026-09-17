@@ -1,0 +1,102 @@
+// The payload: people found, and the raw evidence behind every parsed field. See ARCHITECTURE.md
+// §7. Leads outlive runs — a Lead is *discovered by* a run but owned by none; nothing here cascades
+// into Lead or LeadSnapshot from a run/search deletion.
+
+enum EmailSource {
+  LINKEDIN_CONTACT_INFO
+  WEBSITE_SCRAPE
+  PATTERN_GUESS
+  MANUAL
+  IMPORT
+}
+
+enum LeadStage {
+  STUB // created from a search-results page, not yet profile-scraped
+  SCRAPED
+  ENRICHED
+  FAILED
+}
+
+enum SnapshotKind {
+  SEARCH_RESULT
+  PROFILE
+  CONTACT_INFO
+  WEBSITE
+}
+
+model Lead {
+  id               String  @id @default(cuid())
+  publicIdentifier String  @unique // LinkedIn vanity slug, normalized lowercase in app code
+  memberUrn        String? @unique // stable identity — survives a slug change, unlike publicIdentifier
+  profileUrl       String
+
+  fullName  String?
+  firstName String?
+  lastName  String?
+  headline  String?
+  location  String?
+
+  currentTitle   String?
+  currentCompany String?
+  companyDomain  String?
+  websiteUrl     String?
+
+  email           String?
+  emailSource     EmailSource?
+  emailConfidence Int? // 0-100, enforced by a CHECK constraint + zod at the boundary
+
+  stage LeadStage @default(STUB)
+
+  firstSeenRunId String?
+  firstSeenRun   ScrapeRun? @relation("LeadFirstSeenRun", fields: [firstSeenRunId], references: [id], onDelete: SetNull)
+
+  scrapedAt     DateTime? @db.Timestamptz(3)
+  enrichedAt    DateTime? @db.Timestamptz(3)
+  lastScrapedAt DateTime? @db.Timestamptz(3)
+  createdAt     DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt     DateTime  @updatedAt @db.Timestamptz(3)
+
+  runLeads  RunLead[]
+  snapshots LeadSnapshot[]
+
+  @@index([companyDomain])
+  @@index([email])
+  @@index([createdAt, id])
+  @@index([stage, createdAt])
+}
+
+// The raw evidence behind a Lead, kept separate from the hot Lead row (Prisma selects all scalars
+// by default, so a blob column on Lead would drag HTML into every unguarded findMany). History is
+// kept, not just the latest, so a selector fix can be replayed over exactly the snapshots captured
+// by the broken extractor version (ARCHITECTURE.md §7).
+model LeadSnapshot {
+  id     String     @id @default(cuid())
+  leadId String
+  lead   Lead       @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  runId  String?
+  run    ScrapeRun? @relation(fields: [runId], references: [id], onDelete: SetNull)
+
+  kind             SnapshotKind
+  capturedAt       DateTime     @default(now()) @db.Timestamptz(3)
+  selectorsVersion String?
+  html             Bytes // gzipped, not JSON-wrapped
+  encoding         String       @default("gzip")
+  byteSize         Int
+  parsed           Json?
+
+  @@index([leadId, capturedAt])
+  @@index([runId])
+}
+
+model RunLead {
+  runId       String
+  run         ScrapeRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  leadId      String
+  lead        Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  page        Int
+  position    Int
+  firstSeenAt DateTime  @default(now()) @db.Timestamptz(3)
+
+  @@id([runId, leadId])
+  @@index([leadId])
+}

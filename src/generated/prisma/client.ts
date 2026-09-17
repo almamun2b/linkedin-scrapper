@@ -31,8 +31,8 @@ export * from "./enums.ts"
  * const prisma = new PrismaClient({
  *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
  * })
- * // Fetch zero or more Users
- * const users = await prisma.user.findMany()
+ * // Fetch zero or more LinkedInAccounts
+ * const linkedInAccounts = await prisma.linkedInAccount.findMany()
  * ```
  * 
  * Read more in our [docs](https://pris.ly/d/client).
@@ -42,7 +42,92 @@ export type PrismaClient<LogOpts extends Prisma.LogLevel = never, OmitOpts exten
 export { Prisma }
 
 /**
+ * Model LinkedInAccount
+ * 
+ */
+export type LinkedInAccount = Prisma.LinkedInAccountModel
+/**
+ * Model Proxy
+ * 
+ */
+export type Proxy = Prisma.ProxyModel
+/**
+ * Model ScrapingPolicy
+ * 
+ */
+export type ScrapingPolicy = Prisma.ScrapingPolicyModel
+/**
+ * Model AuditEvent
+ * 
+ */
+export type AuditEvent = Prisma.AuditEventModel
+/**
  * Model User
  * 
  */
 export type User = Prisma.UserModel
+/**
+ * Model Account
+ * 
+ */
+export type Account = Prisma.AccountModel
+/**
+ * Model Session
+ * 
+ */
+export type Session = Prisma.SessionModel
+/**
+ * Model VerificationToken
+ * 
+ */
+export type VerificationToken = Prisma.VerificationTokenModel
+/**
+ * Model Job
+ * 
+ */
+export type Job = Prisma.JobModel
+/**
+ * Model JobLog
+ * 
+ */
+export type JobLog = Prisma.JobLogModel
+/**
+ * Model RateBudget
+ * 
+ */
+export type RateBudget = Prisma.RateBudgetModel
+/**
+ * Model WorkerHeartbeat
+ * 
+ */
+export type WorkerHeartbeat = Prisma.WorkerHeartbeatModel
+/**
+ * Model Lead
+ * 
+ */
+export type Lead = Prisma.LeadModel
+/**
+ * Model LeadSnapshot
+ * 
+ */
+export type LeadSnapshot = Prisma.LeadSnapshotModel
+/**
+ * Model RunLead
+ * 
+ */
+export type RunLead = Prisma.RunLeadModel
+/**
+ * Model SearchDefinition
+ * 
+ */
+export type SearchDefinition = Prisma.SearchDefinitionModel
+/**
+ * Model ScrapeRun
+ * 
+ */
+export type ScrapeRun = Prisma.ScrapeRunModel
+/**
+ * Model FilterRef
+ * 
+ */
+export type FilterRef = Prisma.FilterRefModel
