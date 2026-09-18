@@ -1,12 +1,12 @@
 import { z } from "zod";
 
 /**
- * Mirrors the DB's own column defaults/ranges so the UI rejects bad input before Postgres
- * does. `.refine` pairs keep the error attached to the field the user should actually fix.
+ * Mirrors ScrapingPolicy's own column defaults/ranges and the SQL CHECKs that back them
+ * (`prisma/migrations/.../migration.sql`), same pattern as the per-account schema this
+ * replaced. No `linkedInAccountId` — there is exactly one row, id "global".
  */
-export const updatePolicySchema = z
+export const updateScrapingPolicySchema = z
   .object({
-    linkedInAccountId: z.string().min(1),
     stepDelayMinMs: z.coerce.number().int().min(0),
     stepDelayMaxMs: z.coerce.number().int().min(0),
     profileDelayMinMs: z.coerce.number().int().min(0),
@@ -24,6 +24,8 @@ export const updatePolicySchema = z
     activeOnWeekends: z.coerce.boolean(),
     useProxy: z.coerce.boolean(),
     headless: z.coerce.boolean(),
+    fallbackProxyUrl: z.string().trim().optional(),
+    proxyCountry: z.string().trim().min(1).optional(),
   })
   .refine((v) => v.stepDelayMinMs <= v.stepDelayMaxMs, {
     message: "Step delay min must be ≤ max",
@@ -41,4 +43,19 @@ export const updatePolicySchema = z
     message: "Session break min must be ≤ max",
     path: ["sessionBreakMinMs"],
   });
-export type UpdatePolicyInput = z.infer<typeof updatePolicySchema>;
+export type UpdateScrapingPolicyInput = z.infer<typeof updateScrapingPolicySchema>;
+
+export const LOG_LEVELS = ["fatal", "error", "warn", "info", "debug", "trace"] as const;
+
+export const updateSystemSettingSchema = z.object({
+  workerId: z.string().trim().min(1),
+  workerConcurrency: z.coerce.number().int().min(1).max(32),
+  workerQueues: z.string().trim().min(1),
+  pollIntervalMs: z.coerce.number().int().min(250),
+  leaseSeconds: z.coerce.number().int().min(30),
+  leaseHeartbeatMs: z.coerce.number().int().min(1000),
+  shutdownGraceMs: z.coerce.number().int().min(1000),
+  logLevel: z.enum(LOG_LEVELS),
+  displayTimezone: z.string().trim().min(1),
+});
+export type UpdateSystemSettingInput = z.infer<typeof updateSystemSettingSchema>;

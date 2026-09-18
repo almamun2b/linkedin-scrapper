@@ -29,7 +29,7 @@ model LinkedInAccount {
   email String @unique
 
   // Sealed secrets: AES-256-GCM, packed iv+tag+ciphertext. Never selected by web-process code —
-  // enforced via a client-level `omit` in src/lib/prisma.ts. keyVer enables key rotation.
+  // enforced via a client-level `omit` in src/server/db/prisma.ts. keyVer enables key rotation.
   passwordSealed     Bytes
   passwordKeyVer     Int       @default(1)
   storageStateSealed Bytes?
@@ -52,7 +52,6 @@ model LinkedInAccount {
   createdAt DateTime @default(now()) @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @db.Timestamptz(3)
 
-  policy            ScrapingPolicy?
   searchDefinitions SearchDefinition[]
   scrapeRuns        ScrapeRun[]
   jobs              Job[]
@@ -82,13 +81,14 @@ model Proxy {
   accounts LinkedInAccount[]
 }
 
-// One row per account: an override of the env-config pacing/quota defaults (server/config/env.ts).
-// There is no "global default" row in this table by design — accountId is required, so the
-// singleton-row ambiguity that a nullable unique column would create never arises.
+// A true global singleton, not a per-account row — this system runs one operator, one
+// pacing policy. Pinned with a literal id plus a hand-written `CHECK (id = 'global')` (see
+// the migration) so a second row can never be inserted; the same technique the init
+// migration already uses for this table's delay-ordering CHECKs. Absorbs the pacing/proxy
+// fallback values that used to live in `.env` (ARCHITECTURE.md §10) so an admin can tune
+// them from /config/policy without editing a file or restarting a process.
 model ScrapingPolicy {
-  id                String          @id @default(cuid())
-  linkedInAccountId String          @unique
-  linkedInAccount   LinkedInAccount @relation(fields: [linkedInAccountId], references: [id], onDelete: Cascade)
+  id String @id @default("global")
 
   stepDelayMinMs    Int @default(4000)
   stepDelayMaxMs    Int @default(11000)
@@ -105,12 +105,19 @@ model ScrapingPolicy {
   maxSearchPagesPerDay Int @default(15)
   maxProfilesPerWeek   Int @default(350)
 
-  activeHoursStart Int     @default(9) // account-local hour; does not yet express an overnight wrap
+  activeHoursStart Int     @default(9) // local hour in each LinkedInAccount's own timezone; does not yet express an overnight wrap
   activeHoursEnd   Int     @default(18)
   activeOnWeekends Boolean @default(false)
 
   useProxy Boolean @default(false)
   headless Boolean @default(true)
+
+  // Fallback proxy (formerly PROXY_URL/PROXY_COUNTRY): consulted only when an account has no
+  // Proxy row of its own assigned — never a substitute for per-account assignment. Sealed
+  // because a proxy URL commonly carries a username:password (CLAUDE.md invariant #4).
+  fallbackProxyUrlSealed Bytes?
+  fallbackProxyUrlKeyVer Int?
+  proxyCountry           String? // geo hint; not yet consulted by any pool-selection code
 
   createdAt DateTime @default(now()) @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @db.Timestamptz(3)

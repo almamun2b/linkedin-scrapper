@@ -68,10 +68,20 @@ export type Job = Prisma.JobModel
  */
 export type JobLog = Prisma.JobLogModel
 /**
+ * Model JobArtifact
+ * 
+ */
+export type JobArtifact = Prisma.JobArtifactModel
+/**
  * Model RateBudget
  * 
  */
 export type RateBudget = Prisma.RateBudgetModel
+/**
+ * Model SystemSetting
+ * 
+ */
+export type SystemSetting = Prisma.SystemSettingModel
 /**
  * Model WorkerHeartbeat
  * 

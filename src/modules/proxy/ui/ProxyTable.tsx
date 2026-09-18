@@ -1,8 +1,7 @@
 import type { ProxyListItem } from "../repository/proxy.repository";
 import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
 import { Table, Thead, Tbody, Tr, Th, Td } from "@/components/ui/Table";
-import { setProxyActiveAction } from "../actions";
+import { ProxyRowActions } from "./ProxyRowActions";
 
 const HEALTH_TONE = {
   UNKNOWN: "neutral",
@@ -29,7 +28,7 @@ export function ProxyTable({
           <Th>Health</Th>
           <Th>Shared by</Th>
           <Th>Status</Th>
-          <Th>Actions</Th>
+          <Th className="text-right">Actions</Th>
         </tr>
       </Thead>
       <Tbody>
@@ -57,14 +56,8 @@ export function ProxyTable({
                 <Badge tone="danger">Inactive</Badge>
               )}
             </Td>
-            <Td>
-              <form action={setProxyActiveAction}>
-                <input type="hidden" name="id" value={proxy.id} />
-                <input type="hidden" name="active" value={proxy.active ? "false" : "true"} />
-                <Button type="submit" variant={proxy.active ? "danger" : "secondary"} size="sm">
-                  {proxy.active ? "Deactivate" : "Reactivate"}
-                </Button>
-              </form>
+            <Td className="text-right">
+              <ProxyRowActions proxy={proxy} />
             </Td>
           </Tr>
         ))}

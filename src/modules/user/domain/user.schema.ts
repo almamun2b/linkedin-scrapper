@@ -9,12 +9,6 @@ export const createUserSchema = z.object({
 });
 export type CreateUserInput = z.infer<typeof createUserSchema>;
 
-export const updateRoleSchema = z.object({
-  userId: z.string().min(1),
-  role: z.enum(Role),
-});
-export type UpdateRoleInput = z.infer<typeof updateRoleSchema>;
-
 export const setDisabledSchema = z.object({
   userId: z.string().min(1),
   disabled: z.coerce.boolean(),
@@ -25,3 +19,21 @@ export const deleteUserSchema = z.object({
   userId: z.string().min(1),
 });
 export type DeleteUserInput = z.infer<typeof deleteUserSchema>;
+
+export const updateUserSchema = z.object({
+  userId: z.string().min(1),
+  email: z.email(),
+  name: z.string().trim().min(1).optional(),
+  role: z.enum(Role),
+});
+export type UpdateUserInput = z.infer<typeof updateUserSchema>;
+
+/** `currentPassword` is required in self mode and ignored in admin-reset mode — the
+ * service (not this schema) decides which mode applies, from who the actor is relative
+ * to `userId`. */
+export const changePasswordSchema = z.object({
+  userId: z.string().min(1),
+  currentPassword: z.string().optional(),
+  newPassword: z.string().min(8, "Password must be at least 8 characters"),
+});
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;

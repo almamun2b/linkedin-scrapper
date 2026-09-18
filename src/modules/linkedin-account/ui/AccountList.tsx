@@ -1,10 +1,9 @@
-import Link from "next/link";
 import type { LinkedInAccountListItem } from "../repository/linkedInAccount.repository";
+import type { ProxyListItem } from "@/modules/proxy/repository/proxy.repository";
 import { Badge, type BadgeTone } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Table, Thead, Tbody, Tr, Th, Td } from "@/components/ui/Table";
-import { TestConnectionButton } from "./TestConnectionButton";
-import { DeleteAccountButton } from "./DeleteAccountButton";
+import { AccountRowActions } from "./AccountRowActions";
 
 const STATUS_TONE: Record<LinkedInAccountListItem["status"], BadgeTone> = {
   UNVERIFIED: "neutral",
@@ -17,9 +16,11 @@ const STATUS_TONE: Record<LinkedInAccountListItem["status"], BadgeTone> = {
 
 export function AccountList({
   accounts,
+  proxies,
   canDelete,
 }: {
   accounts: LinkedInAccountListItem[];
+  proxies: ProxyListItem[];
   canDelete: boolean;
 }) {
   if (accounts.length === 0) {
@@ -39,20 +40,13 @@ export function AccountList({
           <Th>Email</Th>
           <Th>Status</Th>
           <Th>Last login</Th>
-          <Th>Actions</Th>
+          <Th className="text-right">Actions</Th>
         </tr>
       </Thead>
       <Tbody>
         {accounts.map((account) => (
           <Tr key={account.id}>
-            <Td>
-              <Link
-                href={`/config/accounts/${account.id}`}
-                className="font-medium text-primary hover:underline"
-              >
-                {account.label}
-              </Link>
-            </Td>
+            <Td className="font-medium text-foreground">{account.label}</Td>
             <Td>{account.email}</Td>
             <Td>
               <Badge tone={STATUS_TONE[account.status]}>{account.status}</Badge>
@@ -63,11 +57,8 @@ export function AccountList({
             <Td>
               {account.lastLoginAt ? new Date(account.lastLoginAt).toLocaleString() : "never"}
             </Td>
-            <Td>
-              <div className="flex items-start gap-2">
-                <TestConnectionButton accountId={account.id} />
-                {canDelete ? <DeleteAccountButton id={account.id} label={account.label} /> : null}
-              </div>
+            <Td className="text-right">
+              <AccountRowActions account={account} proxies={proxies} canDelete={canDelete} />
             </Td>
           </Tr>
         ))}

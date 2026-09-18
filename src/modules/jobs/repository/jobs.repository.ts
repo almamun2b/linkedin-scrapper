@@ -1,6 +1,7 @@
+import { gzipSync } from "node:zlib";
 import { prisma } from "@/server/db/prisma";
 import { claimJobs, type ClaimedJob } from "@/server/db/raw/claimJobs.sql.ts";
-import { JobStatus } from "../../../generated/prisma/enums";
+import { JobStatus, JobArtifactKind } from "../../../generated/prisma/enums";
 
 export type { ClaimedJob };
 
@@ -98,14 +99,42 @@ export async function failRiskSignal(job: ClaimedJob, error: Error) {
 }
 
 /**
- * Not a failure — a lock push-back, outside active hours, or quota exhausted. Leaves
- * attempts/lastError untouched the way a retry would (CLAUDE.md invariant #2, ARCHITECTURE
- * §9: "rescheduled ... not retried").
+ * Not a failure — a lock push-back, outside active hours, or quota exhausted. Meant to
+ * leave `attempts` untouched the way a retry would (CLAUDE.md invariant #2, ARCHITECTURE
+ * §9: "rescheduled ... not retried"), but by the time a handler can call this,
+ * `claimJobs.sql.ts` has already done `attempts = attempts + 1` for the claim — so this
+ * decrements it back rather than leaving it, or every reschedule would silently burn a
+ * real attempt (this is what parked the very first `session.ensure` job at `attempts: 1`
+ * before it ever ran).
  */
 export async function rescheduleTo(jobId: string, runAt: Date) {
   return prisma.job.update({
     where: { id: jobId },
-    data: { status: JobStatus.QUEUED, runAt, lockedBy: null, lockedAt: null, leaseExpiresAt: null },
+    data: {
+      status: JobStatus.QUEUED,
+      runAt,
+      attempts: { decrement: 1 },
+      lockedBy: null,
+      lockedAt: null,
+      leaseExpiresAt: null,
+    },
+  });
+}
+
+/** Human-initiated run: pull `runAt` to now. Scoped to `QUEUED` so a `RUNNING` job under
+ * an active lease can't be yanked out from under its worker. */
+export async function runNow(jobId: string) {
+  return prisma.job.updateMany({
+    where: { id: jobId, status: JobStatus.QUEUED },
+    data: { runAt: new Date() },
+  });
+}
+
+/** Never removes a `RUNNING` job — that would delete the row a worker still holds a lease
+ * on. `JobLog` and `JobArtifact` cascade with it. */
+export async function remove(jobId: string) {
+  return prisma.job.deleteMany({
+    where: { id: jobId, status: { not: JobStatus.RUNNING } },
   });
 }
 
@@ -203,6 +232,43 @@ export async function writeLog(params: {
       level: params.level ?? "INFO",
       message: params.message,
       data: params.data as never,
+    },
+  });
+}
+
+export async function listLogs(jobId: string) {
+  return prisma.jobLog.findMany({ where: { jobId }, orderBy: { at: "asc" } });
+}
+
+export async function listArtifacts(jobId: string) {
+  return prisma.jobArtifact.findMany({
+    where: { jobId },
+    select: { id: true, kind: true, contentType: true, byteSize: true, capturedAt: true },
+    orderBy: { capturedAt: "asc" },
+  });
+}
+
+export async function getArtifact(id: string) {
+  return prisma.jobArtifact.findUnique({ where: { id } });
+}
+
+/** Screenshot bytes are stored as-is; HTML is gzipped here (mirroring
+ * `leadSnapshot.repository.ts`'s `create`) so the caller never has to remember to. */
+export async function createArtifact(params: {
+  jobId: string;
+  kind: "SCREENSHOT" | "HTML";
+  contentType: string;
+  bytes: Buffer | Uint8Array;
+}) {
+  const raw =
+    params.kind === JobArtifactKind.HTML ? gzipSync(Buffer.from(params.bytes)) : Buffer.from(params.bytes);
+  return prisma.jobArtifact.create({
+    data: {
+      jobId: params.jobId,
+      kind: params.kind,
+      contentType: params.contentType,
+      bytes: Uint8Array.from(raw),
+      byteSize: raw.byteLength,
     },
   });
 }

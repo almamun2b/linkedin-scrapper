@@ -1,7 +1,10 @@
 "use client";
 
-import { useActionState } from "react";
-import { Button } from "@/components/ui/Button";
+import { useState, useTransition } from "react";
+import { Trash2 } from "lucide-react";
+import { IconAction } from "@/components/ui/RowActions";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { toast } from "@/components/ui/Toaster";
 import { deleteUserAction } from "../actions";
 
 export function DeleteUserButton({
@@ -15,33 +18,46 @@ export function DeleteUserButton({
   disabled?: boolean;
   disabledReason?: string;
 }) {
-  const [state, formAction, pending] = useActionState(deleteUserAction, {});
+  const [open, setOpen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [pending, startTransition] = useTransition();
 
   return (
-    <div className="flex flex-col items-start gap-1">
-      <form
-        action={formAction}
-        onSubmit={(event) => {
-          // Hard delete is irreversible — confirm before the action runs. The
-          // service still blocks self-delete and deleting the last admin.
-          if (!window.confirm(`Delete "${email}"? This cannot be undone.`)) {
-            event.preventDefault();
-          }
+    <>
+      <IconAction
+        icon={<Trash2 aria-hidden="true" className="size-4" />}
+        label="Delete user"
+        tone="danger"
+        disabled={disabled}
+        title={disabled ? disabledReason : undefined}
+        onClick={() => { setOpen(true); }}
+      />
+      <ConfirmDialog
+        open={open}
+        onClose={() => { setOpen(false); }}
+        onConfirm={() => {
+          startTransition(async () => {
+            const formData = new FormData();
+            formData.set("userId", id);
+            const result = await deleteUserAction({}, formData);
+            if (result.error) {
+              setError(result.error);
+            } else {
+              toast.success("User deleted.");
+              setOpen(false);
+            }
+          });
         }}
-      >
-        <input type="hidden" name="userId" value={id} />
-        <Button
-          type="submit"
-          variant="danger"
-          size="sm"
-          loading={pending}
-          disabled={disabled}
-          title={disabled ? disabledReason : `Delete ${email} permanently`}
-        >
-          {pending ? "Deleting…" : "Delete"}
-        </Button>
-      </form>
-      {state.error ? <p className="text-xs text-danger">{state.error}</p> : null}
-    </div>
+        title={`Delete "${email}"?`}
+        body={
+          <>
+            This cannot be undone.
+            {error ? <span className="mt-2 block text-danger">{error}</span> : null}
+          </>
+        }
+        confirmLabel="Delete user"
+        pending={pending}
+      />
+    </>
   );
 }

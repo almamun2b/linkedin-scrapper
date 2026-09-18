@@ -440,6 +440,23 @@ export type EnumLogLevelWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumLogLevelFilter<$PrismaModel>
 }
 
+export type EnumJobArtifactKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.JobArtifactKind | Prisma.EnumJobArtifactKindFieldRefInput<$PrismaModel>
+  in?: $Enums.JobArtifactKind[] | Prisma.ListEnumJobArtifactKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.JobArtifactKind[] | Prisma.ListEnumJobArtifactKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumJobArtifactKindFilter<$PrismaModel> | $Enums.JobArtifactKind
+}
+
+export type EnumJobArtifactKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.JobArtifactKind | Prisma.EnumJobArtifactKindFieldRefInput<$PrismaModel>
+  in?: $Enums.JobArtifactKind[] | Prisma.ListEnumJobArtifactKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.JobArtifactKind[] | Prisma.ListEnumJobArtifactKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumJobArtifactKindWithAggregatesFilter<$PrismaModel> | $Enums.JobArtifactKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumJobArtifactKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumJobArtifactKindFilter<$PrismaModel>
+}
+
 export type EnumRateMetricFilter<$PrismaModel = never> = {
   equals?: $Enums.RateMetric | Prisma.EnumRateMetricFieldRefInput<$PrismaModel>
   in?: $Enums.RateMetric[] | Prisma.ListEnumRateMetricFieldRefInput<$PrismaModel>
@@ -925,6 +942,23 @@ export type NestedEnumLogLevelWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumLogLevelFilter<$PrismaModel>
   _max?: Prisma.NestedEnumLogLevelFilter<$PrismaModel>
+}
+
+export type NestedEnumJobArtifactKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.JobArtifactKind | Prisma.EnumJobArtifactKindFieldRefInput<$PrismaModel>
+  in?: $Enums.JobArtifactKind[] | Prisma.ListEnumJobArtifactKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.JobArtifactKind[] | Prisma.ListEnumJobArtifactKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumJobArtifactKindFilter<$PrismaModel> | $Enums.JobArtifactKind
+}
+
+export type NestedEnumJobArtifactKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.JobArtifactKind | Prisma.EnumJobArtifactKindFieldRefInput<$PrismaModel>
+  in?: $Enums.JobArtifactKind[] | Prisma.ListEnumJobArtifactKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.JobArtifactKind[] | Prisma.ListEnumJobArtifactKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumJobArtifactKindWithAggregatesFilter<$PrismaModel> | $Enums.JobArtifactKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumJobArtifactKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumJobArtifactKindFilter<$PrismaModel>
 }
 
 export type NestedEnumRateMetricFilter<$PrismaModel = never> = {

@@ -175,12 +175,17 @@ model now; this section states the principles and a one-line inventory, not a pr
 (which would drift the moment the schema changes and the doc doesn't).
 
 **Principles:** secrets are always sealed `Bytes` columns with a `keyVer` sibling for key
-rotation, never selected by default (client-level `omit` in `src/lib/prisma.ts`); every
+rotation, never selected by default (client-level `omit` in `src/server/db/prisma.ts`); every
 `DateTime` is `@db.Timestamptz(3)`, no exceptions — a naive `TIMESTAMP` column compares
 against `now()` through the session timezone, which silently breaks every queue
 visibility check and active-hours window (confirmed live against this project's own
 Postgres server, which runs `Asia/Dhaka`); leads outlive runs, so nothing cascades into
-`Lead` or `LeadSnapshot` from a run/search deletion; every scraped fact carries
+`Lead` or `LeadSnapshot` from a run/search deletion — deleting a `LinkedInAccount` does
+cascade into its own `SearchDefinition`/`ScrapeRun` rows (and their `RunLead` join rows),
+by deliberate choice over the safer-looking `Restrict`, because a used account was
+otherwise permanently undeletable; `Lead.firstSeenRunId`, `LeadSnapshot.runId` and
+`Job.runId`/`linkedInAccountId` are `SetNull`, so the leads themselves still survive,
+just without knowing which run first found them; every scraped fact carries
 provenance; the queue is a first-class table, not bolted on.
 
 | File                    | Models                                                                                                      |
@@ -198,11 +203,15 @@ Worth knowing before reading the schema files directly:
 - **`LinkedInAccount`-related FKs are named `linkedInAccountId`**, not `accountId` —
   `accountId` collides with NextAuth's mandatory `Account` model once auth lands, and
   that collision is worse than the extra characters.
-- **`ScrapingPolicy.linkedInAccountId` is required**, not nullable. There is no "global
-  default row" in this table — global pacing defaults live in `server/config/env.ts`
-  (§10); a `ScrapingPolicy` row exists only as a per-account _override_. A nullable
-  unique column cannot enforce "exactly one default row" in Postgres (NULLs are
-  distinct), so the ambiguity is deleted rather than guarded.
+- **`ScrapingPolicy` is a true global singleton**, not per-account: `id String @id
+  @default("global")` plus a hand-written `CHECK (id = 'global')`, so a second row can
+  never be inserted. It replaced an earlier per-account design keyed by a nullable-unique
+  `linkedInAccountId` — that shape can't express "exactly one default row" either (NULLs
+  are distinct in a unique index in Postgres, so nothing stops two "default" rows from
+  coexisting), which is exactly the ambiguity the singleton-with-CHECK pattern avoids
+  instead. It also absorbed the pacing/proxy-fallback values that used to live in
+  `server/config/env.ts` (§10) — an admin tunes them from `/config/policy` now, and the
+  worker re-reads the row on a short cache TTL instead of requiring a restart.
 - **`Lead.raw` does not exist.** The raw evidence lives in `LeadSnapshot` (1:N from
   `Lead`), not as a column on the hot `Lead` row — Prisma selects every scalar by
   default, so a blob column on `Lead` would drag HTML into the leads grid's `findMany`.
@@ -545,22 +554,34 @@ primary one.
 `server/config/env.ts` parses `process.env` with zod at boot and exports a typed, frozen
 object. **Nothing else in the codebase reads `process.env`.** The process fails fast and
 loudly on a bad or missing variable — `dotenv` silently giving `undefined` to a browser
-launcher is a bad afternoon.
+launcher is a bad afternoon. `.env` now holds only what must be readable before the
+database can be queried or its secrets decrypted at all — everything an admin actually
+tunes (LinkedIn accounts, proxies, scraping pacing/quotas, worker/queue timing) lives in
+the database and is edited from `/config`. See `docs/configuration.md` for the full,
+current field list and its own hover-help text; this table only carries what's left here.
 
-| Variable                                                                       | Where  | Purpose                                                                                                                                                                                                                        |
-| ------------------------------------------------------------------------------ | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `DATABASE_URL`                                                                 | both   | Postgres connection (present)                                                                                                                                                                                                  |
-| `APP_URL`, `AUTH_URL`, `NEXTAUTH_URL`                                          | web    | base URLs (present)                                                                                                                                                                                                            |
-| `AUTH_SECRET`, `AUTH_TRUST_HOST`                                               | web    | NextAuth (present)                                                                                                                                                                                                             |
-| `ENCRYPTION_KEY`                                                               | both   | base64 32 bytes, AES-256-GCM master key — optional at the schema level (queue-only code never seals anything) but `server/crypto/secretBox.ts` throws its own clear error the moment something tries to seal/unseal without it |
-| `USE_PROXY`                                                                    | worker | master on/off for proxying                                                                                                                                                                                                     |
-| `PROXY_URL`                                                                    | worker | single-proxy shortcut, e.g. `http://user:pass@host:port`                                                                                                                                                                       |
-| `PROXY_COUNTRY`                                                                | worker | geo hint for pool selection                                                                                                                                                                                                    |
-| `HEADLESS`                                                                     | worker | `true` in prod; `false` for local debugging                                                                                                                                                                                    |
-| `WORKER_ID`, `WORKER_CONCURRENCY`, `WORKER_QUEUES`                             | worker | identity + parallelism — `WORKER_ID` defaults to `worker-<pid>` if unset, so a quick manual run doesn't need it, though a real deployment should set one explicitly per process                                                |
-| `POLL_INTERVAL_MS`, `LEASE_SECONDS`, `LEASE_HEARTBEAT_MS`, `SHUTDOWN_GRACE_MS` | worker | queue timing                                                                                                                                                                                                                   |
-| `SCRAPER_*_DELAY_*_MS`, `MAX_PROFILES_PER_DAY`, `ACTIVE_HOURS_*`               | worker | global pacing defaults — `ScrapingPolicy` rows are per-account overrides of these, never the other way around                                                                                                                  |
-| `LOG_LEVEL`, `NODE_ENV`, `TZ=UTC`                                              | both   | pin the process timezone explicitly, in addition to every `DateTime` column being `timestamptz`                                                                                                                                |
+| Variable                              | Where | Purpose                                                                                                                                                                                                                          |
+| -------------------------------------- | ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DATABASE_URL`                         | both  | Postgres connection                                                                                                                                                                                                            |
+| `APP_URL`, `AUTH_URL`, `NEXTAUTH_URL`  | web   | base URLs                                                                                                                                                                                                                       |
+| `AUTH_SECRET`, `AUTH_TRUST_HOST`       | web   | NextAuth                                                                                                                                                                                                                        |
+| `ENCRYPTION_KEY`                       | both  | base64 32 bytes, AES-256-GCM master key — optional at the schema level (queue-only code never seals anything) but `server/crypto/secretBox.ts` throws its own clear error the moment something tries to seal/unseal without it |
+| `ADMIN_EMAIL`, `ADMIN_PASSWORD`        | seed  | bootstrap-only, read once by `prisma/seed.ts` to create the first ADMIN `User`                                                                                                                                                 |
+| `NODE_ENV`                             | both  | standard Next.js/Node env                                                                                                                                                                                                       |
+| `TZ`                                   | both  | sets the OS process's own timezone *before* any DB read is possible, which is the one thing that keeps this out of the database (see below) — every stored `DateTime` is `timestamptz` regardless, so this affects log/console readability, not correctness |
+
+Everything that used to live below this table — `USE_PROXY`, `PROXY_URL`, `PROXY_COUNTRY`,
+`HEADLESS`, `WORKER_ID`, `WORKER_CONCURRENCY`, `WORKER_QUEUES`, `POLL_INTERVAL_MS`,
+`LEASE_SECONDS`, `LEASE_HEARTBEAT_MS`, `SHUTDOWN_GRACE_MS`, `SCRAPER_*_DELAY_*_MS`,
+`MAX_PROFILES_PER_DAY`, `ACTIVE_HOURS_*`, `LOG_LEVEL` — moved into the two `src/modules/settings/`-owned
+singletons: **`ScrapingPolicy`** (pacing, quotas, active hours, the proxy toggle and its
+sealed fallback URL) and **`SystemSetting`** (worker identity/concurrency/queues, queue
+timing, log level, the display timezone). Both are `id: "global"` rows guarded by a SQL
+`CHECK`, seeded by `prisma/seed.ts`, edited from `/config/policy` and `/config/system`, and
+re-read by the worker on a short cache TTL (`getEffectiveSettings.ts`) so a save applies
+without a restart. `WORKER_ID` is the one exception worth naming: it's a *default* identity
+now, not a hard requirement — a second worker process overrides it with `--worker-id`
+rather than needing a second settings row, since only one `SystemSetting` can ever exist.
 
 **LinkedIn accounts have no env-based bootstrap.** The system must support multiple
 accounts, rotation, per-account status and fingerprint, and an audit trail — none of
@@ -569,12 +590,14 @@ which fit in env vars. `/config/accounts` (`createAccount`, sealed on write via
 **database is the only source of truth**, and application code never reads a LinkedIn
 credential from `.env`.
 
-**`USE_PROXY` semantics.** `USE_PROXY=false` → `launch()` receives no `proxy` option at
-all (not an empty object). `USE_PROXY=true` → resolve in order: the account's assigned
-`Proxy` row → `PROXY_URL` → **fail the job**. Silently falling back to the datacenter IP
+**`useProxy` semantics** (now a `ScrapingPolicy` column, not an env var).
+`useProxy: false` → `launch()` receives no `proxy` option at all (not an empty object).
+`useProxy: true` → resolve in order: the account's assigned `Proxy` row → `ScrapingPolicy`'s
+sealed fallback proxy URL → **fail the job**. Silently falling back to the datacenter IP
 when a proxy is misconfigured is the worst possible outcome, because it exposes the real
-egress IP precisely when you believed you were hidden. Fail loudly instead. Proxy
-passwords are sealed in the DB and decrypted only in the worker.
+egress IP precisely when you believed you were hidden. Fail loudly instead. Both the
+per-account `Proxy.passwordSealed` and the fallback URL are sealed in the DB and decrypted
+only in the worker.
 
 ---
 

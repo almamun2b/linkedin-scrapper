@@ -8,13 +8,25 @@
     },
     "prisma-local": {
       "type": "local",
-      "command": ["pnpm", "exec", "prisma", "mcp"],
+      "command": [
+        "pnpm",
+        "exec",
+        "prisma",
+        "mcp"
+      ],
       "enabled": true,
     },
     "next-devtools": {
       "type": "local",
-      "command": ["npx", "-y", "next-devtools-mcp@latest"],
+      "command": [
+        "npx",
+        "-y",
+        "next-devtools-mcp@latest"
+      ],
       "enabled": true,
     },
   },
+  "permission": {
+    "*": "allow"
+  }
 }

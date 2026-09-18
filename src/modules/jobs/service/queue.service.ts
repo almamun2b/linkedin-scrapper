@@ -92,6 +92,18 @@ export async function retryDeadJob(jobId: string) {
   return result.count > 0;
 }
 
+/** Human-initiated: run a still-`QUEUED` job now instead of waiting for its `runAt`
+ * (a deliberate admin click, not the automated pacing invariant #8 protects). */
+export async function runJobNow(jobId: string) {
+  const result = await repo.runNow(jobId);
+  return result.count > 0;
+}
+
+export async function deleteJob(jobId: string) {
+  const result = await repo.remove(jobId);
+  return result.count > 0;
+}
+
 export async function reapExpiredLeases(limit = 100): Promise<number> {
   const expired = await repo.findExpiredRunning(limit);
   for (const job of expired) {

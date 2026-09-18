@@ -335,6 +335,7 @@ export type JobWhereInput = {
   run?: Prisma.XOR<Prisma.ScrapeRunNullableScalarRelationFilter, Prisma.ScrapeRunWhereInput> | null
   linkedInAccount?: Prisma.XOR<Prisma.LinkedInAccountNullableScalarRelationFilter, Prisma.LinkedInAccountWhereInput> | null
   logs?: Prisma.JobLogListRelationFilter
+  artifacts?: Prisma.JobArtifactListRelationFilter
 }
 
 export type JobOrderByWithRelationInput = {
@@ -360,6 +361,7 @@ export type JobOrderByWithRelationInput = {
   run?: Prisma.ScrapeRunOrderByWithRelationInput
   linkedInAccount?: Prisma.LinkedInAccountOrderByWithRelationInput
   logs?: Prisma.JobLogOrderByRelationAggregateInput
+  artifacts?: Prisma.JobArtifactOrderByRelationAggregateInput
 }
 
 export type JobWhereUniqueInput = Prisma.AtLeast<{
@@ -388,6 +390,7 @@ export type JobWhereUniqueInput = Prisma.AtLeast<{
   run?: Prisma.XOR<Prisma.ScrapeRunNullableScalarRelationFilter, Prisma.ScrapeRunWhereInput> | null
   linkedInAccount?: Prisma.XOR<Prisma.LinkedInAccountNullableScalarRelationFilter, Prisma.LinkedInAccountWhereInput> | null
   logs?: Prisma.JobLogListRelationFilter
+  artifacts?: Prisma.JobArtifactListRelationFilter
 }, "id" | "idempotencyKey">
 
 export type JobOrderByWithAggregationInput = {
@@ -463,6 +466,7 @@ export type JobCreateInput = {
   run?: Prisma.ScrapeRunCreateNestedOneWithoutJobsInput
   linkedInAccount?: Prisma.LinkedInAccountCreateNestedOneWithoutJobsInput
   logs?: Prisma.JobLogCreateNestedManyWithoutJobInput
+  artifacts?: Prisma.JobArtifactCreateNestedManyWithoutJobInput
 }
 
 export type JobUncheckedCreateInput = {
@@ -486,6 +490,7 @@ export type JobUncheckedCreateInput = {
   createdAt?: Date | string
   finishedAt?: Date | string | null
   logs?: Prisma.JobLogUncheckedCreateNestedManyWithoutJobInput
+  artifacts?: Prisma.JobArtifactUncheckedCreateNestedManyWithoutJobInput
 }
 
 export type JobUpdateInput = {
@@ -509,6 +514,7 @@ export type JobUpdateInput = {
   run?: Prisma.ScrapeRunUpdateOneWithoutJobsNestedInput
   linkedInAccount?: Prisma.LinkedInAccountUpdateOneWithoutJobsNestedInput
   logs?: Prisma.JobLogUpdateManyWithoutJobNestedInput
+  artifacts?: Prisma.JobArtifactUpdateManyWithoutJobNestedInput
 }
 
 export type JobUncheckedUpdateInput = {
@@ -532,6 +538,7 @@ export type JobUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   finishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logs?: Prisma.JobLogUncheckedUpdateManyWithoutJobNestedInput
+  artifacts?: Prisma.JobArtifactUncheckedUpdateManyWithoutJobNestedInput
 }
 
 export type JobCreateManyInput = {
@@ -749,6 +756,20 @@ export type JobUpdateOneRequiredWithoutLogsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.JobUpdateToOneWithWhereWithoutLogsInput, Prisma.JobUpdateWithoutLogsInput>, Prisma.JobUncheckedUpdateWithoutLogsInput>
 }
 
+export type JobCreateNestedOneWithoutArtifactsInput = {
+  create?: Prisma.XOR<Prisma.JobCreateWithoutArtifactsInput, Prisma.JobUncheckedCreateWithoutArtifactsInput>
+  connectOrCreate?: Prisma.JobCreateOrConnectWithoutArtifactsInput
+  connect?: Prisma.JobWhereUniqueInput
+}
+
+export type JobUpdateOneRequiredWithoutArtifactsNestedInput = {
+  create?: Prisma.XOR<Prisma.JobCreateWithoutArtifactsInput, Prisma.JobUncheckedCreateWithoutArtifactsInput>
+  connectOrCreate?: Prisma.JobCreateOrConnectWithoutArtifactsInput
+  upsert?: Prisma.JobUpsertWithoutArtifactsInput
+  connect?: Prisma.JobWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.JobUpdateToOneWithWhereWithoutArtifactsInput, Prisma.JobUpdateWithoutArtifactsInput>, Prisma.JobUncheckedUpdateWithoutArtifactsInput>
+}
+
 export type JobCreateNestedManyWithoutRunInput = {
   create?: Prisma.XOR<Prisma.JobCreateWithoutRunInput, Prisma.JobUncheckedCreateWithoutRunInput> | Prisma.JobCreateWithoutRunInput[] | Prisma.JobUncheckedCreateWithoutRunInput[]
   connectOrCreate?: Prisma.JobCreateOrConnectWithoutRunInput | Prisma.JobCreateOrConnectWithoutRunInput[]
@@ -811,6 +832,7 @@ export type JobCreateWithoutLinkedInAccountInput = {
   finishedAt?: Date | string | null
   run?: Prisma.ScrapeRunCreateNestedOneWithoutJobsInput
   logs?: Prisma.JobLogCreateNestedManyWithoutJobInput
+  artifacts?: Prisma.JobArtifactCreateNestedManyWithoutJobInput
 }
 
 export type JobUncheckedCreateWithoutLinkedInAccountInput = {
@@ -833,6 +855,7 @@ export type JobUncheckedCreateWithoutLinkedInAccountInput = {
   createdAt?: Date | string
   finishedAt?: Date | string | null
   logs?: Prisma.JobLogUncheckedCreateNestedManyWithoutJobInput
+  artifacts?: Prisma.JobArtifactUncheckedCreateNestedManyWithoutJobInput
 }
 
 export type JobCreateOrConnectWithoutLinkedInAccountInput = {
@@ -906,6 +929,7 @@ export type JobCreateWithoutLogsInput = {
   finishedAt?: Date | string | null
   run?: Prisma.ScrapeRunCreateNestedOneWithoutJobsInput
   linkedInAccount?: Prisma.LinkedInAccountCreateNestedOneWithoutJobsInput
+  artifacts?: Prisma.JobArtifactCreateNestedManyWithoutJobInput
 }
 
 export type JobUncheckedCreateWithoutLogsInput = {
@@ -928,6 +952,7 @@ export type JobUncheckedCreateWithoutLogsInput = {
   lastError?: string | null
   createdAt?: Date | string
   finishedAt?: Date | string | null
+  artifacts?: Prisma.JobArtifactUncheckedCreateNestedManyWithoutJobInput
 }
 
 export type JobCreateOrConnectWithoutLogsInput = {
@@ -966,6 +991,7 @@ export type JobUpdateWithoutLogsInput = {
   finishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   run?: Prisma.ScrapeRunUpdateOneWithoutJobsNestedInput
   linkedInAccount?: Prisma.LinkedInAccountUpdateOneWithoutJobsNestedInput
+  artifacts?: Prisma.JobArtifactUpdateManyWithoutJobNestedInput
 }
 
 export type JobUncheckedUpdateWithoutLogsInput = {
@@ -988,6 +1014,115 @@ export type JobUncheckedUpdateWithoutLogsInput = {
   lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   finishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  artifacts?: Prisma.JobArtifactUncheckedUpdateManyWithoutJobNestedInput
+}
+
+export type JobCreateWithoutArtifactsInput = {
+  id?: string
+  queue?: string
+  type: string
+  payload: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  status?: $Enums.JobStatus
+  priority?: number
+  runAt?: Date | string
+  attempts?: number
+  maxAttempts?: number
+  lockedBy?: string | null
+  lockedAt?: Date | string | null
+  leaseExpiresAt?: Date | string | null
+  cancelRequestedAt?: Date | string | null
+  idempotencyKey?: string | null
+  lastError?: string | null
+  createdAt?: Date | string
+  finishedAt?: Date | string | null
+  run?: Prisma.ScrapeRunCreateNestedOneWithoutJobsInput
+  linkedInAccount?: Prisma.LinkedInAccountCreateNestedOneWithoutJobsInput
+  logs?: Prisma.JobLogCreateNestedManyWithoutJobInput
+}
+
+export type JobUncheckedCreateWithoutArtifactsInput = {
+  id?: string
+  queue?: string
+  type: string
+  payload: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  status?: $Enums.JobStatus
+  priority?: number
+  runAt?: Date | string
+  attempts?: number
+  maxAttempts?: number
+  lockedBy?: string | null
+  lockedAt?: Date | string | null
+  leaseExpiresAt?: Date | string | null
+  cancelRequestedAt?: Date | string | null
+  idempotencyKey?: string | null
+  runId?: string | null
+  linkedInAccountId?: string | null
+  lastError?: string | null
+  createdAt?: Date | string
+  finishedAt?: Date | string | null
+  logs?: Prisma.JobLogUncheckedCreateNestedManyWithoutJobInput
+}
+
+export type JobCreateOrConnectWithoutArtifactsInput = {
+  where: Prisma.JobWhereUniqueInput
+  create: Prisma.XOR<Prisma.JobCreateWithoutArtifactsInput, Prisma.JobUncheckedCreateWithoutArtifactsInput>
+}
+
+export type JobUpsertWithoutArtifactsInput = {
+  update: Prisma.XOR<Prisma.JobUpdateWithoutArtifactsInput, Prisma.JobUncheckedUpdateWithoutArtifactsInput>
+  create: Prisma.XOR<Prisma.JobCreateWithoutArtifactsInput, Prisma.JobUncheckedCreateWithoutArtifactsInput>
+  where?: Prisma.JobWhereInput
+}
+
+export type JobUpdateToOneWithWhereWithoutArtifactsInput = {
+  where?: Prisma.JobWhereInput
+  data: Prisma.XOR<Prisma.JobUpdateWithoutArtifactsInput, Prisma.JobUncheckedUpdateWithoutArtifactsInput>
+}
+
+export type JobUpdateWithoutArtifactsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  queue?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  payload?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  runAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  maxAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  leaseExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  finishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  run?: Prisma.ScrapeRunUpdateOneWithoutJobsNestedInput
+  linkedInAccount?: Prisma.LinkedInAccountUpdateOneWithoutJobsNestedInput
+  logs?: Prisma.JobLogUpdateManyWithoutJobNestedInput
+}
+
+export type JobUncheckedUpdateWithoutArtifactsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  queue?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  payload?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  runAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  maxAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  leaseExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  runId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedInAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  finishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  logs?: Prisma.JobLogUncheckedUpdateManyWithoutJobNestedInput
 }
 
 export type JobCreateWithoutRunInput = {
@@ -1010,6 +1145,7 @@ export type JobCreateWithoutRunInput = {
   finishedAt?: Date | string | null
   linkedInAccount?: Prisma.LinkedInAccountCreateNestedOneWithoutJobsInput
   logs?: Prisma.JobLogCreateNestedManyWithoutJobInput
+  artifacts?: Prisma.JobArtifactCreateNestedManyWithoutJobInput
 }
 
 export type JobUncheckedCreateWithoutRunInput = {
@@ -1032,6 +1168,7 @@ export type JobUncheckedCreateWithoutRunInput = {
   createdAt?: Date | string
   finishedAt?: Date | string | null
   logs?: Prisma.JobLogUncheckedCreateNestedManyWithoutJobInput
+  artifacts?: Prisma.JobArtifactUncheckedCreateNestedManyWithoutJobInput
 }
 
 export type JobCreateOrConnectWithoutRunInput = {
@@ -1101,6 +1238,7 @@ export type JobUpdateWithoutLinkedInAccountInput = {
   finishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   run?: Prisma.ScrapeRunUpdateOneWithoutJobsNestedInput
   logs?: Prisma.JobLogUpdateManyWithoutJobNestedInput
+  artifacts?: Prisma.JobArtifactUpdateManyWithoutJobNestedInput
 }
 
 export type JobUncheckedUpdateWithoutLinkedInAccountInput = {
@@ -1123,6 +1261,7 @@ export type JobUncheckedUpdateWithoutLinkedInAccountInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   finishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logs?: Prisma.JobLogUncheckedUpdateManyWithoutJobNestedInput
+  artifacts?: Prisma.JobArtifactUncheckedUpdateManyWithoutJobNestedInput
 }
 
 export type JobUncheckedUpdateManyWithoutLinkedInAccountInput = {
@@ -1187,6 +1326,7 @@ export type JobUpdateWithoutRunInput = {
   finishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   linkedInAccount?: Prisma.LinkedInAccountUpdateOneWithoutJobsNestedInput
   logs?: Prisma.JobLogUpdateManyWithoutJobNestedInput
+  artifacts?: Prisma.JobArtifactUpdateManyWithoutJobNestedInput
 }
 
 export type JobUncheckedUpdateWithoutRunInput = {
@@ -1209,6 +1349,7 @@ export type JobUncheckedUpdateWithoutRunInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   finishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logs?: Prisma.JobLogUncheckedUpdateManyWithoutJobNestedInput
+  artifacts?: Prisma.JobArtifactUncheckedUpdateManyWithoutJobNestedInput
 }
 
 export type JobUncheckedUpdateManyWithoutRunInput = {
@@ -1239,10 +1380,12 @@ export type JobUncheckedUpdateManyWithoutRunInput = {
 
 export type JobCountOutputType = {
   logs: number
+  artifacts: number
 }
 
 export type JobCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   logs?: boolean | JobCountOutputTypeCountLogsArgs
+  artifacts?: boolean | JobCountOutputTypeCountArtifactsArgs
 }
 
 /**
@@ -1260,6 +1403,13 @@ export type JobCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensio
  */
 export type JobCountOutputTypeCountLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.JobLogWhereInput
+}
+
+/**
+ * JobCountOutputType without action
+ */
+export type JobCountOutputTypeCountArtifactsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.JobArtifactWhereInput
 }
 
 
@@ -1286,6 +1436,7 @@ export type JobSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   run?: boolean | Prisma.Job$runArgs<ExtArgs>
   linkedInAccount?: boolean | Prisma.Job$linkedInAccountArgs<ExtArgs>
   logs?: boolean | Prisma.Job$logsArgs<ExtArgs>
+  artifacts?: boolean | Prisma.Job$artifactsArgs<ExtArgs>
   _count?: boolean | Prisma.JobCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["job"]>
 
@@ -1364,6 +1515,7 @@ export type JobInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   run?: boolean | Prisma.Job$runArgs<ExtArgs>
   linkedInAccount?: boolean | Prisma.Job$linkedInAccountArgs<ExtArgs>
   logs?: boolean | Prisma.Job$logsArgs<ExtArgs>
+  artifacts?: boolean | Prisma.Job$artifactsArgs<ExtArgs>
   _count?: boolean | Prisma.JobCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type JobIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1381,6 +1533,7 @@ export type $JobPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     run: Prisma.$ScrapeRunPayload<ExtArgs> | null
     linkedInAccount: Prisma.$LinkedInAccountPayload<ExtArgs> | null
     logs: Prisma.$JobLogPayload<ExtArgs>[]
+    artifacts: Prisma.$JobArtifactPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1799,6 +1952,7 @@ export interface Prisma__JobClient<T, Null = never, ExtArgs extends runtime.Type
   run<T extends Prisma.Job$runArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Job$runArgs<ExtArgs>>): Prisma.Prisma__ScrapeRunClient<runtime.Types.Result.GetResult<Prisma.$ScrapeRunPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   linkedInAccount<T extends Prisma.Job$linkedInAccountArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Job$linkedInAccountArgs<ExtArgs>>): Prisma.Prisma__LinkedInAccountClient<runtime.Types.Result.GetResult<Prisma.$LinkedInAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   logs<T extends Prisma.Job$logsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Job$logsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JobLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  artifacts<T extends Prisma.Job$artifactsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Job$artifactsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JobArtifactPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2307,6 +2461,30 @@ export type Job$logsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   take?: number
   skip?: number
   distinct?: Prisma.JobLogScalarFieldEnum | Prisma.JobLogScalarFieldEnum[]
+}
+
+/**
+ * Job.artifacts
+ */
+export type Job$artifactsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the JobArtifact
+   */
+  select?: Prisma.JobArtifactSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the JobArtifact
+   */
+  omit?: Prisma.JobArtifactOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JobArtifactInclude<ExtArgs> | null
+  where?: Prisma.JobArtifactWhereInput
+  orderBy?: Prisma.JobArtifactOrderByWithRelationInput | Prisma.JobArtifactOrderByWithRelationInput[]
+  cursor?: Prisma.JobArtifactWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.JobArtifactScalarFieldEnum | Prisma.JobArtifactScalarFieldEnum[]
 }
 
 /**

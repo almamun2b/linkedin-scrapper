@@ -1,13 +1,13 @@
 import * as runRepo from "@/modules/search/repository/scrapeRun.repository";
 import * as searchRepo from "@/modules/search/repository/searchDefinition.repository";
 import { RunStatus } from "@/generated/prisma/enums";
-import { ListChecks } from "lucide-react";
+import { ListChecks, Ban } from "lucide-react";
 import { Badge, type BadgeTone } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Table, Thead, Tbody, Tr, Th, Td } from "@/components/ui/Table";
+import { IconAction } from "@/components/ui/RowActions";
 import { cancelRunAction } from "@/modules/search/actions";
 
 const STATUS_TONE: Record<RunStatus, BadgeTone> = {
@@ -58,7 +58,7 @@ export default async function RunsPage({
               <Th>Leads new</Th>
               <Th>Emails found</Th>
               <Th>Started</Th>
-              <Th>Actions</Th>
+              <Th className="text-right">Actions</Th>
             </tr>
           </Thead>
           <Tbody>
@@ -77,13 +77,16 @@ export default async function RunsPage({
                 <Td>{run.leadsNew}</Td>
                 <Td>{run.emailsFound}</Td>
                 <Td>{run.startedAt ? new Date(run.startedAt).toLocaleString() : "—"}</Td>
-                <Td>
+                <Td className="text-right">
                   {run.status === "QUEUED" || run.status === "RUNNING" ? (
-                    <form action={cancelRunAction}>
+                    <form action={cancelRunAction} className="inline-flex justify-end">
                       <input type="hidden" name="runId" value={run.id} />
-                      <Button type="submit" variant="danger" size="sm">
-                        Cancel
-                      </Button>
+                      <IconAction
+                        type="submit"
+                        icon={<Ban aria-hidden="true" className="size-4" />}
+                        label="Cancel run"
+                        tone="danger"
+                      />
                     </form>
                   ) : null}
                 </Td>

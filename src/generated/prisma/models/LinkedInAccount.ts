@@ -321,7 +321,6 @@ export type LinkedInAccountWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"LinkedInAccount"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"LinkedInAccount"> | Date | string
   proxy?: Prisma.XOR<Prisma.ProxyNullableScalarRelationFilter, Prisma.ProxyWhereInput> | null
-  policy?: Prisma.XOR<Prisma.ScrapingPolicyNullableScalarRelationFilter, Prisma.ScrapingPolicyWhereInput> | null
   searchDefinitions?: Prisma.SearchDefinitionListRelationFilter
   scrapeRuns?: Prisma.ScrapeRunListRelationFilter
   jobs?: Prisma.JobListRelationFilter
@@ -347,7 +346,6 @@ export type LinkedInAccountOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   proxy?: Prisma.ProxyOrderByWithRelationInput
-  policy?: Prisma.ScrapingPolicyOrderByWithRelationInput
   searchDefinitions?: Prisma.SearchDefinitionOrderByRelationAggregateInput
   scrapeRuns?: Prisma.ScrapeRunOrderByRelationAggregateInput
   jobs?: Prisma.JobOrderByRelationAggregateInput
@@ -376,7 +374,6 @@ export type LinkedInAccountWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"LinkedInAccount"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"LinkedInAccount"> | Date | string
   proxy?: Prisma.XOR<Prisma.ProxyNullableScalarRelationFilter, Prisma.ProxyWhereInput> | null
-  policy?: Prisma.XOR<Prisma.ScrapingPolicyNullableScalarRelationFilter, Prisma.ScrapingPolicyWhereInput> | null
   searchDefinitions?: Prisma.SearchDefinitionListRelationFilter
   scrapeRuns?: Prisma.ScrapeRunListRelationFilter
   jobs?: Prisma.JobListRelationFilter
@@ -451,7 +448,6 @@ export type LinkedInAccountCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   proxy?: Prisma.ProxyCreateNestedOneWithoutAccountsInput
-  policy?: Prisma.ScrapingPolicyCreateNestedOneWithoutLinkedInAccountInput
   searchDefinitions?: Prisma.SearchDefinitionCreateNestedManyWithoutLinkedInAccountInput
   scrapeRuns?: Prisma.ScrapeRunCreateNestedManyWithoutLinkedInAccountInput
   jobs?: Prisma.JobCreateNestedManyWithoutLinkedInAccountInput
@@ -476,7 +472,6 @@ export type LinkedInAccountUncheckedCreateInput = {
   lastActivityAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  policy?: Prisma.ScrapingPolicyUncheckedCreateNestedOneWithoutLinkedInAccountInput
   searchDefinitions?: Prisma.SearchDefinitionUncheckedCreateNestedManyWithoutLinkedInAccountInput
   scrapeRuns?: Prisma.ScrapeRunUncheckedCreateNestedManyWithoutLinkedInAccountInput
   jobs?: Prisma.JobUncheckedCreateNestedManyWithoutLinkedInAccountInput
@@ -501,7 +496,6 @@ export type LinkedInAccountUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   proxy?: Prisma.ProxyUpdateOneWithoutAccountsNestedInput
-  policy?: Prisma.ScrapingPolicyUpdateOneWithoutLinkedInAccountNestedInput
   searchDefinitions?: Prisma.SearchDefinitionUpdateManyWithoutLinkedInAccountNestedInput
   scrapeRuns?: Prisma.ScrapeRunUpdateManyWithoutLinkedInAccountNestedInput
   jobs?: Prisma.JobUpdateManyWithoutLinkedInAccountNestedInput
@@ -526,7 +520,6 @@ export type LinkedInAccountUncheckedUpdateInput = {
   lastActivityAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  policy?: Prisma.ScrapingPolicyUncheckedUpdateOneWithoutLinkedInAccountNestedInput
   searchDefinitions?: Prisma.SearchDefinitionUncheckedUpdateManyWithoutLinkedInAccountNestedInput
   scrapeRuns?: Prisma.ScrapeRunUncheckedUpdateManyWithoutLinkedInAccountNestedInput
   jobs?: Prisma.JobUncheckedUpdateManyWithoutLinkedInAccountNestedInput
@@ -675,14 +668,14 @@ export type LinkedInAccountOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type LinkedInAccountScalarRelationFilter = {
-  is?: Prisma.LinkedInAccountWhereInput
-  isNot?: Prisma.LinkedInAccountWhereInput
-}
-
 export type LinkedInAccountNullableScalarRelationFilter = {
   is?: Prisma.LinkedInAccountWhereInput | null
   isNot?: Prisma.LinkedInAccountWhereInput | null
+}
+
+export type LinkedInAccountScalarRelationFilter = {
+  is?: Prisma.LinkedInAccountWhereInput
+  isNot?: Prisma.LinkedInAccountWhereInput
 }
 
 export type StringFieldUpdateOperationsInput = {
@@ -771,20 +764,6 @@ export type LinkedInAccountUncheckedUpdateManyWithoutProxyNestedInput = {
   deleteMany?: Prisma.LinkedInAccountScalarWhereInput | Prisma.LinkedInAccountScalarWhereInput[]
 }
 
-export type LinkedInAccountCreateNestedOneWithoutPolicyInput = {
-  create?: Prisma.XOR<Prisma.LinkedInAccountCreateWithoutPolicyInput, Prisma.LinkedInAccountUncheckedCreateWithoutPolicyInput>
-  connectOrCreate?: Prisma.LinkedInAccountCreateOrConnectWithoutPolicyInput
-  connect?: Prisma.LinkedInAccountWhereUniqueInput
-}
-
-export type LinkedInAccountUpdateOneRequiredWithoutPolicyNestedInput = {
-  create?: Prisma.XOR<Prisma.LinkedInAccountCreateWithoutPolicyInput, Prisma.LinkedInAccountUncheckedCreateWithoutPolicyInput>
-  connectOrCreate?: Prisma.LinkedInAccountCreateOrConnectWithoutPolicyInput
-  upsert?: Prisma.LinkedInAccountUpsertWithoutPolicyInput
-  connect?: Prisma.LinkedInAccountWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.LinkedInAccountUpdateToOneWithWhereWithoutPolicyInput, Prisma.LinkedInAccountUpdateWithoutPolicyInput>, Prisma.LinkedInAccountUncheckedUpdateWithoutPolicyInput>
-}
-
 export type LinkedInAccountCreateNestedOneWithoutJobsInput = {
   create?: Prisma.XOR<Prisma.LinkedInAccountCreateWithoutJobsInput, Prisma.LinkedInAccountUncheckedCreateWithoutJobsInput>
   connectOrCreate?: Prisma.LinkedInAccountCreateOrConnectWithoutJobsInput
@@ -847,7 +826,6 @@ export type LinkedInAccountCreateWithoutProxyInput = {
   lastActivityAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  policy?: Prisma.ScrapingPolicyCreateNestedOneWithoutLinkedInAccountInput
   searchDefinitions?: Prisma.SearchDefinitionCreateNestedManyWithoutLinkedInAccountInput
   scrapeRuns?: Prisma.ScrapeRunCreateNestedManyWithoutLinkedInAccountInput
   jobs?: Prisma.JobCreateNestedManyWithoutLinkedInAccountInput
@@ -871,7 +849,6 @@ export type LinkedInAccountUncheckedCreateWithoutProxyInput = {
   lastActivityAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  policy?: Prisma.ScrapingPolicyUncheckedCreateNestedOneWithoutLinkedInAccountInput
   searchDefinitions?: Prisma.SearchDefinitionUncheckedCreateNestedManyWithoutLinkedInAccountInput
   scrapeRuns?: Prisma.ScrapeRunUncheckedCreateNestedManyWithoutLinkedInAccountInput
   jobs?: Prisma.JobUncheckedCreateNestedManyWithoutLinkedInAccountInput
@@ -927,118 +904,6 @@ export type LinkedInAccountScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"LinkedInAccount"> | Date | string
 }
 
-export type LinkedInAccountCreateWithoutPolicyInput = {
-  id?: string
-  label: string
-  email: string
-  passwordSealed: runtime.Bytes
-  passwordKeyVer?: number
-  storageStateSealed?: runtime.Bytes | null
-  storageStateKeyVer?: number | null
-  storageStateAt?: Date | string | null
-  fingerprint: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  timezone?: string
-  status?: $Enums.AccountStatus
-  statusReason?: string | null
-  cooldownUntil?: Date | string | null
-  lastLoginAt?: Date | string | null
-  lastActivityAt?: Date | string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  proxy?: Prisma.ProxyCreateNestedOneWithoutAccountsInput
-  searchDefinitions?: Prisma.SearchDefinitionCreateNestedManyWithoutLinkedInAccountInput
-  scrapeRuns?: Prisma.ScrapeRunCreateNestedManyWithoutLinkedInAccountInput
-  jobs?: Prisma.JobCreateNestedManyWithoutLinkedInAccountInput
-}
-
-export type LinkedInAccountUncheckedCreateWithoutPolicyInput = {
-  id?: string
-  label: string
-  email: string
-  passwordSealed: runtime.Bytes
-  passwordKeyVer?: number
-  storageStateSealed?: runtime.Bytes | null
-  storageStateKeyVer?: number | null
-  storageStateAt?: Date | string | null
-  fingerprint: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  timezone?: string
-  proxyId?: string | null
-  status?: $Enums.AccountStatus
-  statusReason?: string | null
-  cooldownUntil?: Date | string | null
-  lastLoginAt?: Date | string | null
-  lastActivityAt?: Date | string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  searchDefinitions?: Prisma.SearchDefinitionUncheckedCreateNestedManyWithoutLinkedInAccountInput
-  scrapeRuns?: Prisma.ScrapeRunUncheckedCreateNestedManyWithoutLinkedInAccountInput
-  jobs?: Prisma.JobUncheckedCreateNestedManyWithoutLinkedInAccountInput
-}
-
-export type LinkedInAccountCreateOrConnectWithoutPolicyInput = {
-  where: Prisma.LinkedInAccountWhereUniqueInput
-  create: Prisma.XOR<Prisma.LinkedInAccountCreateWithoutPolicyInput, Prisma.LinkedInAccountUncheckedCreateWithoutPolicyInput>
-}
-
-export type LinkedInAccountUpsertWithoutPolicyInput = {
-  update: Prisma.XOR<Prisma.LinkedInAccountUpdateWithoutPolicyInput, Prisma.LinkedInAccountUncheckedUpdateWithoutPolicyInput>
-  create: Prisma.XOR<Prisma.LinkedInAccountCreateWithoutPolicyInput, Prisma.LinkedInAccountUncheckedCreateWithoutPolicyInput>
-  where?: Prisma.LinkedInAccountWhereInput
-}
-
-export type LinkedInAccountUpdateToOneWithWhereWithoutPolicyInput = {
-  where?: Prisma.LinkedInAccountWhereInput
-  data: Prisma.XOR<Prisma.LinkedInAccountUpdateWithoutPolicyInput, Prisma.LinkedInAccountUncheckedUpdateWithoutPolicyInput>
-}
-
-export type LinkedInAccountUpdateWithoutPolicyInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  label?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordSealed?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
-  passwordKeyVer?: Prisma.IntFieldUpdateOperationsInput | number
-  storageStateSealed?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
-  storageStateKeyVer?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  storageStateAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  fingerprint?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  timezone?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.EnumAccountStatusFieldUpdateOperationsInput | $Enums.AccountStatus
-  statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  cooldownUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  lastActivityAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  proxy?: Prisma.ProxyUpdateOneWithoutAccountsNestedInput
-  searchDefinitions?: Prisma.SearchDefinitionUpdateManyWithoutLinkedInAccountNestedInput
-  scrapeRuns?: Prisma.ScrapeRunUpdateManyWithoutLinkedInAccountNestedInput
-  jobs?: Prisma.JobUpdateManyWithoutLinkedInAccountNestedInput
-}
-
-export type LinkedInAccountUncheckedUpdateWithoutPolicyInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  label?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordSealed?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
-  passwordKeyVer?: Prisma.IntFieldUpdateOperationsInput | number
-  storageStateSealed?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
-  storageStateKeyVer?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  storageStateAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  fingerprint?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  timezone?: Prisma.StringFieldUpdateOperationsInput | string
-  proxyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.EnumAccountStatusFieldUpdateOperationsInput | $Enums.AccountStatus
-  statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  cooldownUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  lastActivityAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  searchDefinitions?: Prisma.SearchDefinitionUncheckedUpdateManyWithoutLinkedInAccountNestedInput
-  scrapeRuns?: Prisma.ScrapeRunUncheckedUpdateManyWithoutLinkedInAccountNestedInput
-  jobs?: Prisma.JobUncheckedUpdateManyWithoutLinkedInAccountNestedInput
-}
-
 export type LinkedInAccountCreateWithoutJobsInput = {
   id?: string
   label: string
@@ -1058,7 +923,6 @@ export type LinkedInAccountCreateWithoutJobsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   proxy?: Prisma.ProxyCreateNestedOneWithoutAccountsInput
-  policy?: Prisma.ScrapingPolicyCreateNestedOneWithoutLinkedInAccountInput
   searchDefinitions?: Prisma.SearchDefinitionCreateNestedManyWithoutLinkedInAccountInput
   scrapeRuns?: Prisma.ScrapeRunCreateNestedManyWithoutLinkedInAccountInput
 }
@@ -1082,7 +946,6 @@ export type LinkedInAccountUncheckedCreateWithoutJobsInput = {
   lastActivityAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  policy?: Prisma.ScrapingPolicyUncheckedCreateNestedOneWithoutLinkedInAccountInput
   searchDefinitions?: Prisma.SearchDefinitionUncheckedCreateNestedManyWithoutLinkedInAccountInput
   scrapeRuns?: Prisma.ScrapeRunUncheckedCreateNestedManyWithoutLinkedInAccountInput
 }
@@ -1122,7 +985,6 @@ export type LinkedInAccountUpdateWithoutJobsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   proxy?: Prisma.ProxyUpdateOneWithoutAccountsNestedInput
-  policy?: Prisma.ScrapingPolicyUpdateOneWithoutLinkedInAccountNestedInput
   searchDefinitions?: Prisma.SearchDefinitionUpdateManyWithoutLinkedInAccountNestedInput
   scrapeRuns?: Prisma.ScrapeRunUpdateManyWithoutLinkedInAccountNestedInput
 }
@@ -1146,7 +1008,6 @@ export type LinkedInAccountUncheckedUpdateWithoutJobsInput = {
   lastActivityAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  policy?: Prisma.ScrapingPolicyUncheckedUpdateOneWithoutLinkedInAccountNestedInput
   searchDefinitions?: Prisma.SearchDefinitionUncheckedUpdateManyWithoutLinkedInAccountNestedInput
   scrapeRuns?: Prisma.ScrapeRunUncheckedUpdateManyWithoutLinkedInAccountNestedInput
 }
@@ -1170,7 +1031,6 @@ export type LinkedInAccountCreateWithoutSearchDefinitionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   proxy?: Prisma.ProxyCreateNestedOneWithoutAccountsInput
-  policy?: Prisma.ScrapingPolicyCreateNestedOneWithoutLinkedInAccountInput
   scrapeRuns?: Prisma.ScrapeRunCreateNestedManyWithoutLinkedInAccountInput
   jobs?: Prisma.JobCreateNestedManyWithoutLinkedInAccountInput
 }
@@ -1194,7 +1054,6 @@ export type LinkedInAccountUncheckedCreateWithoutSearchDefinitionsInput = {
   lastActivityAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  policy?: Prisma.ScrapingPolicyUncheckedCreateNestedOneWithoutLinkedInAccountInput
   scrapeRuns?: Prisma.ScrapeRunUncheckedCreateNestedManyWithoutLinkedInAccountInput
   jobs?: Prisma.JobUncheckedCreateNestedManyWithoutLinkedInAccountInput
 }
@@ -1234,7 +1093,6 @@ export type LinkedInAccountUpdateWithoutSearchDefinitionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   proxy?: Prisma.ProxyUpdateOneWithoutAccountsNestedInput
-  policy?: Prisma.ScrapingPolicyUpdateOneWithoutLinkedInAccountNestedInput
   scrapeRuns?: Prisma.ScrapeRunUpdateManyWithoutLinkedInAccountNestedInput
   jobs?: Prisma.JobUpdateManyWithoutLinkedInAccountNestedInput
 }
@@ -1258,7 +1116,6 @@ export type LinkedInAccountUncheckedUpdateWithoutSearchDefinitionsInput = {
   lastActivityAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  policy?: Prisma.ScrapingPolicyUncheckedUpdateOneWithoutLinkedInAccountNestedInput
   scrapeRuns?: Prisma.ScrapeRunUncheckedUpdateManyWithoutLinkedInAccountNestedInput
   jobs?: Prisma.JobUncheckedUpdateManyWithoutLinkedInAccountNestedInput
 }
@@ -1282,7 +1139,6 @@ export type LinkedInAccountCreateWithoutScrapeRunsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   proxy?: Prisma.ProxyCreateNestedOneWithoutAccountsInput
-  policy?: Prisma.ScrapingPolicyCreateNestedOneWithoutLinkedInAccountInput
   searchDefinitions?: Prisma.SearchDefinitionCreateNestedManyWithoutLinkedInAccountInput
   jobs?: Prisma.JobCreateNestedManyWithoutLinkedInAccountInput
 }
@@ -1306,7 +1162,6 @@ export type LinkedInAccountUncheckedCreateWithoutScrapeRunsInput = {
   lastActivityAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  policy?: Prisma.ScrapingPolicyUncheckedCreateNestedOneWithoutLinkedInAccountInput
   searchDefinitions?: Prisma.SearchDefinitionUncheckedCreateNestedManyWithoutLinkedInAccountInput
   jobs?: Prisma.JobUncheckedCreateNestedManyWithoutLinkedInAccountInput
 }
@@ -1346,7 +1201,6 @@ export type LinkedInAccountUpdateWithoutScrapeRunsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   proxy?: Prisma.ProxyUpdateOneWithoutAccountsNestedInput
-  policy?: Prisma.ScrapingPolicyUpdateOneWithoutLinkedInAccountNestedInput
   searchDefinitions?: Prisma.SearchDefinitionUpdateManyWithoutLinkedInAccountNestedInput
   jobs?: Prisma.JobUpdateManyWithoutLinkedInAccountNestedInput
 }
@@ -1370,7 +1224,6 @@ export type LinkedInAccountUncheckedUpdateWithoutScrapeRunsInput = {
   lastActivityAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  policy?: Prisma.ScrapingPolicyUncheckedUpdateOneWithoutLinkedInAccountNestedInput
   searchDefinitions?: Prisma.SearchDefinitionUncheckedUpdateManyWithoutLinkedInAccountNestedInput
   jobs?: Prisma.JobUncheckedUpdateManyWithoutLinkedInAccountNestedInput
 }
@@ -1413,7 +1266,6 @@ export type LinkedInAccountUpdateWithoutProxyInput = {
   lastActivityAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  policy?: Prisma.ScrapingPolicyUpdateOneWithoutLinkedInAccountNestedInput
   searchDefinitions?: Prisma.SearchDefinitionUpdateManyWithoutLinkedInAccountNestedInput
   scrapeRuns?: Prisma.ScrapeRunUpdateManyWithoutLinkedInAccountNestedInput
   jobs?: Prisma.JobUpdateManyWithoutLinkedInAccountNestedInput
@@ -1437,7 +1289,6 @@ export type LinkedInAccountUncheckedUpdateWithoutProxyInput = {
   lastActivityAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  policy?: Prisma.ScrapingPolicyUncheckedUpdateOneWithoutLinkedInAccountNestedInput
   searchDefinitions?: Prisma.SearchDefinitionUncheckedUpdateManyWithoutLinkedInAccountNestedInput
   scrapeRuns?: Prisma.ScrapeRunUncheckedUpdateManyWithoutLinkedInAccountNestedInput
   jobs?: Prisma.JobUncheckedUpdateManyWithoutLinkedInAccountNestedInput
@@ -1532,7 +1383,6 @@ export type LinkedInAccountSelect<ExtArgs extends runtime.Types.Extensions.Inter
   createdAt?: boolean
   updatedAt?: boolean
   proxy?: boolean | Prisma.LinkedInAccount$proxyArgs<ExtArgs>
-  policy?: boolean | Prisma.LinkedInAccount$policyArgs<ExtArgs>
   searchDefinitions?: boolean | Prisma.LinkedInAccount$searchDefinitionsArgs<ExtArgs>
   scrapeRuns?: boolean | Prisma.LinkedInAccount$scrapeRunsArgs<ExtArgs>
   jobs?: boolean | Prisma.LinkedInAccount$jobsArgs<ExtArgs>
@@ -1607,7 +1457,6 @@ export type LinkedInAccountSelectScalar = {
 export type LinkedInAccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "label" | "email" | "passwordSealed" | "passwordKeyVer" | "storageStateSealed" | "storageStateKeyVer" | "storageStateAt" | "fingerprint" | "timezone" | "proxyId" | "status" | "statusReason" | "cooldownUntil" | "lastLoginAt" | "lastActivityAt" | "createdAt" | "updatedAt", ExtArgs["result"]["linkedInAccount"]>
 export type LinkedInAccountInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   proxy?: boolean | Prisma.LinkedInAccount$proxyArgs<ExtArgs>
-  policy?: boolean | Prisma.LinkedInAccount$policyArgs<ExtArgs>
   searchDefinitions?: boolean | Prisma.LinkedInAccount$searchDefinitionsArgs<ExtArgs>
   scrapeRuns?: boolean | Prisma.LinkedInAccount$scrapeRunsArgs<ExtArgs>
   jobs?: boolean | Prisma.LinkedInAccount$jobsArgs<ExtArgs>
@@ -1624,7 +1473,6 @@ export type $LinkedInAccountPayload<ExtArgs extends runtime.Types.Extensions.Int
   name: "LinkedInAccount"
   objects: {
     proxy: Prisma.$ProxyPayload<ExtArgs> | null
-    policy: Prisma.$ScrapingPolicyPayload<ExtArgs> | null
     searchDefinitions: Prisma.$SearchDefinitionPayload<ExtArgs>[]
     scrapeRuns: Prisma.$ScrapeRunPayload<ExtArgs>[]
     jobs: Prisma.$JobPayload<ExtArgs>[]
@@ -2043,7 +1891,6 @@ readonly fields: LinkedInAccountFieldRefs;
 export interface Prisma__LinkedInAccountClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   proxy<T extends Prisma.LinkedInAccount$proxyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LinkedInAccount$proxyArgs<ExtArgs>>): Prisma.Prisma__ProxyClient<runtime.Types.Result.GetResult<Prisma.$ProxyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  policy<T extends Prisma.LinkedInAccount$policyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LinkedInAccount$policyArgs<ExtArgs>>): Prisma.Prisma__ScrapingPolicyClient<runtime.Types.Result.GetResult<Prisma.$ScrapingPolicyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   searchDefinitions<T extends Prisma.LinkedInAccount$searchDefinitionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LinkedInAccount$searchDefinitionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SearchDefinitionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   scrapeRuns<T extends Prisma.LinkedInAccount$scrapeRunsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LinkedInAccount$scrapeRunsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ScrapeRunPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   jobs<T extends Prisma.LinkedInAccount$jobsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LinkedInAccount$jobsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2511,25 +2358,6 @@ export type LinkedInAccount$proxyArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   include?: Prisma.ProxyInclude<ExtArgs> | null
   where?: Prisma.ProxyWhereInput
-}
-
-/**
- * LinkedInAccount.policy
- */
-export type LinkedInAccount$policyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the ScrapingPolicy
-   */
-  select?: Prisma.ScrapingPolicySelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the ScrapingPolicy
-   */
-  omit?: Prisma.ScrapingPolicyOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ScrapingPolicyInclude<ExtArgs> | null
-  where?: Prisma.ScrapingPolicyWhereInput
 }
 
 /**

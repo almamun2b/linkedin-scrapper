@@ -174,7 +174,7 @@
   }
 
   ::selection {
-    background: var(--color-primary-subtle);
+    background: color-mix(in srgb, var(--color-primary-subtle) 80%, var(--color-primary));
     color: var(--color-primary-active);
   }
 }

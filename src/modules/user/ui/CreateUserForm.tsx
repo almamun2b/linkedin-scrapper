@@ -1,21 +1,27 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { Field } from "@/components/ui/form/Field";
 import { Input } from "@/components/ui/form/Input";
 import { Select } from "@/components/ui/form/Select";
+import { DialogFooter } from "@/components/ui/Dialog";
 import { createUserAction } from "../actions";
+import { toast } from "@/components/ui/Toaster";
 
-export function CreateUserForm() {
+export function CreateUserForm({ onSuccess }: { onSuccess?: () => void }) {
   const [state, formAction, pending] = useActionState(createUserAction, {});
 
+  useEffect(() => {
+    if (state.ok) {
+      toast.success("User created.");
+      onSuccess?.();
+    }
+  }, [state, onSuccess]);
+
   return (
-    <form
-      action={formAction}
-      className="flex flex-wrap items-end gap-3 rounded-lg border border-border bg-card p-4 shadow-card"
-    >
+    <form action={formAction} className="flex flex-col gap-3">
       <Field label="Email">
         <Input name="email" type="email" required />
       </Field>
@@ -32,14 +38,12 @@ export function CreateUserForm() {
           <option value="ADMIN">ADMIN</option>
         </Select>
       </Field>
-      <Button type="submit" loading={pending}>
-        {pending ? "Creating…" : "Create user"}
-      </Button>
-      {state.error ? (
-        <Alert tone="error" className="w-full">
-          {state.error}
-        </Alert>
-      ) : null}
+      {state.error ? <Alert tone="error">{state.error}</Alert> : null}
+      <DialogFooter>
+        <Button type="submit" loading={pending}>
+          {pending ? "Creating…" : "Create user"}
+        </Button>
+      </DialogFooter>
     </form>
   );
 }

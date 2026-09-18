@@ -25,6 +25,7 @@ const prisma = new PrismaClient({
     user: { passwordHash: true },
     linkedInAccount: { passwordSealed: true, storageStateSealed: true },
     proxy: { passwordSealed: true },
+    scrapingPolicy: { fallbackProxyUrlSealed: true },
   },
 });
 

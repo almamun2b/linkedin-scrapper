@@ -44,6 +44,16 @@ export async function updateRole(userId: string, role: Role) {
   return prisma.user.update({ where: { id: userId }, data: { role } });
 }
 
+export async function updateProfile(userId: string, data: { email?: string; name?: string }) {
+  return prisma.user.update({ where: { id: userId }, data });
+}
+
+/** The one other sanctioned `passwordHash` write path besides `create` — a locked-out user
+ * otherwise has no recovery short of a DB edit. */
+export async function updatePassword(userId: string, passwordHash: string) {
+  return prisma.user.update({ where: { id: userId }, data: { passwordHash } });
+}
+
 export async function setDisabled(userId: string, disabled: boolean) {
   return prisma.user.update({
     where: { id: userId },

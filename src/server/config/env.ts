@@ -20,6 +20,15 @@ function booleanString(defaultValue: boolean) {
     );
 }
 
+/**
+ * Only what genuinely must be readable before the database can be queried at all:
+ * connection strings, secrets used to decrypt other secrets, and NextAuth's own boot
+ * config. Everything else this project used to read from `.env` — worker/queue timing,
+ * scraping pacing/quotas, proxy toggles — now lives in the DB (`ScrapingPolicy` and
+ * `SystemSetting` singletons, see `src/modules/settings/`) and is edited from `/config`.
+ * See `docs/configuration.md` for the full list and why each of these specific few could
+ * not follow.
+ */
 const schema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
 
@@ -37,43 +46,11 @@ const schema = z.object({
   ADMIN_EMAIL: z.string().optional().default(""),
   ADMIN_PASSWORD: z.string().optional().default(""),
 
-  // AES-256-GCM master key for LinkedInAccount/Proxy secrets and sealed storageState.
-  // Bootstrap-only per ARCHITECTURE.md §10 — optional here so stage-2 queue work (which
-  // never seals/unseals anything) doesn't require it; server/crypto/secretBox.ts throws its
-  // own clear error the moment something actually tries to seal or unseal without it.
+  // AES-256-GCM master key for LinkedInAccount/Proxy/ScrapingPolicy-fallback-proxy secrets
+  // and sealed storageState. Optional here so stage-2 queue work (which never seals/unseals
+  // anything) doesn't require it; server/crypto/secretBox.ts throws its own clear error the
+  // moment something actually tries to seal or unseal without it.
   ENCRYPTION_KEY: z.string().optional().default(""),
-
-  // USE_PROXY=true with no resolvable proxy fails the job — never falls back to the direct
-  // IP (CLAUDE.md invariant #9). Enforced in scraper/browser/proxy.ts, not here.
-  USE_PROXY: booleanString(false),
-  PROXY_URL: z.string().optional().default(""),
-  PROXY_COUNTRY: z.string().optional().default(""),
-
-  WORKER_ID: z.string().optional(),
-  WORKER_CONCURRENCY: z.coerce.number().int().positive().default(1),
-  WORKER_QUEUES: z.string().default("default"),
-  HEADLESS: booleanString(true),
-  TZ: z.string().default("UTC"),
-  LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace"]).default("info"),
-
-  // Queue timing (ARCHITECTURE.md §6).
-  POLL_INTERVAL_MS: z.coerce.number().int().positive().default(2000),
-  LEASE_SECONDS: z.coerce.number().int().positive().default(900),
-  LEASE_HEARTBEAT_MS: z.coerce.number().int().positive().default(60000),
-  SHUTDOWN_GRACE_MS: z.coerce.number().int().positive().default(30000),
-
-  // Global pacing fallbacks — only consulted before a per-account ScrapingPolicy row
-  // exists. db:seed always creates one, so these mirror ScrapingPolicy's own column
-  // defaults and are exercised in code without drifting from "the DB default" in practice.
-  SCRAPER_STEP_DELAY_MIN_MS: z.coerce.number().int().positive().default(4000),
-  SCRAPER_STEP_DELAY_MAX_MS: z.coerce.number().int().positive().default(11000),
-  SCRAPER_PROFILE_DELAY_MIN_MS: z.coerce.number().int().positive().default(25000),
-  SCRAPER_PROFILE_DELAY_MAX_MS: z.coerce.number().int().positive().default(90000),
-  SCRAPER_PAGE_DELAY_MIN_MS: z.coerce.number().int().positive().default(45000),
-  SCRAPER_PAGE_DELAY_MAX_MS: z.coerce.number().int().positive().default(150000),
-  MAX_PROFILES_PER_DAY: z.coerce.number().int().min(1).max(200).default(80),
-  ACTIVE_HOURS_START: z.coerce.number().int().min(0).max(23).default(9),
-  ACTIVE_HOURS_END: z.coerce.number().int().min(0).max(23).default(18),
 });
 
 const cleanedEnv = Object.fromEntries(
@@ -91,12 +68,7 @@ if (!parsed.success) {
   throw new Error("Environment validation failed — see errors above");
 }
 
-const resolved = {
-  ...parsed.data,
-  WORKER_ID: parsed.data.WORKER_ID ?? `worker-${process.pid}`,
-};
-
-export const env = Object.freeze(resolved);
+export const env = Object.freeze(parsed.data);
 export type Env = typeof env;
 
 // Configure the secret box once, at the end of parsing — only if a key was actually

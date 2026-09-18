@@ -11,14 +11,15 @@ const log = logger.child({ module: "linkedin-account.deleteAccount" });
 
 export type DeleteAccountError =
   | { kind: "invalid_input"; issues: string[] }
-  | { kind: "not_found" }
-  | { kind: "blocked_by_history"; searches: number; runs: number };
+  | { kind: "not_found" };
 
 /**
- * Hard delete for an unused account. SearchDefinition/ScrapeRun are onDelete: Restrict by
- * design (history must not vanish silently), so a used account is blocked with counts rather
- * than cascaded. QUEUED jobs are cancelled first (same call the breaker uses) and orphaned
- * RateBudget rows are removed since that table has no FK to cascade.
+ * Hard delete with cascade. SearchDefinition/ScrapeRun are onDelete: Cascade, so deleting
+ * the account removes its searches and runs (and their RunLead join rows) in the same
+ * statement. Leads and LeadSnapshots survive: Lead.firstSeenRun, LeadSnapshot.run, and
+ * Job.run/linkedInAccountId are SetNull, never Cascade. QUEUED jobs are cancelled first
+ * (same call the breaker uses) and orphaned RateBudget rows are removed since that table
+ * has no FK to cascade.
  */
 export async function deleteAccount(
   input: DeleteAccountInput,
@@ -39,10 +40,6 @@ export async function deleteAccount(
     searchRepo.countByAccount(id),
     runRepo.countByAccount(id),
   ]);
-  if (searches > 0 || runs > 0) {
-    log.warn({ accountId: id, searches, runs }, "account delete blocked by referencing history");
-    return err({ kind: "blocked_by_history", searches, runs });
-  }
 
   await jobsRepo.cancelQueuedForAccount(id);
   await jobsRepo.deleteRateBudgetsForAccount(id);
@@ -53,18 +50,6 @@ export async function deleteAccount(
     if (isRecordNotFound(error)) {
       return err({ kind: "not_found" });
     }
-    if (isForeignKeyViolation(error)) {
-      // A search/run landed between the count check and the delete — report, don't leak P2003.
-      const [retrySearches, retryRuns] = await Promise.all([
-        searchRepo.countByAccount(id),
-        runRepo.countByAccount(id),
-      ]);
-      log.warn(
-        { accountId: id, searches: retrySearches, runs: retryRuns },
-        "account delete raced referencing history",
-      );
-      return err({ kind: "blocked_by_history", searches: retrySearches, runs: retryRuns });
-    }
     throw error;
   }
 
@@ -73,15 +58,11 @@ export async function deleteAccount(
     action: "linkedin_account.deleted",
     entity: "LinkedInAccount",
     entityId: id,
-    data: { email: account.email, label: account.label },
+    data: { email: account.email, label: account.label, searches, runs },
   });
 
-  log.info({ accountId: id, email: account.email }, "account deleted via /config");
+  log.info({ accountId: id, email: account.email, searches, runs }, "account deleted via /config");
   return ok({ id, email: account.email, label: account.label });
-}
-
-function isForeignKeyViolation(error: unknown): boolean {
-  return typeof error === "object" && error !== null && (error as { code?: string }).code === "P2003";
 }
 
 function isRecordNotFound(error: unknown): boolean {

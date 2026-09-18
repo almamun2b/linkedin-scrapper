@@ -1,12 +1,15 @@
 import type { InputHTMLAttributes, ReactNode } from "react";
+import { Info } from "lucide-react";
 import { cn } from "@/lib/cn";
+import { Tooltip } from "../Tooltip";
 
 export interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
   label: ReactNode;
   hint?: ReactNode;
+  help?: ReactNode;
 }
 
-export function Checkbox({ label, hint, className, id, ...props }: CheckboxProps) {
+export function Checkbox({ label, hint, help, className, id, ...props }: CheckboxProps) {
   return (
     <label
       htmlFor={id}
@@ -19,7 +22,21 @@ export function Checkbox({ label, hint, className, id, ...props }: CheckboxProps
         {...props}
       />
       <span>
-        {label}
+        <span className="inline-flex items-center gap-1">
+          {label}
+          {help ? (
+            <Tooltip content={help}>
+              <button
+                type="button"
+                aria-label="What is this setting?"
+                onClick={(event) => { event.preventDefault(); }}
+                className="inline-flex text-muted-foreground/70 hover:text-muted-foreground"
+              >
+                <Info aria-hidden="true" className="size-3" />
+              </button>
+            </Tooltip>
+          ) : null}
+        </span>
         {hint ? <span className="mt-0.5 block text-xs text-muted-foreground">{hint}</span> : null}
       </span>
     </label>

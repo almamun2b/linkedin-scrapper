@@ -23,6 +23,11 @@ enum RateMetric {
   PROFILES_PER_WEEK
 }
 
+enum JobArtifactKind {
+  SCREENSHOT
+  HTML
+}
+
 model Job {
   id       String    @id @default(cuid())
   queue    String    @default("default")
@@ -52,7 +57,8 @@ model Job {
   createdAt  DateTime  @default(now()) @db.Timestamptz(3)
   finishedAt DateTime? @db.Timestamptz(3)
 
-  logs JobLog[]
+  logs      JobLog[]
+  artifacts JobArtifact[]
 
   // Column order matches the claim query's predicate (queue, status equality) then its
   // ORDER BY (priority, runAt) exactly, so the scan needs no Sort node before LIMIT applies.
@@ -76,6 +82,23 @@ model JobLog {
   @@index([jobId, at])
 }
 
+// Evidence captured on a risk signal (checkpoint/authwall/login_redirect/999/captcha) so a
+// selector fix can be verified against what the page actually showed, instead of costing
+// another login attempt to find out — the same "replay offline" philosophy invariant #7
+// applies to `LeadSnapshot`. `bytes` for HTML is gzipped, mirroring `LeadSnapshot.encoding`.
+model JobArtifact {
+  id          String          @id @default(cuid())
+  jobId       String
+  job         Job             @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  kind        JobArtifactKind
+  contentType String
+  bytes       Bytes
+  byteSize    Int
+  capturedAt  DateTime        @default(now()) @db.Timestamptz(3)
+
+  @@index([jobId, capturedAt])
+}
+
 // DB-backed token buckets (§9.4). Decrement MUST be one atomic
 //   UPDATE "RateBudget" SET consumed = consumed + 1 WHERE ... AND consumed < cap RETURNING consumed
 // in server/db/raw/ — check-then-increment across workers is a lost-update race against the one
@@ -95,6 +118,32 @@ model RateBudget {
 
   @@unique([scope, scopeId, metric, windowStart])
   @@index([windowEnd])
+}
+
+// Global singleton (see `ScrapingPolicy` for the same pattern) for the worker/queue-timing
+// values that used to live in `.env` (ARCHITECTURE.md §10). `workerId` is this row's
+// *default* identity — a second worker process overrides it with a `--worker-id` CLI flag
+// rather than a second row, since `WorkerHeartbeat` below is keyed by that string per
+// process. `TZ` has no column here at all: it sets the OS process's own timezone before any
+// DB read is possible, so it stays a literal env var (see `docs/configuration.md`).
+// `logLevel` mirrors pino's own level names, not `LogLevel` above (`JobLog.level` is a
+// message severity, not a minimum threshold — the two enums' value sets genuinely differ,
+// so sharing one would be a false simplification).
+model SystemSetting {
+  id String @id @default("global")
+
+  workerId          String @default("worker-local-1")
+  workerConcurrency Int    @default(1)
+  workerQueues      String @default("default") // comma-separated queue names
+  pollIntervalMs    Int    @default(2000)
+  leaseSeconds      Int    @default(900)
+  leaseHeartbeatMs  Int    @default(60000)
+  shutdownGraceMs   Int    @default(30000)
+  logLevel          String @default("info") // fatal|error|warn|info|debug|trace — validated at the boundary
+  displayTimezone   String @default("UTC") // IANA id; dashboard rendering + new-account default
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
 }
 
 model WorkerHeartbeat {

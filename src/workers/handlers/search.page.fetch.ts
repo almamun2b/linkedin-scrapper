@@ -31,14 +31,19 @@ export async function handleSearchPageFetch(job: ClaimedJob, signal: AbortSignal
   if (!run) throw new FatalError(`ScrapeRun ${scrapeRunId} not found`);
 
   const lockResult = await withAccountLock(run.linkedInAccountId, () =>
-    runFetch(run, page, signal),
+    runFetch(run, page, job.id, signal),
   );
   if (!lockResult.ok) {
     throw new RescheduleError("Account lock unavailable", new Date(Date.now() + 15_000));
   }
 }
 
-async function runFetch(run: ScrapeRunModel, page: number, signal: AbortSignal): Promise<void> {
+async function runFetch(
+  run: ScrapeRunModel,
+  page: number,
+  jobId: string,
+  signal: AbortSignal,
+): Promise<void> {
   const accountId = run.linkedInAccountId;
   const prepared = await prepareAccountSession(accountId, new Date());
   if (!prepared.ok) {
@@ -89,6 +94,8 @@ async function runFetch(run: ScrapeRunModel, page: number, signal: AbortSignal):
         context,
         risk,
         handlerName: "search.page.fetch",
+        page: pw,
+        jobId,
       });
     }
 

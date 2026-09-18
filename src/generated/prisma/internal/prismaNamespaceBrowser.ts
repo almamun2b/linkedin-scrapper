@@ -61,7 +61,9 @@ export const ModelName = {
   VerificationToken: 'VerificationToken',
   Job: 'Job',
   JobLog: 'JobLog',
+  JobArtifact: 'JobArtifact',
   RateBudget: 'RateBudget',
+  SystemSetting: 'SystemSetting',
   WorkerHeartbeat: 'WorkerHeartbeat',
   Lead: 'Lead',
   LeadSnapshot: 'LeadSnapshot',
@@ -135,7 +137,6 @@ export type ProxyScalarFieldEnum = (typeof ProxyScalarFieldEnum)[keyof typeof Pr
 
 export const ScrapingPolicyScalarFieldEnum = {
   id: 'id',
-  linkedInAccountId: 'linkedInAccountId',
   stepDelayMinMs: 'stepDelayMinMs',
   stepDelayMaxMs: 'stepDelayMaxMs',
   profileDelayMinMs: 'profileDelayMinMs',
@@ -153,6 +154,9 @@ export const ScrapingPolicyScalarFieldEnum = {
   activeOnWeekends: 'activeOnWeekends',
   useProxy: 'useProxy',
   headless: 'headless',
+  fallbackProxyUrlSealed: 'fallbackProxyUrlSealed',
+  fallbackProxyUrlKeyVer: 'fallbackProxyUrlKeyVer',
+  proxyCountry: 'proxyCountry',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -263,6 +267,19 @@ export const JobLogScalarFieldEnum = {
 export type JobLogScalarFieldEnum = (typeof JobLogScalarFieldEnum)[keyof typeof JobLogScalarFieldEnum]
 
 
+export const JobArtifactScalarFieldEnum = {
+  id: 'id',
+  jobId: 'jobId',
+  kind: 'kind',
+  contentType: 'contentType',
+  bytes: 'bytes',
+  byteSize: 'byteSize',
+  capturedAt: 'capturedAt'
+} as const
+
+export type JobArtifactScalarFieldEnum = (typeof JobArtifactScalarFieldEnum)[keyof typeof JobArtifactScalarFieldEnum]
+
+
 export const RateBudgetScalarFieldEnum = {
   id: 'id',
   scope: 'scope',
@@ -277,6 +294,24 @@ export const RateBudgetScalarFieldEnum = {
 } as const
 
 export type RateBudgetScalarFieldEnum = (typeof RateBudgetScalarFieldEnum)[keyof typeof RateBudgetScalarFieldEnum]
+
+
+export const SystemSettingScalarFieldEnum = {
+  id: 'id',
+  workerId: 'workerId',
+  workerConcurrency: 'workerConcurrency',
+  workerQueues: 'workerQueues',
+  pollIntervalMs: 'pollIntervalMs',
+  leaseSeconds: 'leaseSeconds',
+  leaseHeartbeatMs: 'leaseHeartbeatMs',
+  shutdownGraceMs: 'shutdownGraceMs',
+  logLevel: 'logLevel',
+  displayTimezone: 'displayTimezone',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SystemSettingScalarFieldEnum = (typeof SystemSettingScalarFieldEnum)[keyof typeof SystemSettingScalarFieldEnum]
 
 
 export const WorkerHeartbeatScalarFieldEnum = {

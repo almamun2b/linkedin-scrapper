@@ -1,7 +1,7 @@
-import { env } from "@/server/config/env";
 import { logger } from "@/server/logger";
 import { prisma } from "@/server/db/prisma";
 import * as queueService from "@/modules/jobs/service/queue.service";
+import { getSystemSetting } from "@/modules/settings/service/getEffectiveSettings";
 import { FatalError } from "@/modules/jobs/domain/errors";
 import type { ClaimedJob } from "@/modules/jobs/repository/jobs.repository";
 import { createShutdownController, type ShutdownController } from "./runtime/shutdown";
@@ -31,7 +31,20 @@ const handlers: Record<string, Handler> = {
 
 const log = logger.child({ module: "worker" });
 
-function runJob(job: ClaimedJob, shutdown: ShutdownController, onSettle: () => void): void {
+/** `--worker-id <id>` overrides the DB default — how a second worker process gets its own
+ * identity without a second SystemSetting row (there is only ever one, see
+ * prisma/schema/jobs.prisma). */
+function cliWorkerId(): string | null {
+  const flagIndex = process.argv.indexOf("--worker-id");
+  return flagIndex >= 0 ? (process.argv[flagIndex + 1] ?? null) : null;
+}
+
+function runJob(
+  job: ClaimedJob,
+  shutdown: ShutdownController,
+  pollIntervalMs: number,
+  onSettle: () => void,
+): void {
   const localController = new AbortController();
   const forwardShutdown = () => {
     localController.abort();
@@ -46,7 +59,7 @@ function runJob(job: ClaimedJob, shutdown: ShutdownController, onSettle: () => v
         if (row?.cancelRequestedAt) localController.abort();
       })
       .catch(() => undefined);
-  }, env.POLL_INTERVAL_MS);
+  }, pollIntervalMs);
   cancelPoll.unref();
 
   const promise = (async () => {
@@ -81,46 +94,48 @@ function jitter(ms: number): number {
 }
 
 async function main(): Promise<void> {
-  const queues = env.WORKER_QUEUES.split(",")
-    .map((q) => q.trim())
-    .filter(Boolean);
-  const shutdown = createShutdownController(env.SHUTDOWN_GRACE_MS);
+  const initialSetting = await getSystemSetting();
+  const workerId = cliWorkerId() ?? initialSetting.workerId;
+  logger.level = initialSetting.logLevel;
+
+  const shutdown = createShutdownController(initialSetting.shutdownGraceMs);
   const heartbeat = await startHeartbeat({
-    workerId: env.WORKER_ID,
-    queues,
-    concurrency: env.WORKER_CONCURRENCY,
-    intervalMs: env.LEASE_HEARTBEAT_MS,
+    workerId,
+    queues: initialSetting.workerQueues.split(",").map((q) => q.trim()),
+    concurrency: initialSetting.workerConcurrency,
+    intervalMs: initialSetting.leaseHeartbeatMs,
   });
 
-  log.info(
-    { workerId: env.WORKER_ID, queues, concurrency: env.WORKER_CONCURRENCY },
-    "worker started",
-  );
+  log.info({ workerId, queues: initialSetting.workerQueues }, "worker started");
 
   let active = 0;
   while (!shutdown.isShuttingDown()) {
-    const capacity = env.WORKER_CONCURRENCY - active;
+    // Re-read on every tick — cheap (getSystemSetting has a 30s TTL cache) and this is how
+    // a `/config/system` change applies without restarting the process.
+    const setting = await getSystemSetting();
+    const queues = setting.workerQueues.split(",").map((q) => q.trim()).filter(Boolean);
+    const capacity = setting.workerConcurrency - active;
     let claimed = 0;
     if (capacity > 0) {
       for (const queue of queues) {
         if (claimed >= capacity) break;
         const jobs = await queueService.claimBatch({
           queue,
-          workerId: env.WORKER_ID,
-          leaseSeconds: env.LEASE_SECONDS,
+          workerId,
+          leaseSeconds: setting.leaseSeconds,
           limit: capacity - claimed,
         });
         for (const job of jobs) {
           claimed++;
           active++;
-          runJob(job, shutdown, () => {
+          runJob(job, shutdown, setting.pollIntervalMs, () => {
             active--;
           });
         }
       }
     }
     if (claimed === 0) {
-      await sleep(jitter(env.POLL_INTERVAL_MS));
+      await sleep(jitter(setting.pollIntervalMs));
     }
   }
 

@@ -4,7 +4,7 @@ import { runStartPayloadSchema } from "@/modules/jobs/domain/payloads";
 import { enqueueJob } from "@/modules/jobs/service/queue.service";
 import * as runRepo from "@/modules/search/repository/scrapeRun.repository";
 import * as accountRepo from "@/modules/linkedin-account/repository/linkedInAccount.repository";
-import * as policyRepo from "@/modules/linkedin-account/repository/scrapingPolicy.repository";
+import * as settingsRepo from "@/modules/settings/repository/settings.repository";
 import { isWithinActiveHours, nextWindowStart } from "@/scraper/guards/activeHours";
 import { AccountStatus } from "@/generated/prisma/enums";
 import type { ClaimedJob } from "@/modules/jobs/repository/jobs.repository";
@@ -25,10 +25,10 @@ export async function handleRunStart(job: ClaimedJob, signal: AbortSignal): Prom
     throw new FatalError(`ScrapeRun ${scrapeRunId} not found`);
   }
   const account = await accountRepo.findById(run.linkedInAccountId);
-  const policy = await policyRepo.findByAccountId(run.linkedInAccountId);
-  if (!account || !policy) {
-    throw new FatalError(`Account or policy missing for ScrapeRun ${scrapeRunId}`);
+  if (!account) {
+    throw new FatalError(`Account missing for ScrapeRun ${scrapeRunId}`);
   }
+  const policy = await settingsRepo.getScrapingPolicy();
 
   const blocked: AccountStatus[] = [
     AccountStatus.RESTRICTED,

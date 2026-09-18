@@ -7,6 +7,7 @@ export interface CreateAccountInput {
   label: string;
   passwordSealed: Uint8Array<ArrayBuffer>;
   fingerprint: AccountFingerprint;
+  proxyId?: string | null;
 }
 
 /** Web-safe: sealed columns stay excluded via the client-level `omit` in server/db/prisma.ts. */
@@ -18,9 +19,14 @@ export async function findById(id: string) {
   return prisma.linkedInAccount.findUnique({ where: { id } });
 }
 
-/** Web-safe list for the /config UI — sealed columns stay excluded via the client-level `omit`. */
+/** Web-safe list for the /config UI — sealed columns stay excluded via the client-level
+ * `omit`. Includes searches/runs counts so the delete confirmation can show real numbers
+ * instead of a generic warning, without a second round trip per row. */
 export async function list() {
-  return prisma.linkedInAccount.findMany({ orderBy: { createdAt: "desc" } });
+  return prisma.linkedInAccount.findMany({
+    orderBy: { createdAt: "desc" },
+    include: { _count: { select: { searchDefinitions: true, scrapeRuns: true } } },
+  });
 }
 
 /** The `omit`-shaped type (no passwordSealed/storageStateSealed) — what every UI component
@@ -58,6 +64,7 @@ export async function create(input: CreateAccountInput) {
       label: input.label,
       passwordSealed: input.passwordSealed,
       fingerprint: input.fingerprint,
+      proxyId: input.proxyId ?? null,
       status: AccountStatus.UNVERIFIED,
     },
   });
@@ -105,9 +112,10 @@ export async function updateLastActivity(id: string) {
 }
 
 /**
- * Hard delete. ScrapingPolicy cascades, Job rows detach (SetNull); SearchDefinition and
- * ScrapeRun are Restrict — the service pre-checks them and maps the FK race to a
- * blocked error instead of leaking a P2003.
+ * Hard delete. ScrapingPolicy cascades, SearchDefinition/ScrapeRun cascade (their RunLead
+ * join rows go with them; Lead/LeadSnapshot/Job rows detach via SetNull and survive).
+ * Job rows detach (SetNull); QUEUED jobs are cancelled and RateBudgets removed by the
+ * service before this runs.
  */
 export async function remove(id: string) {
   return prisma.linkedInAccount.delete({ where: { id } });

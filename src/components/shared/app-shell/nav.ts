@@ -1,4 +1,13 @@
-import { Briefcase, Cog, LayoutDashboard, ListChecks, Search, Users, Users2 } from "lucide-react";
+import {
+  Briefcase,
+  Cog,
+  LayoutDashboard,
+  ListChecks,
+  Search,
+  UserCircle,
+  Users,
+  Users2,
+} from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 export interface NavItem {
@@ -31,6 +40,10 @@ export const NAV_GROUPS: NavGroup[] = [
       { href: "/config/accounts", label: "Config", icon: Cog },
       { href: "/users", label: "Users", icon: Users },
     ],
+  },
+  {
+    label: "Account",
+    items: [{ href: "/me", label: "Me", icon: UserCircle }],
   },
 ];
 

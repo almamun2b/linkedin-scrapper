@@ -40,7 +40,7 @@ export async function handleProfileScrape(job: ClaimedJob, signal: AbortSignal):
   }
 
   const lockResult = await withAccountLock(linkedInAccountId, () =>
-    runScrape(linkedInAccountId, scrapeRunId, publicIdentifier, profileUrl, signal),
+    runScrape(linkedInAccountId, scrapeRunId, publicIdentifier, profileUrl, job.id, signal),
   );
   if (!lockResult.ok) {
     throw new RescheduleError("Account lock unavailable", new Date(Date.now() + 15_000));
@@ -52,6 +52,7 @@ async function runScrape(
   scrapeRunId: string,
   publicIdentifier: string,
   profileUrl: string,
+  jobId: string,
   signal: AbortSignal,
 ): Promise<void> {
   const prepared = await prepareAccountSession(accountId, new Date());
@@ -95,7 +96,15 @@ async function runScrape(
     const html = await openProfile(page, profileUrl);
     const risk = await classifyResponse(page);
     if (risk) {
-      await handleRiskSignal({ accountId, browser, context, risk, handlerName: "profile.scrape" });
+      await handleRiskSignal({
+        accountId,
+        browser,
+        context,
+        risk,
+        handlerName: "profile.scrape",
+        page,
+        jobId,
+      });
     }
 
     const fields = extractProfileFields(html);

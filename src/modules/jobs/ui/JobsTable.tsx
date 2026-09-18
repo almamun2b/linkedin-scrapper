@@ -1,9 +1,8 @@
 import type { JobModel } from "@/generated/prisma/models/Job";
 import { Badge, type BadgeTone } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Table, Thead, Tbody, Tr, Th, Td } from "@/components/ui/Table";
-import { retryDeadJobAction } from "../actions";
+import { JobRowActions } from "./JobRowActions";
 
 const STATUS_TONE: Record<JobModel["status"], BadgeTone> = {
   QUEUED: "neutral",
@@ -33,7 +32,7 @@ export function JobsTable({ jobs }: { jobs: JobModel[] }) {
           <Th>Attempts</Th>
           <Th>Last error</Th>
           <Th>Created</Th>
-          <Th>Actions</Th>
+          <Th className="text-right">Actions</Th>
         </tr>
       </Thead>
       <Tbody>
@@ -53,15 +52,8 @@ export function JobsTable({ jobs }: { jobs: JobModel[] }) {
               {job.lastError ?? "—"}
             </Td>
             <Td>{new Date(job.createdAt).toLocaleString()}</Td>
-            <Td>
-              {job.status === "DEAD" ? (
-                <form action={retryDeadJobAction}>
-                  <input type="hidden" name="jobId" value={job.id} />
-                  <Button type="submit" variant="secondary" size="sm">
-                    Retry
-                  </Button>
-                </form>
-              ) : null}
+            <Td className="text-right">
+              <JobRowActions job={job} />
             </Td>
           </Tr>
         ))}

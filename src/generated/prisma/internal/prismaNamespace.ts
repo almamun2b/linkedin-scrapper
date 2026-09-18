@@ -407,7 +407,9 @@ export const ModelName = {
   VerificationToken: 'VerificationToken',
   Job: 'Job',
   JobLog: 'JobLog',
+  JobArtifact: 'JobArtifact',
   RateBudget: 'RateBudget',
+  SystemSetting: 'SystemSetting',
   WorkerHeartbeat: 'WorkerHeartbeat',
   Lead: 'Lead',
   LeadSnapshot: 'LeadSnapshot',
@@ -430,7 +432,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "linkedInAccount" | "proxy" | "scrapingPolicy" | "auditEvent" | "user" | "account" | "session" | "verificationToken" | "job" | "jobLog" | "rateBudget" | "workerHeartbeat" | "lead" | "leadSnapshot" | "runLead" | "searchDefinition" | "scrapeRun" | "filterRef"
+    modelProps: "linkedInAccount" | "proxy" | "scrapingPolicy" | "auditEvent" | "user" | "account" | "session" | "verificationToken" | "job" | "jobLog" | "jobArtifact" | "rateBudget" | "systemSetting" | "workerHeartbeat" | "lead" | "leadSnapshot" | "runLead" | "searchDefinition" | "scrapeRun" | "filterRef"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1174,6 +1176,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    JobArtifact: {
+      payload: Prisma.$JobArtifactPayload<ExtArgs>
+      fields: Prisma.JobArtifactFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.JobArtifactFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobArtifactPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.JobArtifactFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobArtifactPayload>
+        }
+        findFirst: {
+          args: Prisma.JobArtifactFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobArtifactPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.JobArtifactFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobArtifactPayload>
+        }
+        findMany: {
+          args: Prisma.JobArtifactFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobArtifactPayload>[]
+        }
+        create: {
+          args: Prisma.JobArtifactCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobArtifactPayload>
+        }
+        createMany: {
+          args: Prisma.JobArtifactCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.JobArtifactCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobArtifactPayload>[]
+        }
+        delete: {
+          args: Prisma.JobArtifactDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobArtifactPayload>
+        }
+        update: {
+          args: Prisma.JobArtifactUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobArtifactPayload>
+        }
+        deleteMany: {
+          args: Prisma.JobArtifactDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.JobArtifactUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.JobArtifactUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobArtifactPayload>[]
+        }
+        upsert: {
+          args: Prisma.JobArtifactUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobArtifactPayload>
+        }
+        aggregate: {
+          args: Prisma.JobArtifactAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateJobArtifact>
+        }
+        groupBy: {
+          args: Prisma.JobArtifactGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.JobArtifactGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.JobArtifactCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.JobArtifactCountAggregateOutputType> | number
+        }
+      }
+    }
     RateBudget: {
       payload: Prisma.$RateBudgetPayload<ExtArgs>
       fields: Prisma.RateBudgetFieldRefs
@@ -1245,6 +1321,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.RateBudgetCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.RateBudgetCountAggregateOutputType> | number
+        }
+      }
+    }
+    SystemSetting: {
+      payload: Prisma.$SystemSettingPayload<ExtArgs>
+      fields: Prisma.SystemSettingFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SystemSettingFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SystemSettingPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SystemSettingFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SystemSettingPayload>
+        }
+        findFirst: {
+          args: Prisma.SystemSettingFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SystemSettingPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SystemSettingFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SystemSettingPayload>
+        }
+        findMany: {
+          args: Prisma.SystemSettingFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SystemSettingPayload>[]
+        }
+        create: {
+          args: Prisma.SystemSettingCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SystemSettingPayload>
+        }
+        createMany: {
+          args: Prisma.SystemSettingCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SystemSettingCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SystemSettingPayload>[]
+        }
+        delete: {
+          args: Prisma.SystemSettingDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SystemSettingPayload>
+        }
+        update: {
+          args: Prisma.SystemSettingUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SystemSettingPayload>
+        }
+        deleteMany: {
+          args: Prisma.SystemSettingDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SystemSettingUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SystemSettingUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SystemSettingPayload>[]
+        }
+        upsert: {
+          args: Prisma.SystemSettingUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SystemSettingPayload>
+        }
+        aggregate: {
+          args: Prisma.SystemSettingAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSystemSetting>
+        }
+        groupBy: {
+          args: Prisma.SystemSettingGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SystemSettingGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SystemSettingCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SystemSettingCountAggregateOutputType> | number
         }
       }
     }
@@ -1853,7 +2003,6 @@ export type ProxyScalarFieldEnum = (typeof ProxyScalarFieldEnum)[keyof typeof Pr
 
 export const ScrapingPolicyScalarFieldEnum = {
   id: 'id',
-  linkedInAccountId: 'linkedInAccountId',
   stepDelayMinMs: 'stepDelayMinMs',
   stepDelayMaxMs: 'stepDelayMaxMs',
   profileDelayMinMs: 'profileDelayMinMs',
@@ -1871,6 +2020,9 @@ export const ScrapingPolicyScalarFieldEnum = {
   activeOnWeekends: 'activeOnWeekends',
   useProxy: 'useProxy',
   headless: 'headless',
+  fallbackProxyUrlSealed: 'fallbackProxyUrlSealed',
+  fallbackProxyUrlKeyVer: 'fallbackProxyUrlKeyVer',
+  proxyCountry: 'proxyCountry',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1981,6 +2133,19 @@ export const JobLogScalarFieldEnum = {
 export type JobLogScalarFieldEnum = (typeof JobLogScalarFieldEnum)[keyof typeof JobLogScalarFieldEnum]
 
 
+export const JobArtifactScalarFieldEnum = {
+  id: 'id',
+  jobId: 'jobId',
+  kind: 'kind',
+  contentType: 'contentType',
+  bytes: 'bytes',
+  byteSize: 'byteSize',
+  capturedAt: 'capturedAt'
+} as const
+
+export type JobArtifactScalarFieldEnum = (typeof JobArtifactScalarFieldEnum)[keyof typeof JobArtifactScalarFieldEnum]
+
+
 export const RateBudgetScalarFieldEnum = {
   id: 'id',
   scope: 'scope',
@@ -1995,6 +2160,24 @@ export const RateBudgetScalarFieldEnum = {
 } as const
 
 export type RateBudgetScalarFieldEnum = (typeof RateBudgetScalarFieldEnum)[keyof typeof RateBudgetScalarFieldEnum]
+
+
+export const SystemSettingScalarFieldEnum = {
+  id: 'id',
+  workerId: 'workerId',
+  workerConcurrency: 'workerConcurrency',
+  workerQueues: 'workerQueues',
+  pollIntervalMs: 'pollIntervalMs',
+  leaseSeconds: 'leaseSeconds',
+  leaseHeartbeatMs: 'leaseHeartbeatMs',
+  shutdownGraceMs: 'shutdownGraceMs',
+  logLevel: 'logLevel',
+  displayTimezone: 'displayTimezone',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SystemSettingScalarFieldEnum = (typeof SystemSettingScalarFieldEnum)[keyof typeof SystemSettingScalarFieldEnum]
 
 
 export const WorkerHeartbeatScalarFieldEnum = {
@@ -2339,6 +2522,20 @@ export type ListEnumLogLevelFieldRefInput<$PrismaModel> = FieldRefInputType<$Pri
 
 
 /**
+ * Reference to a field of type 'JobArtifactKind'
+ */
+export type EnumJobArtifactKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobArtifactKind'>
+    
+
+
+/**
+ * Reference to a field of type 'JobArtifactKind[]'
+ */
+export type ListEnumJobArtifactKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobArtifactKind[]'>
+    
+
+
+/**
  * Reference to a field of type 'RateMetric'
  */
 export type EnumRateMetricFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RateMetric'>
@@ -2596,7 +2793,9 @@ export type GlobalOmitConfig = {
   verificationToken?: Prisma.VerificationTokenOmit
   job?: Prisma.JobOmit
   jobLog?: Prisma.JobLogOmit
+  jobArtifact?: Prisma.JobArtifactOmit
   rateBudget?: Prisma.RateBudgetOmit
+  systemSetting?: Prisma.SystemSettingOmit
   workerHeartbeat?: Prisma.WorkerHeartbeatOmit
   lead?: Prisma.LeadOmit
   leadSnapshot?: Prisma.LeadSnapshotOmit

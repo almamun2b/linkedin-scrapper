@@ -1,0 +1,516 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-18T00:00:00.000Z",
+  "title": "Design System: LinkedIn Scrapper",
+  "extensions": {
+    "colorMeta": {
+      "background": {
+        "role": "neutral",
+        "displayName": "Warm Paper",
+        "canonical": "#f4f2ee",
+        "darkValue": "#000000",
+        "tonalRamp": [
+          "#26241f",
+          "#3d3a33",
+          "#5a564d",
+          "#7d786d",
+          "#a39d91",
+          "#c7c1b6",
+          "#e3ded6",
+          "#faf8f4"
+        ]
+      },
+      "card": {
+        "role": "neutral",
+        "displayName": "Card White",
+        "canonical": "#ffffff",
+        "darkValue": "#1b1f23",
+        "tonalRamp": [
+          "#262626",
+          "#3d3d3d",
+          "#595959",
+          "#7a7a7a",
+          "#a1a1a1",
+          "#c7c7c7",
+          "#e6e6e6",
+          "#ffffff"
+        ]
+      },
+      "surface-muted": {
+        "role": "neutral",
+        "displayName": "Cool Muted",
+        "canonical": "#f9fafb",
+        "darkValue": "#282c30",
+        "tonalRamp": [
+          "#24262a",
+          "#3a3d42",
+          "#565a61",
+          "#777c85",
+          "#9ea3ac",
+          "#c4c9d1",
+          "#e4e7ec",
+          "#f9fafb"
+        ]
+      },
+      "foreground": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "rgb(0 0 0 / 90%)",
+        "darkValue": "rgb(255 255 255 / 90%)",
+        "tonalRamp": [
+          "rgb(0 0 0 / 90%)",
+          "rgb(0 0 0 / 80%)",
+          "rgb(0 0 0 / 70%)",
+          "rgb(0 0 0 / 60%)",
+          "rgb(0 0 0 / 45%)",
+          "rgb(0 0 0 / 30%)",
+          "rgb(0 0 0 / 15%)",
+          "rgb(0 0 0 / 6%)"
+        ]
+      },
+      "muted-foreground": {
+        "role": "neutral",
+        "displayName": "Ink Muted",
+        "canonical": "rgb(0 0 0 / 60%)",
+        "darkValue": "rgb(255 255 255 / 60%)",
+        "tonalRamp": [
+          "rgb(0 0 0 / 60%)",
+          "rgb(0 0 0 / 52%)",
+          "rgb(0 0 0 / 44%)",
+          "rgb(0 0 0 / 36%)",
+          "rgb(0 0 0 / 28%)",
+          "rgb(0 0 0 / 20%)",
+          "rgb(0 0 0 / 12%)",
+          "rgb(0 0 0 / 6%)"
+        ]
+      },
+      "border": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#e0dfdc",
+        "darkValue": "#38434f",
+        "tonalRamp": [
+          "#24231f",
+          "#3a3833",
+          "#56544d",
+          "#78756c",
+          "#9e9b91",
+          "#c3c0b8",
+          "#e0dfdc",
+          "#f5f4f2"
+        ]
+      },
+      "border-strong": {
+        "role": "neutral",
+        "displayName": "Strong Hairline",
+        "canonical": "#8c8c8c",
+        "darkValue": "#8c8c8c",
+        "tonalRamp": [
+          "#262626",
+          "#3d3d3d",
+          "#595959",
+          "#737373",
+          "#8c8c8c",
+          "#b0b0b0",
+          "#d4d4d4",
+          "#f0f0f0"
+        ]
+      },
+      "primary": {
+        "role": "primary",
+        "displayName": "LinkedIn Blue",
+        "canonical": "#0a66c2",
+        "darkValue": "#71b7fb",
+        "tonalRamp": [
+          "#09223b",
+          "#0b3157",
+          "#004182",
+          "#0a66c2",
+          "#3f8bd8",
+          "#71b7fb",
+          "#b6d8ff",
+          "#e8f3ff"
+        ]
+      },
+      "primary-subtle": {
+        "role": "primary",
+        "displayName": "Blue Wash",
+        "canonical": "#e8f3ff",
+        "darkValue": "#1e3a52",
+        "tonalRamp": [
+          "#12293c",
+          "#1e3a52",
+          "#234764",
+          "#356a92",
+          "#5d97c4",
+          "#9cc7ea",
+          "#cbe4ff",
+          "#e8f3ff"
+        ]
+      },
+      "secondary-foreground": {
+        "role": "secondary",
+        "displayName": "Outlined Blue",
+        "canonical": "#0a66c2",
+        "darkValue": "#71b7fb",
+        "tonalRamp": [
+          "#09223b",
+          "#0b3157",
+          "#004182",
+          "#0a66c2",
+          "#3f8bd8",
+          "#71b7fb",
+          "#b6d8ff",
+          "#e8f3ff"
+        ]
+      },
+      "accent-navy": {
+        "role": "tertiary",
+        "displayName": "Deep Navy",
+        "canonical": "#1d2226",
+        "darkValue": "#1d2226",
+        "tonalRamp": [
+          "#0d1012",
+          "#1d2226",
+          "#2e353b",
+          "#454d55",
+          "#616a73",
+          "#8992996",
+          "#b6bdc4",
+          "#e2e6ea"
+        ]
+      },
+      "success": {
+        "role": "tertiary",
+        "displayName": "Field Green",
+        "canonical": "#057642",
+        "darkValue": "#6dae4f",
+        "tonalRamp": [
+          "#052616",
+          "#083d24",
+          "#057642",
+          "#0d9a59",
+          "#3fba7e",
+          "#7fd3a8",
+          "#b6e7cc",
+          "#e6f3ec"
+        ]
+      },
+      "warning": {
+        "role": "tertiary",
+        "displayName": "Amber Caution",
+        "canonical": "#915907",
+        "darkValue": "#e7a33e",
+        "tonalRamp": [
+          "#2b1a02",
+          "#4a2d04",
+          "#915907",
+          "#c07c14",
+          "#e7a33e",
+          "#f2c37c",
+          "#f8dcb2",
+          "#fcf0db"
+        ]
+      },
+      "danger": {
+        "role": "tertiary",
+        "displayName": "Alert Red",
+        "canonical": "#cc1016",
+        "darkValue": "#f5987e",
+        "tonalRamp": [
+          "#330507",
+          "#66090c",
+          "#a10d12",
+          "#cc1016",
+          "#e5473f",
+          "#f5987e",
+          "#fac7bb",
+          "#fdecec"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Login panel headline only. One instance in the application; scales to 1.875rem at lg."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "PageHeader h1 on every dashboard route."
+      },
+      "metric": {
+        "displayName": "Metric",
+        "purpose": "StatCard values. Tabular figures so a changing count does not shift the card."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Card titles, sticky-header page title, fieldset legends, dialog titles. Same size as body; distinguished by weight."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Every paragraph, table cell, input value, and nav label."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Field labels, badges, metadata, hints, small buttons. Table and sidebar-group headings add uppercase + tracking-wide."
+      },
+      "data": {
+        "displayName": "Data",
+        "purpose": "Copyable values — ids, URNs, URLs, durations. DescriptionList values and all code/kbd/pre."
+      }
+    },
+    "shadows": [
+      {
+        "name": "shadow-card",
+        "value": "0 0 0 1px rgb(140 140 140 / 20%)",
+        "purpose": "Every resting surface (card, table, stat card, fieldset, sidebar, header). A 1px ring, not a drop shadow — paired with border-border for one crisp edge."
+      },
+      {
+        "name": "shadow-popover",
+        "value": "0 0 0 1px rgb(140 140 140 / 20%), 0 4px 12px rgb(0 0 0 / 12%)",
+        "purpose": "Anything that floats over the document and can be dismissed: mobile drawer, sidebar user menu, typeahead list, tooltip, dialog panel."
+      },
+      {
+        "name": "shadow-card-dark",
+        "value": "0 0 0 1px rgb(140 140 140 / 32%)",
+        "purpose": "Dark-theme counterpart. Defined in :root[data-theme=\"dark\"] but dormant — nothing sets the attribute."
+      },
+      {
+        "name": "shadow-popover-dark",
+        "value": "0 0 0 1px rgb(140 140 140 / 32%), 0 4px 16px rgb(0 0 0 / 40%)",
+        "purpose": "Dark-theme counterpart. Dormant."
+      }
+    ],
+    "motion": [
+      {
+        "name": "transition-colors",
+        "value": "transition-property: color, background-color, border-color; duration 150ms",
+        "purpose": "The only state transition in the system. Buttons, nav items, table rows, chips, inputs."
+      },
+      {
+        "name": "shell-resize",
+        "value": "transition-[width] 200ms / transition-[margin] 200ms",
+        "purpose": "Sidebar collapse: the rail animates width, the content column animates its left margin, in lockstep."
+      },
+      {
+        "name": "chevron-flip",
+        "value": "transition-transform + rotate-180",
+        "purpose": "The user-menu chevron on open. The only transform animation."
+      },
+      {
+        "name": "spin",
+        "value": "animate-spin",
+        "purpose": "Loader2 inside a loading Button. There is no skeleton or page-level loading overlay."
+      }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "lg", "value": "1024px" }
+    ],
+    "zIndexLadder": [
+      { "rung": 10, "surface": "Typeahead results list (belongs to the form, not the page)" },
+      { "rung": 20, "surface": "Sticky app header" },
+      { "rung": 30, "surface": "Fixed desktop sidebar" },
+      { "rung": 40, "surface": "Mobile drawer and its scrim" },
+      { "rung": 50, "surface": "Portaled Dialog, and Tooltip" }
+    ],
+    "layoutTokens": [
+      { "name": "--header-h / --spacing-header", "value": "3.5rem", "purpose": "Sticky header height; the sidebar brand block matches it exactly so the two rules meet." },
+      { "name": "--sidebar-w / --spacing-sidebar", "value": "15rem", "purpose": "Expanded rail width, and the mobile drawer width (capped at 85vw)." },
+      { "name": "--sidebar-rail / --spacing-sidebar-rail", "value": "4rem", "purpose": "Collapsed icon-rail width. Collapse state persists to localStorage." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one action a screen wants next. Pill, blue fill, white 600-weight label.",
+      "html": "<button class=\"ds-btn-primary\">New search</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 0.375rem; height: 2.25rem; padding: 0 1rem; border: none; border-radius: 9999px; background: var(--primary, #0a66c2); color: var(--primary-foreground, #ffffff); font-family: var(--font-sans); font-size: 0.875rem; font-weight: 600; white-space: nowrap; cursor: pointer; transition: color 150ms, background-color 150ms, border-color 150ms; } .ds-btn-primary:hover { background: var(--primary-hover, #004182); } .ds-btn-primary:active { background: var(--primary-active, #09223b); } .ds-btn-primary:focus-visible { outline: 2px solid var(--ring, #0a66c2); outline-offset: 2px; } .ds-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Outlined blue pill for the alternative action; fills with the blue wash on hover.",
+      "html": "<button class=\"ds-btn-secondary\">Cancel</button>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 0.375rem; height: 2.25rem; padding: 0 1rem; border: 1px solid var(--secondary-border, #0a66c2); border-radius: 9999px; background: transparent; color: var(--secondary-foreground, #0a66c2); font-family: var(--font-sans); font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: color 150ms, background-color 150ms, border-color 150ms; } .ds-btn-secondary:hover { background: var(--primary-subtle, #e8f3ff); } .ds-btn-secondary:focus-visible { outline: 2px solid var(--ring, #0a66c2); outline-offset: 2px; }"
+    },
+    {
+      "name": "Danger Button (small)",
+      "kind": "button",
+      "refersTo": "button-danger",
+      "description": "Destructive action, usually at size sm inside a table's actions column. Hover dims rather than shifting hue.",
+      "html": "<button class=\"ds-btn-danger\">Delete</button>",
+      "css": ".ds-btn-danger { display: inline-flex; align-items: center; justify-content: center; gap: 0.375rem; height: 1.75rem; padding: 0 0.75rem; border: none; border-radius: 9999px; background: var(--danger, #cc1016); color: #ffffff; font-family: var(--font-sans); font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: opacity 150ms; } .ds-btn-danger:hover { opacity: 0.9; } .ds-btn-danger:focus-visible { outline: 2px solid var(--ring, #0a66c2); outline-offset: 2px; } .ds-btn-danger:disabled { opacity: 0.5; cursor: not-allowed; }"
+    },
+    {
+      "name": "Status Badge",
+      "kind": "chip",
+      "refersTo": "badge-success",
+      "description": "Carries a raw domain enum (ACTIVE, CHALLENGED, DEAD) as a tinted pill. Five tones; optional leading dot.",
+      "html": "<span class=\"ds-badge ds-badge-success\"><span class=\"ds-badge-dot\"></span>ACTIVE</span><span class=\"ds-badge ds-badge-danger\">CHALLENGED</span>",
+      "css": ".ds-badge { display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.125rem 0.625rem; border-radius: 9999px; font-family: var(--font-sans); font-size: 0.75rem; font-weight: 500; margin-right: 0.5rem; } .ds-badge-dot { width: 0.375rem; height: 0.375rem; border-radius: 9999px; background: currentColor; } .ds-badge-success { background: var(--success-subtle, #e6f3ec); color: var(--success, #057642); } .ds-badge-danger { background: var(--danger-subtle, #fdecec); color: var(--danger, #cc1016); }"
+    },
+    {
+      "name": "Filter Chip",
+      "kind": "chip",
+      "refersTo": "badge-neutral",
+      "description": "URL-backed filter link. Unselected is a hairline outline; selected inverts to a solid primary fill.",
+      "html": "<a class=\"ds-chip\" href=\"#\">All</a><a class=\"ds-chip ds-chip-active\" href=\"#\" aria-current=\"true\">Has email</a>",
+      "css": ".ds-chip { display: inline-block; padding: 0.25rem 0.75rem; margin-right: 0.5rem; border: 1px solid var(--border, #e0dfdc); border-radius: 9999px; color: var(--muted-foreground, rgb(0 0 0 / 60%)); font-family: var(--font-sans); font-size: 0.75rem; font-weight: 500; text-decoration: none; transition: color 150ms, background-color 150ms, border-color 150ms; } .ds-chip:hover { background: var(--surface-muted, #f9fafb); } .ds-chip-active { border-color: var(--primary, #0a66c2); background: var(--primary, #0a66c2); color: var(--primary-foreground, #ffffff); } .ds-chip:focus-visible { outline: 2px solid var(--ring, #0a66c2); outline-offset: 2px; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "36px control with a hairline border; focus shifts the border to blue and adds a soft 2px ring.",
+      "html": "<label class=\"ds-field\">Account label<input class=\"ds-input\" placeholder=\"Primary sourcing account\" /><span class=\"ds-hint\">Shown in the accounts table and in job logs.</span></label>",
+      "css": ".ds-field { display: flex; flex-direction: column; gap: 0.375rem; font-family: var(--font-sans); font-size: 0.75rem; font-weight: 600; color: var(--muted-foreground, rgb(0 0 0 / 60%)); } .ds-hint { font-size: 0.75rem; font-weight: 400; color: var(--muted-foreground, rgb(0 0 0 / 60%)); } .ds-input { height: 2.25rem; width: 100%; padding: 0 0.75rem; border: 1px solid var(--border, #e0dfdc); border-radius: 0.5rem; background: var(--input, #ffffff); color: var(--foreground, rgb(0 0 0 / 90%)); font-family: var(--font-sans); font-size: 0.875rem; font-weight: 400; outline: none; transition: color 150ms, background-color 150ms, border-color 150ms, box-shadow 150ms; } .ds-input::placeholder { color: var(--muted-foreground, rgb(0 0 0 / 60%)); } .ds-input:focus { border-color: var(--primary, #0a66c2); box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary, #0a66c2) 20%, transparent); } .ds-input:disabled { opacity: 0.5; cursor: not-allowed; }"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "The resting surface: 12px corner, hairline, card ring. Header and footer are divided by the same hairline.",
+      "html": "<div class=\"ds-card\"><div class=\"ds-card-header\"><h2 class=\"ds-card-title\">Scraping policy</h2><p class=\"ds-card-desc\">Pacing is the safety mechanism, not a throttle to tune away.</p></div><div class=\"ds-card-body\">Daily budget, dwell ranges, and backoff windows.</div></div>",
+      "css": ".ds-card { border: 1px solid var(--border, #e0dfdc); border-radius: 0.75rem; background: var(--card, #ffffff); color: var(--card-foreground, rgb(0 0 0 / 90%)); box-shadow: 0 0 0 1px rgb(140 140 140 / 20%); font-family: var(--font-sans); } .ds-card-header { display: flex; flex-direction: column; gap: 0.25rem; padding: 1rem; border-bottom: 1px solid var(--border, #e0dfdc); } .ds-card-title { margin: 0; font-size: 0.875rem; font-weight: 600; color: var(--foreground, rgb(0 0 0 / 90%)); } .ds-card-desc { margin: 0; font-size: 0.875rem; color: var(--muted-foreground, rgb(0 0 0 / 60%)); } .ds-card-body { padding: 1rem; font-size: 0.875rem; }"
+    },
+    {
+      "name": "Stat Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Label opposite a 16px icon, with a 24px tabular metric below. tone=danger reddens icon and number together.",
+      "html": "<div class=\"ds-stat\"><div class=\"ds-stat-top\"><p class=\"ds-stat-label\">Dead jobs</p><svg class=\"ds-stat-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect width=\"20\" height=\"14\" x=\"2\" y=\"7\" rx=\"2\"/><path d=\"M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16\"/></svg></div><p class=\"ds-stat-value\">3</p></div>",
+      "css": ".ds-stat { padding: 1rem; border: 1px solid var(--border, #e0dfdc); border-radius: 0.75rem; background: var(--card, #ffffff); box-shadow: 0 0 0 1px rgb(140 140 140 / 20%); font-family: var(--font-sans); } .ds-stat-top { display: flex; align-items: center; justify-content: space-between; } .ds-stat-label { margin: 0; font-size: 0.75rem; font-weight: 600; color: var(--muted-foreground, rgb(0 0 0 / 60%)); } .ds-stat-icon { width: 1rem; height: 1rem; color: var(--danger, #cc1016); } .ds-stat-value { margin: 0.5rem 0 0; font-size: 1.5rem; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--danger, #cc1016); }"
+    },
+    {
+      "name": "Data Table",
+      "kind": "custom",
+      "refersTo": "table-cell",
+      "description": "Plain server-rendered table inside a scrolling bordered card. No data-grid library; sorting and filtering are URL state.",
+      "html": "<div class=\"ds-table-wrap\"><table class=\"ds-table\"><thead class=\"ds-thead\"><tr><th class=\"ds-th\">Label</th><th class=\"ds-th\">Status</th><th class=\"ds-th\">Last login</th></tr></thead><tbody><tr class=\"ds-tr\"><td class=\"ds-td\"><a class=\"ds-td-link\" href=\"#\">primary-sourcing</a></td><td class=\"ds-td\"><span class=\"ds-badge ds-badge-success\">ACTIVE</span></td><td class=\"ds-td\">2026-09-17 09:12</td></tr><tr class=\"ds-tr\"><td class=\"ds-td\"><a class=\"ds-td-link\" href=\"#\">backup-eu</a></td><td class=\"ds-td\"><span class=\"ds-badge ds-badge-danger\">CHALLENGED</span></td><td class=\"ds-td\">—</td></tr></tbody></table></div>",
+      "css": ".ds-table-wrap { overflow-x: auto; border: 1px solid var(--border, #e0dfdc); border-radius: 0.75rem; background: var(--card, #ffffff); box-shadow: 0 0 0 1px rgb(140 140 140 / 20%); font-family: var(--font-sans); } .ds-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; } .ds-thead { border-bottom: 1px solid var(--border, #e0dfdc); background: var(--surface-muted, #f9fafb); text-align: left; } .ds-th { padding: 0.625rem 1rem; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.025em; text-transform: uppercase; color: var(--muted-foreground, rgb(0 0 0 / 60%)); } .ds-tr { border-top: 1px solid var(--border, #e0dfdc); transition: background-color 150ms; } .ds-tr:hover { background: var(--surface-muted, #f9fafb); } .ds-td { padding: 0.625rem 1rem; vertical-align: middle; font-variant-numeric: tabular-nums; } .ds-td-link { color: var(--primary, #0a66c2); font-weight: 500; text-decoration: none; } .ds-td-link:hover { text-decoration: underline; } .ds-badge { display: inline-flex; align-items: center; padding: 0.125rem 0.625rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; } .ds-badge-success { background: var(--success-subtle, #e6f3ec); color: var(--success, #057642); } .ds-badge-danger { background: var(--danger-subtle, #fdecec); color: var(--danger, #cc1016); }"
+    },
+    {
+      "name": "Sidebar Navigation",
+      "kind": "nav",
+      "refersTo": "nav-item-active",
+      "description": "Grouped rail. Active item gets the blue wash, blue text, and a 2px blue spine on its left edge.",
+      "html": "<nav class=\"ds-nav\"><p class=\"ds-nav-group\">Workspace</p><a class=\"ds-nav-item ds-nav-item-active\" href=\"#\" aria-current=\"page\"><span class=\"ds-nav-spine\" aria-hidden=\"true\"></span><svg class=\"ds-nav-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/></svg>Searches</a><a class=\"ds-nav-item\" href=\"#\"><svg class=\"ds-nav-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m3 17 2 2 4-4\"/><path d=\"m3 7 2 2 4-4\"/><path d=\"M13 6h8\"/><path d=\"M13 12h8\"/><path d=\"M13 18h8\"/></svg>Runs</a></nav>",
+      "css": ".ds-nav { display: flex; flex-direction: column; gap: 0.125rem; width: 15rem; padding: 0.5rem; background: var(--card, #ffffff); border-right: 1px solid var(--border, #e0dfdc); font-family: var(--font-sans); } .ds-nav-group { margin: 0 0 0.25rem; padding: 0 0.625rem; font-size: 11px; font-weight: 600; letter-spacing: 0.025em; text-transform: uppercase; color: var(--muted-foreground, rgb(0 0 0 / 60%)); } .ds-nav-item { position: relative; display: flex; align-items: center; gap: 0.625rem; padding: 0.5rem 0.625rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; text-decoration: none; color: var(--foreground, rgb(0 0 0 / 90%)); transition: color 150ms, background-color 150ms; } .ds-nav-item:hover { background: var(--surface-muted, #f9fafb); } .ds-nav-item-active { background: var(--primary-subtle, #e8f3ff); color: var(--primary, #0a66c2); } .ds-nav-spine { position: absolute; left: 0; top: 0.375rem; bottom: 0.375rem; width: 2px; border-radius: 9999px; background: var(--primary, #0a66c2); } .ds-nav-icon { width: 1.125rem; height: 1.125rem; flex-shrink: 0; } .ds-nav-item:focus-visible { outline: 2px solid var(--ring, #0a66c2); outline-offset: 2px; }"
+    },
+    {
+      "name": "Dialog",
+      "kind": "custom",
+      "refersTo": "popover-panel",
+      "description": "The one reusable modal, portaled to body at z-50 over a plain 40% black scrim. Footer bleeds to the panel edges on a muted fill.",
+      "html": "<div class=\"ds-dialog-panel\" role=\"dialog\" aria-modal=\"true\" aria-label=\"Delete account\"><div class=\"ds-dialog-head\"><div><h2 class=\"ds-dialog-title\">Delete account</h2><p class=\"ds-dialog-desc\">This cannot be undone.</p></div><button class=\"ds-dialog-close\" aria-label=\"Close dialog\"><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/></svg></button></div><div class=\"ds-dialog-body\"><p>Its searches and runs will also be deleted. Leads are kept.</p><div class=\"ds-dialog-footer\"><button class=\"ds-btn-secondary\">Cancel</button><button class=\"ds-btn-danger\">Delete</button></div></div></div>",
+      "css": ".ds-dialog-panel { display: flex; flex-direction: column; max-width: 32rem; max-height: 85vh; border: 1px solid var(--border, #e0dfdc); border-radius: 0.75rem; background: var(--popover, #ffffff); color: var(--popover-foreground, rgb(0 0 0 / 90%)); box-shadow: 0 0 0 1px rgb(140 140 140 / 20%), 0 4px 12px rgb(0 0 0 / 12%); font-family: var(--font-sans); } .ds-dialog-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem; padding: 1rem; border-bottom: 1px solid var(--border, #e0dfdc); } .ds-dialog-title { margin: 0; font-size: 0.875rem; font-weight: 600; } .ds-dialog-desc { margin: 0.125rem 0 0; font-size: 0.75rem; color: var(--muted-foreground, rgb(0 0 0 / 60%)); } .ds-dialog-close { display: inline-flex; align-items: center; justify-content: center; width: 2.25rem; height: 2.25rem; border: none; border-radius: 0.5rem; background: transparent; color: var(--foreground, rgb(0 0 0 / 90%)); cursor: pointer; transition: background-color 150ms; } .ds-dialog-close:hover { background: var(--surface-muted, #f9fafb); } .ds-dialog-body { padding: 1rem; font-size: 0.875rem; } .ds-dialog-footer { display: flex; align-items: center; justify-content: flex-end; gap: 0.5rem; margin: 1rem -1rem -1rem; padding: 0.75rem 1rem; border-top: 1px solid var(--border, #e0dfdc); background: var(--surface-muted, #f9fafb); } .ds-btn-secondary { height: 1.75rem; padding: 0 0.75rem; border: 1px solid var(--secondary-border, #0a66c2); border-radius: 9999px; background: transparent; color: var(--secondary-foreground, #0a66c2); font-size: 0.75rem; font-weight: 600; cursor: pointer; } .ds-btn-secondary:hover { background: var(--primary-subtle, #e8f3ff); } .ds-btn-danger { height: 1.75rem; padding: 0 0.75rem; border: none; border-radius: 9999px; background: var(--danger, #cc1016); color: #fff; font-size: 0.75rem; font-weight: 600; cursor: pointer; } .ds-btn-danger:hover { opacity: 0.9; }"
+    },
+    {
+      "name": "Empty State",
+      "kind": "custom",
+      "refersTo": "card",
+      "description": "What a zero-row table renders instead of headers. Dashed hairline, centered, muted 32px icon.",
+      "html": "<div class=\"ds-empty\"><svg class=\"ds-empty-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"22 12 16 12 14 15 10 15 8 12 2 12\"/><path d=\"M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z\"/></svg><p class=\"ds-empty-title\">No leads yet</p><p class=\"ds-empty-desc\">Leads land here once a run collects and parses profiles.</p></div>",
+      "css": ".ds-empty { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 3rem 1.5rem; border: 1px dashed var(--border, #e0dfdc); border-radius: 0.75rem; text-align: center; font-family: var(--font-sans); } .ds-empty-icon { width: 2rem; height: 2rem; color: var(--muted-foreground, rgb(0 0 0 / 60%)); } .ds-empty-title { margin: 0; font-size: 0.875rem; font-weight: 500; color: var(--foreground, rgb(0 0 0 / 90%)); } .ds-empty-desc { margin: 0; max-width: 24rem; font-size: 0.875rem; color: var(--muted-foreground, rgb(0 0 0 / 60%)); }"
+    },
+    {
+      "name": "Alert",
+      "kind": "custom",
+      "refersTo": "badge-danger",
+      "description": "Inline feedback banner. Subtle fill, saturated text, 20%-opacity border of the same tone, leading 16px icon.",
+      "html": "<div class=\"ds-alert ds-alert-error\" role=\"alert\"><svg class=\"ds-alert-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"m15 9-6 6\"/><path d=\"m9 9 6 6\"/></svg><div>Account is CHALLENGED — its queued jobs were cancelled and a human must sign in.</div></div>",
+      "css": ".ds-alert { display: flex; align-items: flex-start; gap: 0.5rem; padding: 0.75rem; border: 1px solid; border-radius: 0.5rem; font-family: var(--font-sans); font-size: 0.875rem; } .ds-alert-icon { width: 1rem; height: 1rem; flex-shrink: 0; margin-top: 0.125rem; } .ds-alert-error { border-color: color-mix(in srgb, var(--danger, #cc1016) 20%, transparent); background: var(--danger-subtle, #fdecec); color: var(--danger, #cc1016); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Instrument Panel",
+    "overview": "This is the console of a machine that runs slowly on purpose. The palette is borrowed wholesale from LinkedIn — the same warm paper background (#f4f2ee), the same corporate blue (#0a66c2), the same pill-shaped buttons — because the operator spends their day reading one system and acting in the other, and an unfamiliar skin would add a translation step to every glance. Surfaces are white cards floating on warm paper, separated by a hairline rather than a drop shadow. Nothing is decorative; every colored element on a screen is reporting a state.\n\nDensity is the point. Body text is 14px, labels and metadata are 12px, and the display sizes appear exactly twice in the whole application (the login hero and the dashboard's stat numbers). Tables are plain server-rendered HTML with 10px vertical cell padding, so a full page of jobs or leads fits without scrolling. The system is information-forward admin UI, not onboarding: it assumes the reader already knows what CHALLENGED means and gives them the badge, not a tour.\n\nStatus color is the system's loudest voice, and it is rationed. Five tones (neutral, accent, success, warning, danger) each pair a subtle tinted background with its own saturated foreground, and they appear only on badges, alerts, and the one metric that can go bad. The chrome — sidebar, header, cards, tables — is achromatic except for the active nav item. When something on a screen is colored, it is because it is telling the operator about account health, quota, or a dead job.",
+    "keyCharacteristics": [
+      "LinkedIn-derived palette applied as semantic tokens, never as raw hex",
+      "Hairline separation over shadow; one true elevated tier for things that float",
+      "Pill buttons, 8px-cornered surfaces, 4px form controls",
+      "14px body / 12px label as the working pair; display type is rare",
+      "Status is carried by a five-tone badge vocabulary, never by chrome color",
+      "Fixed left rail (240px, collapsible to 64px) under a 56px sticky header"
+    ],
+    "rules": [
+      {
+        "name": "The Semantic-Only Rule",
+        "body": "No raw hex, no rgb(), no arbitrary color class ever appears in a component. Everything goes through a named utility (bg-card, text-danger, border-border). ESLint enforces this with eslint-plugin-better-tailwindcss pointed at globals.css; a raw color is a build error, not a review note.",
+        "section": "colors"
+      },
+      {
+        "name": "The Rationed Accent Rule",
+        "body": "Blue marks the one thing on a screen the operator would act on next — the primary button, the active nav row, the link out. A screen with two primary buttons has one too many.",
+        "section": "colors"
+      },
+      {
+        "name": "The Honest Status Rule",
+        "body": "Account health, job state, and lead stage are always rendered as a toned Badge with the raw enum as its text (CHALLENGED, DEAD, ENRICHED), never softened into prose. Danger tone is reserved for states that need a human; warning for states that will resolve themselves (cooling down, retrying).",
+        "section": "colors"
+      },
+      {
+        "name": "The Two-Size Rule",
+        "body": "Real screens are built from 14px body and 12px label. Reaching past those two sizes means a page title, a stat number, or the login hero — and nothing else. If a new surface wants a fourth size, it wants a different weight.",
+        "section": "typography"
+      },
+      {
+        "name": "The Copyable-Is-Mono Rule",
+        "body": "Any value the operator might paste elsewhere (id, URN, URL, timestamp) renders in the mono stack at 12px. Prose never does.",
+        "section": "typography"
+      },
+      {
+        "name": "The Full-Bleed Table Rule",
+        "body": "Content is never centered in a max-width column. A table that outgrows the viewport scrolls inside its own bordered card (overflow-x-auto); the page never gains a horizontal scrollbar.",
+        "section": "layout"
+      },
+      {
+        "name": "The Stated-Ladder Rule",
+        "body": "Stacking is a fixed, documented ladder and nothing may invent a rung between the existing ones. Inline dropdown z-10 → sticky header z-20 → desktop sidebar z-30 → mobile drawer and its scrim z-40 → portaled dialog and tooltip z-50. These are Tailwind's default z-* steps used literally; there is no z-index custom property and no token, so a new floating surface must pick an existing rung and say which.",
+        "section": "layout"
+      },
+      {
+        "name": "The Two-Shadow Rule",
+        "body": "There are two shadows and there will not be a third. If a surface is part of the page, it gets the card ring; if it floats over the page and can be dismissed, it gets the popover lift. No hover shadows, no focus shadows, no ambient glow.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Scrim-Is-Plain-Black Rule",
+        "body": "Overlay backdrops are bg-black/40 with no blur. Both the mobile drawer and the dialog use the same value, and the backdrop is a real <button> with an accessible label, not a click-swallowing div.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Round-What-You-Click Rule",
+        "body": "Anything pill-shaped is pressable or is a status capsule. Anything with a 12px corner is a container and is not clickable as a whole — except the dashboard link cards, which wrap a whole Card in a Link and signal it with a surface-muted hover.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "Do compose new screens from src/components/ui/ primitives and put app chrome in src/components/shared/app-shell/; a component file stays under 150 lines (AGENTS.md §4.1).",
+      "Do reach for a named utility for every color, radius, shadow, and layout dimension (bg-card, rounded-lg, shadow-card, w-sidebar, h-header). If a value is missing, add a token to globals.css and map it in @theme inline.",
+      "Do give a table its Actions header only when there are actions, and keep each mutation in its own <form> with hidden inputs so it works as a Server Action post.",
+      "Do render every domain state as a toned Badge with the raw enum as its label, and every absent value as an em dash.",
+      "Do use EmptyState instead of an empty table, and Alert instead of inline red prose for anything that is a real error.",
+      "Do pick an existing rung of the z-index ladder (10/20/30/40/50) and say which one in a comment when adding a floating surface.",
+      "Do use shadow-card for anything that is part of the page and shadow-popover for anything that floats over it.",
+      "Do nest the control inside Field's <label> and let implicit association do the work; add id/htmlFor only where the label text sits beside the control (Checkbox).",
+      "Do route new modals through Dialog / ConfirmDialog rather than building a second overlay."
+    ],
+    "donts": [
+      "Don't write a raw hex, rgb(), or an arbitrary color class. ESLint's better-tailwindcss rule (entry point src/app/globals.css) makes it a hard error.",
+      "Don't use Tailwind v3's [--x] arbitrary-value syntax, as the stylesheet header states. Use the named utility, or v4's (--x) shorthand for a genuine one-off.",
+      "Don't add a third shadow, a hover elevation, or a blurred scrim. Two shadows and bg-black/40.",
+      "Don't introduce a data-grid library for tables; ARCHITECTURE.md §11 forbids @tanstack/react-table, and sorting/filtering/paging belong in URL state on the server.",
+      "Don't add a font size outside the ramp. Two arbitrary sizes (text-[11px], text-[10px]) already exist in the build and are drift, not precedent.",
+      "Don't set data-theme or ship a theme switcher on the assumption that dark mode works. The dark palette is defined and complete in globals.css but nothing in the application writes the attribute — it is dormant, and wiring it is its own change with its own review.",
+      "Don't invent a z-index between the documented rungs, and don't add a z-index custom property without deciding the whole ladder at once.",
+      "Don't use window.confirm for a destructive action. ConfirmDialog exists for exactly this.",
+      "Don't use a text character as an icon. Lucide covers every case in use.",
+      "Don't center page content in a max-width column or shrink a table to fit; tables scroll inside their own card."
+    ]
+  }
+}

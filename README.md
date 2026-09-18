@@ -22,10 +22,14 @@ pnpm install
 cp .env.example .env
 # fill in DATABASE_URL, AUTH_SECRET, ENCRYPTION_KEY (32 random bytes, base64), and
 # ADMIN_EMAIL/ADMIN_PASSWORD for the first admin user — see .env.example for the full list.
-# LinkedIn accounts are added afterwards from /config/accounts, not from .env.
+# LinkedIn accounts, proxies, scraping pacing/quotas, and worker/queue timing are all
+# configured afterwards from /config, not from .env — see docs/configuration.md.
 pnpm db:migrate
 pnpm db:seed
 pnpm dev
+# in separate terminals, once you're ready to actually scrape:
+pnpm worker
+pnpm scheduler
 ```
 
 `pnpm exec playwright install --with-deps chromium` is needed once the scraper is wired
@@ -33,15 +37,18 @@ up; it is not required to run the web app.
 
 ## Scripts
 
-| Command                     | Does                         |
-| --------------------------- | ---------------------------- |
-| `pnpm dev`                  | Next.js dev server           |
-| `pnpm build` / `pnpm start` | production build / serve     |
-| `pnpm lint`                 | ESLint                       |
-| `pnpm typecheck`            | `tsc --noEmit`               |
-| `pnpm db:generate`          | regenerate the Prisma client |
-| `pnpm db:migrate`           | `prisma migrate dev`         |
-| `pnpm db:seed`              | run `prisma/seed.ts`         |
+| Command                     | Does                                    |
+| --------------------------- | ---------------------------------------- |
+| `pnpm dev`                  | Next.js dev server                       |
+| `pnpm build` / `pnpm start` | production build / serve                 |
+| `pnpm lint`                 | ESLint                                   |
+| `pnpm typecheck`            | `tsc --noEmit`                           |
+| `pnpm db:generate`          | regenerate the Prisma client             |
+| `pnpm db:migrate`           | `prisma migrate dev`                     |
+| `pnpm db:seed`              | run `prisma/seed.ts`                     |
+| `pnpm worker`               | run the queue worker (claims + runs jobs) |
+| `pnpm worker:dev`           | worker with hot-reload on handler changes |
+| `pnpm scheduler`            | lease reaper / cron tick process         |
 
 ## Runtime
 
@@ -53,6 +60,8 @@ a singleton scheduler (cron ticks, lease reaping, quota rollover). See
 
 ## Where to go next
 
+- **[docs/](docs/README.md)** — how scraping actually works, the configuration reference,
+  and proxy setup (start here if you just want to *use* the dashboard)
 - **[CLAUDE.md](CLAUDE.md)** — commands, Prisma 7 specifics, the non-negotiable invariants
 - **[AGENTS.md](AGENTS.md)** — where code goes, size budgets, the review checklist
 - **[ARCHITECTURE.md](ARCHITECTURE.md)** — the full design: data model, job queue, the

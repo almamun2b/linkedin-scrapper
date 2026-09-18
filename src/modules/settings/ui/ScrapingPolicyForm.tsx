@@ -1,21 +1,22 @@
 "use client";
 
 import { useActionState } from "react";
-import type { ScrapingPolicyModel } from "@/generated/prisma/models/ScrapingPolicy";
+import type { ScrapingPolicySettings } from "../repository/settings.repository";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
-import { updatePolicyAction } from "../actions";
+import { updateScrapingPolicyAction } from "../actions";
 import { DelayFields } from "./policy/DelayFields";
 import { QuotaFields } from "./policy/QuotaFields";
 import { ActiveHoursFields } from "./policy/ActiveHoursFields";
 import { TogglesFields } from "./policy/TogglesFields";
 
-export function PolicyForm({ policy }: { policy: ScrapingPolicyModel }) {
-  const [state, formAction, pending] = useActionState(updatePolicyAction, {});
+/** One global policy for every LinkedIn account this system scrapes with — there is no
+ * per-account override anymore (ScrapingPolicy is now a singleton row, id "global"). */
+export function ScrapingPolicyForm({ policy }: { policy: ScrapingPolicySettings }) {
+  const [state, formAction, pending] = useActionState(updateScrapingPolicyAction, {});
 
   return (
     <form action={formAction} className="flex flex-col gap-4">
-      <input type="hidden" name="linkedInAccountId" value={policy.linkedInAccountId} />
       <DelayFields policy={policy} />
       <QuotaFields policy={policy} />
       <ActiveHoursFields policy={policy} />
@@ -24,6 +25,7 @@ export function PolicyForm({ policy }: { policy: ScrapingPolicyModel }) {
         {pending ? "Saving…" : "Save policy"}
       </Button>
       {state.error ? <Alert tone="error">{state.error}</Alert> : null}
+      {state.ok ? <Alert tone="success">Saved. The worker picks this up within 30 seconds.</Alert> : null}
     </form>
   );
 }

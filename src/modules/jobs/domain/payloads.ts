@@ -9,6 +9,10 @@ export type NoopPayload = z.infer<typeof noopPayloadSchema>;
 
 export const sessionEnsurePayloadSchema = z.object({
   linkedInAccountId: z.string().min(1),
+  // Set only by a human-initiated Test connection click — skips the active-hours gate for
+  // this one run. A deliberate admin click is not the automated scraping invariant #8's
+  // pacing exists to slow down; it does not touch any delay value.
+  bypassActiveHours: z.boolean().default(false),
 });
 export type SessionEnsurePayload = z.infer<typeof sessionEnsurePayloadSchema>;
 

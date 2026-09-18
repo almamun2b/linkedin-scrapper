@@ -13,7 +13,7 @@ export async function requestTestConnection(
 ): Promise<{ queued: boolean }> {
   const job = await enqueueJob({
     type: "session.ensure",
-    payload: { linkedInAccountId },
+    payload: { linkedInAccountId, bypassActiveHours: true },
     linkedInAccountId,
     idempotencyKey: hourBucketKey("session-ensure", linkedInAccountId),
   });

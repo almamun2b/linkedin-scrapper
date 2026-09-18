@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { ChevronUp } from "lucide-react";
-import type { Role } from "@/generated/prisma/enums";
 import { Avatar } from "@/components/ui/Avatar";
-import { Badge } from "@/components/ui/Badge";
+import type { Role } from "@/generated/prisma/enums";
 import { cn } from "@/lib/cn";
-import { SignOutButton } from "./SignOutButton";
+import { ChevronUp, Settings } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import { useShell } from "./ShellProvider";
+import { SignOutButton } from "./SignOutButton";
 
 export function SidebarUserMenu({
   user,
@@ -55,10 +55,19 @@ export function SidebarUserMenu({
               <p className="truncate text-xs text-muted-foreground">{user.email}</p>
             </div>
           </div>
-          <Badge tone="accent" className="mt-2.5">
-            {user.role}
-          </Badge>
+
           <div className="my-2.5 border-t border-border" />
+          <Link
+            href="/me"
+            role="menuitem"
+            onClick={() => {
+              setOpen(false);
+            }}
+            className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-foreground transition-colors hover:bg-surface-muted"
+          >
+            <Settings aria-hidden="true" className="size-4" />
+            My profile
+          </Link>
           <SignOutButton />
         </div>
       ) : null}

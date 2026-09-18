@@ -29,8 +29,29 @@ async function seedAdminUser() {
   );
 }
 
+/**
+ * Both are global singletons (`id: "global"`, enforced by a SQL CHECK — see
+ * prisma/migrations/.../migration.sql). Empty `create`/`update` objects let every column's
+ * own `@default(...)` fill in the values that used to live in `.env`
+ * (ARCHITECTURE.md §10) — idempotent by design: a rerun never overwrites values an admin
+ * has since tuned from /config, because `update: {}` touches nothing on an existing row.
+ */
+async function seedScrapingPolicy() {
+  const existed = await prisma.scrapingPolicy.findUnique({ where: { id: "global" } });
+  await prisma.scrapingPolicy.upsert({ where: { id: "global" }, create: {}, update: {} });
+  console.log(existed ? "ScrapingPolicy already exists — left untouched." : "Seeded ScrapingPolicy.");
+}
+
+async function seedSystemSetting() {
+  const existed = await prisma.systemSetting.findUnique({ where: { id: "global" } });
+  await prisma.systemSetting.upsert({ where: { id: "global" }, create: {}, update: {} });
+  console.log(existed ? "SystemSetting already exists — left untouched." : "Seeded SystemSetting.");
+}
+
 async function main() {
   await seedAdminUser();
+  await seedScrapingPolicy();
+  await seedSystemSetting();
 }
 
 main()

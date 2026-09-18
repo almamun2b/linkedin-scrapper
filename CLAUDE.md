@@ -20,6 +20,7 @@ so open the smallest thing that answers the question:
 | Schema / migration         | the `schema-change` skill                         | ARCHITECTURE.md §4 (model inventory) |
 | New feature slice          | AGENTS.md §3 (one table, no need to read further) | ARCHITECTURE.md §2                   |
 | Config page / env          | this file's Environment section above             | ARCHITECTURE.md §10                  |
+| How scraping/proxy/config work, user-facing | `docs/` (README, how-scraping-works, proxy-setup, getting-a-proxy-url, configuration) | ARCHITECTURE.md §7, §9, §10 |
 
 Skills are small and loaded on demand — they carry the how-to. The matching
 ARCHITECTURE.md section carries the _why_; read it when the skill doesn't cover the
@@ -47,17 +48,23 @@ pnpm db:seed             # tsx ./prisma/seed.ts
 ```
 
 pnpm required (`packageManager: pnpm@11.8.0`); Node 24. No `test` script (invariant #10).
-Worker/scheduler scripts don't exist yet; when added: `worker`/`scheduler`
-(`tsx src/workers/worker.ts`), `worker:dev`.
+Worker/scheduler scripts: `pnpm worker` (`tsx src/workers/worker.ts`), `pnpm worker:dev`
+(`tsx watch`, hot-reloads on handler changes), `pnpm scheduler` (`tsx src/workers/scheduler.ts`).
+`pnpm worker` accepts `--worker-id <id>` to run a second worker process alongside the
+first — see `src/modules/settings/` (§10).
 
 ## Environment
 
-`.env` is gitignored, `.env.example` tracked and documents every variable the design
-needs (`DATABASE_URL`, NextAuth URLs/secret, `ENCRYPTION_KEY`, `ADMIN_EMAIL`/
-`ADMIN_PASSWORD` for the first admin user, `USE_PROXY`/`PROXY_URL`, worker
-identity/concurrency, `HEADLESS`, `TZ=UTC`) — most are placeholders until the reading code
-exists. LinkedIn accounts are never read from env — they're added from `/config/accounts`.
-ARCHITECTURE.md §10 has the full table.
+`.env` is gitignored, `.env.example` tracked. It now holds only what must be readable
+before the database can be queried or its secrets decrypted at all: `DATABASE_URL`,
+NextAuth URLs/secret, `ENCRYPTION_KEY`, `ADMIN_EMAIL`/`ADMIN_PASSWORD` for the first admin
+user, and `TZ` (sets the OS process's own timezone before any DB read is possible).
+Everything else this project once configured via env — LinkedIn accounts, proxies,
+scraping pacing/quotas/active-hours, worker/queue timing — lives in the database and is
+edited from `/config`, seeded with the same defaults those variables used to carry
+(`prisma/seed.ts`, `src/modules/settings/`). LinkedIn accounts specifically are never read
+from env at all — they're added from `/config/accounts`. ARCHITECTURE.md §10 has the full
+table of what remains, and `docs/configuration.md` documents every DB-backed setting.
 
 Once `server/config/env.ts` exists, **read env only through it** — no `process.env` access
 anywhere else, so a missing variable fails at boot instead of inside a browser launch.
@@ -117,9 +124,9 @@ Violating any of these is a defect regardless of whether the build passes:
    irreplaceable.
 8. **Delays are never removed or shortened to move faster**, including while debugging.
    Pacing is the safety mechanism. Inject a fake clock (`server/clock.ts`) instead.
-9. **`USE_PROXY=true` with an unresolvable proxy fails the job** — never fall back to the
-   direct IP, which would expose the real egress address exactly when you believed it was
-   hidden.
+9. **`ScrapingPolicy.useProxy = true` (edited from `/config/policy`, formerly the `USE_PROXY`
+   env var) with an unresolvable proxy fails the job** — never fall back to the direct IP,
+   which would expose the real egress address exactly when you believed it was hidden.
 10. **No script, example, or dev utility may hit linkedin.com.** Only the worker's paced,
     guarded path may — there is no test suite to exempt, because there is no test suite.
 

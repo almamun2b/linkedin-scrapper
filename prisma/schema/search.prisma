@@ -26,7 +26,7 @@ model SearchDefinition {
   id                String          @id @default(cuid())
   name              String
   linkedInAccountId String
-  linkedInAccount   LinkedInAccount @relation(fields: [linkedInAccountId], references: [id], onDelete: Restrict)
+  linkedInAccount   LinkedInAccount @relation(fields: [linkedInAccountId], references: [id], onDelete: Cascade)
 
   keywords String?
   filters  Json // validated by the zod SearchFilters schema at the boundary — see §8
@@ -52,7 +52,7 @@ model ScrapeRun {
   searchDefinitionId String
   searchDefinition   SearchDefinition @relation(fields: [searchDefinitionId], references: [id], onDelete: Cascade)
   linkedInAccountId  String
-  linkedInAccount    LinkedInAccount  @relation(fields: [linkedInAccountId], references: [id], onDelete: Restrict)
+  linkedInAccount    LinkedInAccount  @relation(fields: [linkedInAccountId], references: [id], onDelete: Cascade)
 
   status            RunStatus @default(QUEUED)
   startedAt         DateTime? @db.Timestamptz(3)

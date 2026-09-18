@@ -1,9 +1,8 @@
-import { env } from "@/server/config/env";
 import { unsealSecret } from "@/server/crypto/secretBox";
 import { ok, err, type Result } from "@/server/result";
 import * as accountRepo from "@/modules/linkedin-account/repository/linkedInAccount.repository";
-import * as policyRepo from "@/modules/linkedin-account/repository/scrapingPolicy.repository";
 import * as proxyRepo from "@/modules/proxy/repository/proxy.repository";
+import * as settingsRepo from "@/modules/settings/repository/settings.repository";
 import {
   fingerprintSchema,
   type AccountFingerprint,
@@ -12,7 +11,7 @@ import { isWithinActiveHours, nextWindowStart } from "@/scraper/guards/activeHou
 import { resolveProxy, type ScraperProxy, type ProxyCandidate } from "@/scraper/browser/proxy";
 
 type Account = NonNullable<Awaited<ReturnType<typeof accountRepo.findForWorker>>>;
-type Policy = NonNullable<Awaited<ReturnType<typeof policyRepo.findByAccountId>>>;
+type Policy = Awaited<ReturnType<typeof settingsRepo.getScrapingPolicyForWorker>>;
 
 export interface PreparedSession {
   account: Account;
@@ -30,22 +29,24 @@ export type PrepareError =
  * Shared bootstrap for both browser-bound job handlers: load account+policy, gate on active
  * hours, resolve the proxy per USE_PROXY semantics (CLAUDE.md invariant #9). Lives in
  * workers/ (not scraper/) because it needs modules/ — scraper/ must never import modules/.
+ * `bypassActiveHours` is set only by a human-initiated action (Test connection) — a
+ * deliberate click is not the automated pacing invariant #8 protects against.
  */
 export async function prepareAccountSession(
   accountId: string,
   now: Date,
+  bypassActiveHours = false,
 ): Promise<Result<PreparedSession, PrepareError>> {
   const account = await accountRepo.findForWorker(accountId);
   if (!account) return err({ kind: "not_found" });
-  const policy = await policyRepo.findByAccountId(accountId);
-  if (!policy) return err({ kind: "not_found" });
+  const policy = await settingsRepo.getScrapingPolicyForWorker();
 
   const activeHoursPolicy = {
     activeHoursStart: policy.activeHoursStart,
     activeHoursEnd: policy.activeHoursEnd,
     activeOnWeekends: policy.activeOnWeekends,
   };
-  if (!isWithinActiveHours(now, activeHoursPolicy, account.timezone)) {
+  if (!bypassActiveHours && !isWithinActiveHours(now, activeHoursPolicy, account.timezone)) {
     return err({
       kind: "outside_active_hours",
       nextRunAt: nextWindowStart(now, activeHoursPolicy, account.timezone),
@@ -69,10 +70,13 @@ export async function prepareAccountSession(
       };
     }
   }
+  const fallbackProxyUrl = policy.fallbackProxyUrlSealed
+    ? unsealSecret(policy.fallbackProxyUrlSealed, policy.fallbackProxyUrlKeyVer ?? 1)
+    : null;
   const proxyResult = resolveProxy({
     useProxy: policy.useProxy,
     accountProxy,
-    proxyUrl: env.PROXY_URL || null,
+    proxyUrl: fallbackProxyUrl,
   });
   if (!proxyResult.ok) {
     return err({ kind: "proxy_unresolvable" });

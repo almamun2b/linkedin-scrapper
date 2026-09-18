@@ -80,6 +80,14 @@ export const RateMetric = {
 export type RateMetric = (typeof RateMetric)[keyof typeof RateMetric]
 
 
+export const JobArtifactKind = {
+  SCREENSHOT: 'SCREENSHOT',
+  HTML: 'HTML'
+} as const
+
+export type JobArtifactKind = (typeof JobArtifactKind)[keyof typeof JobArtifactKind]
+
+
 export const EmailSource = {
   LINKEDIN_CONTACT_INFO: 'LINKEDIN_CONTACT_INFO',
   WEBSITE_SCRAPE: 'WEBSITE_SCRAPE',

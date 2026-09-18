@@ -41,6 +41,7 @@ export type ScrapingPolicyAvgAggregateOutputType = {
   maxProfilesPerWeek: number | null
   activeHoursStart: number | null
   activeHoursEnd: number | null
+  fallbackProxyUrlKeyVer: number | null
 }
 
 export type ScrapingPolicySumAggregateOutputType = {
@@ -58,11 +59,11 @@ export type ScrapingPolicySumAggregateOutputType = {
   maxProfilesPerWeek: number | null
   activeHoursStart: number | null
   activeHoursEnd: number | null
+  fallbackProxyUrlKeyVer: number | null
 }
 
 export type ScrapingPolicyMinAggregateOutputType = {
   id: string | null
-  linkedInAccountId: string | null
   stepDelayMinMs: number | null
   stepDelayMaxMs: number | null
   profileDelayMinMs: number | null
@@ -80,13 +81,15 @@ export type ScrapingPolicyMinAggregateOutputType = {
   activeOnWeekends: boolean | null
   useProxy: boolean | null
   headless: boolean | null
+  fallbackProxyUrlSealed: runtime.Bytes | null
+  fallbackProxyUrlKeyVer: number | null
+  proxyCountry: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
 
 export type ScrapingPolicyMaxAggregateOutputType = {
   id: string | null
-  linkedInAccountId: string | null
   stepDelayMinMs: number | null
   stepDelayMaxMs: number | null
   profileDelayMinMs: number | null
@@ -104,13 +107,15 @@ export type ScrapingPolicyMaxAggregateOutputType = {
   activeOnWeekends: boolean | null
   useProxy: boolean | null
   headless: boolean | null
+  fallbackProxyUrlSealed: runtime.Bytes | null
+  fallbackProxyUrlKeyVer: number | null
+  proxyCountry: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
 
 export type ScrapingPolicyCountAggregateOutputType = {
   id: number
-  linkedInAccountId: number
   stepDelayMinMs: number
   stepDelayMaxMs: number
   profileDelayMinMs: number
@@ -128,6 +133,9 @@ export type ScrapingPolicyCountAggregateOutputType = {
   activeOnWeekends: number
   useProxy: number
   headless: number
+  fallbackProxyUrlSealed: number
+  fallbackProxyUrlKeyVer: number
+  proxyCountry: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -149,6 +157,7 @@ export type ScrapingPolicyAvgAggregateInputType = {
   maxProfilesPerWeek?: true
   activeHoursStart?: true
   activeHoursEnd?: true
+  fallbackProxyUrlKeyVer?: true
 }
 
 export type ScrapingPolicySumAggregateInputType = {
@@ -166,11 +175,11 @@ export type ScrapingPolicySumAggregateInputType = {
   maxProfilesPerWeek?: true
   activeHoursStart?: true
   activeHoursEnd?: true
+  fallbackProxyUrlKeyVer?: true
 }
 
 export type ScrapingPolicyMinAggregateInputType = {
   id?: true
-  linkedInAccountId?: true
   stepDelayMinMs?: true
   stepDelayMaxMs?: true
   profileDelayMinMs?: true
@@ -188,13 +197,15 @@ export type ScrapingPolicyMinAggregateInputType = {
   activeOnWeekends?: true
   useProxy?: true
   headless?: true
+  fallbackProxyUrlSealed?: true
+  fallbackProxyUrlKeyVer?: true
+  proxyCountry?: true
   createdAt?: true
   updatedAt?: true
 }
 
 export type ScrapingPolicyMaxAggregateInputType = {
   id?: true
-  linkedInAccountId?: true
   stepDelayMinMs?: true
   stepDelayMaxMs?: true
   profileDelayMinMs?: true
@@ -212,13 +223,15 @@ export type ScrapingPolicyMaxAggregateInputType = {
   activeOnWeekends?: true
   useProxy?: true
   headless?: true
+  fallbackProxyUrlSealed?: true
+  fallbackProxyUrlKeyVer?: true
+  proxyCountry?: true
   createdAt?: true
   updatedAt?: true
 }
 
 export type ScrapingPolicyCountAggregateInputType = {
   id?: true
-  linkedInAccountId?: true
   stepDelayMinMs?: true
   stepDelayMaxMs?: true
   profileDelayMinMs?: true
@@ -236,6 +249,9 @@ export type ScrapingPolicyCountAggregateInputType = {
   activeOnWeekends?: true
   useProxy?: true
   headless?: true
+  fallbackProxyUrlSealed?: true
+  fallbackProxyUrlKeyVer?: true
+  proxyCountry?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -329,7 +345,6 @@ export type ScrapingPolicyGroupByArgs<ExtArgs extends runtime.Types.Extensions.I
 
 export type ScrapingPolicyGroupByOutputType = {
   id: string
-  linkedInAccountId: string
   stepDelayMinMs: number
   stepDelayMaxMs: number
   profileDelayMinMs: number
@@ -347,6 +362,9 @@ export type ScrapingPolicyGroupByOutputType = {
   activeOnWeekends: boolean
   useProxy: boolean
   headless: boolean
+  fallbackProxyUrlSealed: runtime.Bytes | null
+  fallbackProxyUrlKeyVer: number | null
+  proxyCountry: string | null
   createdAt: Date
   updatedAt: Date
   _count: ScrapingPolicyCountAggregateOutputType | null
@@ -376,7 +394,6 @@ export type ScrapingPolicyWhereInput = {
   OR?: Prisma.ScrapingPolicyWhereInput[]
   NOT?: Prisma.ScrapingPolicyWhereInput | Prisma.ScrapingPolicyWhereInput[]
   id?: Prisma.StringFilter<"ScrapingPolicy"> | string
-  linkedInAccountId?: Prisma.StringFilter<"ScrapingPolicy"> | string
   stepDelayMinMs?: Prisma.IntFilter<"ScrapingPolicy"> | number
   stepDelayMaxMs?: Prisma.IntFilter<"ScrapingPolicy"> | number
   profileDelayMinMs?: Prisma.IntFilter<"ScrapingPolicy"> | number
@@ -394,14 +411,15 @@ export type ScrapingPolicyWhereInput = {
   activeOnWeekends?: Prisma.BoolFilter<"ScrapingPolicy"> | boolean
   useProxy?: Prisma.BoolFilter<"ScrapingPolicy"> | boolean
   headless?: Prisma.BoolFilter<"ScrapingPolicy"> | boolean
+  fallbackProxyUrlSealed?: Prisma.BytesNullableFilter<"ScrapingPolicy"> | runtime.Bytes | null
+  fallbackProxyUrlKeyVer?: Prisma.IntNullableFilter<"ScrapingPolicy"> | number | null
+  proxyCountry?: Prisma.StringNullableFilter<"ScrapingPolicy"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ScrapingPolicy"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ScrapingPolicy"> | Date | string
-  linkedInAccount?: Prisma.XOR<Prisma.LinkedInAccountScalarRelationFilter, Prisma.LinkedInAccountWhereInput>
 }
 
 export type ScrapingPolicyOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  linkedInAccountId?: Prisma.SortOrder
   stepDelayMinMs?: Prisma.SortOrder
   stepDelayMaxMs?: Prisma.SortOrder
   profileDelayMinMs?: Prisma.SortOrder
@@ -419,14 +437,15 @@ export type ScrapingPolicyOrderByWithRelationInput = {
   activeOnWeekends?: Prisma.SortOrder
   useProxy?: Prisma.SortOrder
   headless?: Prisma.SortOrder
+  fallbackProxyUrlSealed?: Prisma.SortOrderInput | Prisma.SortOrder
+  fallbackProxyUrlKeyVer?: Prisma.SortOrderInput | Prisma.SortOrder
+  proxyCountry?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  linkedInAccount?: Prisma.LinkedInAccountOrderByWithRelationInput
 }
 
 export type ScrapingPolicyWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  linkedInAccountId?: string
   AND?: Prisma.ScrapingPolicyWhereInput | Prisma.ScrapingPolicyWhereInput[]
   OR?: Prisma.ScrapingPolicyWhereInput[]
   NOT?: Prisma.ScrapingPolicyWhereInput | Prisma.ScrapingPolicyWhereInput[]
@@ -447,14 +466,15 @@ export type ScrapingPolicyWhereUniqueInput = Prisma.AtLeast<{
   activeOnWeekends?: Prisma.BoolFilter<"ScrapingPolicy"> | boolean
   useProxy?: Prisma.BoolFilter<"ScrapingPolicy"> | boolean
   headless?: Prisma.BoolFilter<"ScrapingPolicy"> | boolean
+  fallbackProxyUrlSealed?: Prisma.BytesNullableFilter<"ScrapingPolicy"> | runtime.Bytes | null
+  fallbackProxyUrlKeyVer?: Prisma.IntNullableFilter<"ScrapingPolicy"> | number | null
+  proxyCountry?: Prisma.StringNullableFilter<"ScrapingPolicy"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ScrapingPolicy"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ScrapingPolicy"> | Date | string
-  linkedInAccount?: Prisma.XOR<Prisma.LinkedInAccountScalarRelationFilter, Prisma.LinkedInAccountWhereInput>
-}, "id" | "linkedInAccountId">
+}, "id">
 
 export type ScrapingPolicyOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  linkedInAccountId?: Prisma.SortOrder
   stepDelayMinMs?: Prisma.SortOrder
   stepDelayMaxMs?: Prisma.SortOrder
   profileDelayMinMs?: Prisma.SortOrder
@@ -472,6 +492,9 @@ export type ScrapingPolicyOrderByWithAggregationInput = {
   activeOnWeekends?: Prisma.SortOrder
   useProxy?: Prisma.SortOrder
   headless?: Prisma.SortOrder
+  fallbackProxyUrlSealed?: Prisma.SortOrderInput | Prisma.SortOrder
+  fallbackProxyUrlKeyVer?: Prisma.SortOrderInput | Prisma.SortOrder
+  proxyCountry?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ScrapingPolicyCountOrderByAggregateInput
@@ -486,7 +509,6 @@ export type ScrapingPolicyScalarWhereWithAggregatesInput = {
   OR?: Prisma.ScrapingPolicyScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ScrapingPolicyScalarWhereWithAggregatesInput | Prisma.ScrapingPolicyScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"ScrapingPolicy"> | string
-  linkedInAccountId?: Prisma.StringWithAggregatesFilter<"ScrapingPolicy"> | string
   stepDelayMinMs?: Prisma.IntWithAggregatesFilter<"ScrapingPolicy"> | number
   stepDelayMaxMs?: Prisma.IntWithAggregatesFilter<"ScrapingPolicy"> | number
   profileDelayMinMs?: Prisma.IntWithAggregatesFilter<"ScrapingPolicy"> | number
@@ -504,6 +526,9 @@ export type ScrapingPolicyScalarWhereWithAggregatesInput = {
   activeOnWeekends?: Prisma.BoolWithAggregatesFilter<"ScrapingPolicy"> | boolean
   useProxy?: Prisma.BoolWithAggregatesFilter<"ScrapingPolicy"> | boolean
   headless?: Prisma.BoolWithAggregatesFilter<"ScrapingPolicy"> | boolean
+  fallbackProxyUrlSealed?: Prisma.BytesNullableWithAggregatesFilter<"ScrapingPolicy"> | runtime.Bytes | null
+  fallbackProxyUrlKeyVer?: Prisma.IntNullableWithAggregatesFilter<"ScrapingPolicy"> | number | null
+  proxyCountry?: Prisma.StringNullableWithAggregatesFilter<"ScrapingPolicy"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ScrapingPolicy"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ScrapingPolicy"> | Date | string
 }
@@ -527,14 +552,15 @@ export type ScrapingPolicyCreateInput = {
   activeOnWeekends?: boolean
   useProxy?: boolean
   headless?: boolean
+  fallbackProxyUrlSealed?: runtime.Bytes | null
+  fallbackProxyUrlKeyVer?: number | null
+  proxyCountry?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  linkedInAccount: Prisma.LinkedInAccountCreateNestedOneWithoutPolicyInput
 }
 
 export type ScrapingPolicyUncheckedCreateInput = {
   id?: string
-  linkedInAccountId: string
   stepDelayMinMs?: number
   stepDelayMaxMs?: number
   profileDelayMinMs?: number
@@ -552,6 +578,9 @@ export type ScrapingPolicyUncheckedCreateInput = {
   activeOnWeekends?: boolean
   useProxy?: boolean
   headless?: boolean
+  fallbackProxyUrlSealed?: runtime.Bytes | null
+  fallbackProxyUrlKeyVer?: number | null
+  proxyCountry?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -575,14 +604,15 @@ export type ScrapingPolicyUpdateInput = {
   activeOnWeekends?: Prisma.BoolFieldUpdateOperationsInput | boolean
   useProxy?: Prisma.BoolFieldUpdateOperationsInput | boolean
   headless?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fallbackProxyUrlSealed?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  fallbackProxyUrlKeyVer?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  proxyCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  linkedInAccount?: Prisma.LinkedInAccountUpdateOneRequiredWithoutPolicyNestedInput
 }
 
 export type ScrapingPolicyUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  linkedInAccountId?: Prisma.StringFieldUpdateOperationsInput | string
   stepDelayMinMs?: Prisma.IntFieldUpdateOperationsInput | number
   stepDelayMaxMs?: Prisma.IntFieldUpdateOperationsInput | number
   profileDelayMinMs?: Prisma.IntFieldUpdateOperationsInput | number
@@ -600,13 +630,15 @@ export type ScrapingPolicyUncheckedUpdateInput = {
   activeOnWeekends?: Prisma.BoolFieldUpdateOperationsInput | boolean
   useProxy?: Prisma.BoolFieldUpdateOperationsInput | boolean
   headless?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fallbackProxyUrlSealed?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  fallbackProxyUrlKeyVer?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  proxyCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ScrapingPolicyCreateManyInput = {
   id?: string
-  linkedInAccountId: string
   stepDelayMinMs?: number
   stepDelayMaxMs?: number
   profileDelayMinMs?: number
@@ -624,6 +656,9 @@ export type ScrapingPolicyCreateManyInput = {
   activeOnWeekends?: boolean
   useProxy?: boolean
   headless?: boolean
+  fallbackProxyUrlSealed?: runtime.Bytes | null
+  fallbackProxyUrlKeyVer?: number | null
+  proxyCountry?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -647,13 +682,15 @@ export type ScrapingPolicyUpdateManyMutationInput = {
   activeOnWeekends?: Prisma.BoolFieldUpdateOperationsInput | boolean
   useProxy?: Prisma.BoolFieldUpdateOperationsInput | boolean
   headless?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fallbackProxyUrlSealed?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  fallbackProxyUrlKeyVer?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  proxyCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ScrapingPolicyUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  linkedInAccountId?: Prisma.StringFieldUpdateOperationsInput | string
   stepDelayMinMs?: Prisma.IntFieldUpdateOperationsInput | number
   stepDelayMaxMs?: Prisma.IntFieldUpdateOperationsInput | number
   profileDelayMinMs?: Prisma.IntFieldUpdateOperationsInput | number
@@ -671,18 +708,15 @@ export type ScrapingPolicyUncheckedUpdateManyInput = {
   activeOnWeekends?: Prisma.BoolFieldUpdateOperationsInput | boolean
   useProxy?: Prisma.BoolFieldUpdateOperationsInput | boolean
   headless?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fallbackProxyUrlSealed?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  fallbackProxyUrlKeyVer?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  proxyCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type ScrapingPolicyNullableScalarRelationFilter = {
-  is?: Prisma.ScrapingPolicyWhereInput | null
-  isNot?: Prisma.ScrapingPolicyWhereInput | null
-}
-
 export type ScrapingPolicyCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  linkedInAccountId?: Prisma.SortOrder
   stepDelayMinMs?: Prisma.SortOrder
   stepDelayMaxMs?: Prisma.SortOrder
   profileDelayMinMs?: Prisma.SortOrder
@@ -700,6 +734,9 @@ export type ScrapingPolicyCountOrderByAggregateInput = {
   activeOnWeekends?: Prisma.SortOrder
   useProxy?: Prisma.SortOrder
   headless?: Prisma.SortOrder
+  fallbackProxyUrlSealed?: Prisma.SortOrder
+  fallbackProxyUrlKeyVer?: Prisma.SortOrder
+  proxyCountry?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -719,11 +756,11 @@ export type ScrapingPolicyAvgOrderByAggregateInput = {
   maxProfilesPerWeek?: Prisma.SortOrder
   activeHoursStart?: Prisma.SortOrder
   activeHoursEnd?: Prisma.SortOrder
+  fallbackProxyUrlKeyVer?: Prisma.SortOrder
 }
 
 export type ScrapingPolicyMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  linkedInAccountId?: Prisma.SortOrder
   stepDelayMinMs?: Prisma.SortOrder
   stepDelayMaxMs?: Prisma.SortOrder
   profileDelayMinMs?: Prisma.SortOrder
@@ -741,13 +778,15 @@ export type ScrapingPolicyMaxOrderByAggregateInput = {
   activeOnWeekends?: Prisma.SortOrder
   useProxy?: Prisma.SortOrder
   headless?: Prisma.SortOrder
+  fallbackProxyUrlSealed?: Prisma.SortOrder
+  fallbackProxyUrlKeyVer?: Prisma.SortOrder
+  proxyCountry?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type ScrapingPolicyMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  linkedInAccountId?: Prisma.SortOrder
   stepDelayMinMs?: Prisma.SortOrder
   stepDelayMaxMs?: Prisma.SortOrder
   profileDelayMinMs?: Prisma.SortOrder
@@ -765,6 +804,9 @@ export type ScrapingPolicyMinOrderByAggregateInput = {
   activeOnWeekends?: Prisma.SortOrder
   useProxy?: Prisma.SortOrder
   headless?: Prisma.SortOrder
+  fallbackProxyUrlSealed?: Prisma.SortOrder
+  fallbackProxyUrlKeyVer?: Prisma.SortOrder
+  proxyCountry?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -784,153 +826,13 @@ export type ScrapingPolicySumOrderByAggregateInput = {
   maxProfilesPerWeek?: Prisma.SortOrder
   activeHoursStart?: Prisma.SortOrder
   activeHoursEnd?: Prisma.SortOrder
-}
-
-export type ScrapingPolicyCreateNestedOneWithoutLinkedInAccountInput = {
-  create?: Prisma.XOR<Prisma.ScrapingPolicyCreateWithoutLinkedInAccountInput, Prisma.ScrapingPolicyUncheckedCreateWithoutLinkedInAccountInput>
-  connectOrCreate?: Prisma.ScrapingPolicyCreateOrConnectWithoutLinkedInAccountInput
-  connect?: Prisma.ScrapingPolicyWhereUniqueInput
-}
-
-export type ScrapingPolicyUncheckedCreateNestedOneWithoutLinkedInAccountInput = {
-  create?: Prisma.XOR<Prisma.ScrapingPolicyCreateWithoutLinkedInAccountInput, Prisma.ScrapingPolicyUncheckedCreateWithoutLinkedInAccountInput>
-  connectOrCreate?: Prisma.ScrapingPolicyCreateOrConnectWithoutLinkedInAccountInput
-  connect?: Prisma.ScrapingPolicyWhereUniqueInput
-}
-
-export type ScrapingPolicyUpdateOneWithoutLinkedInAccountNestedInput = {
-  create?: Prisma.XOR<Prisma.ScrapingPolicyCreateWithoutLinkedInAccountInput, Prisma.ScrapingPolicyUncheckedCreateWithoutLinkedInAccountInput>
-  connectOrCreate?: Prisma.ScrapingPolicyCreateOrConnectWithoutLinkedInAccountInput
-  upsert?: Prisma.ScrapingPolicyUpsertWithoutLinkedInAccountInput
-  disconnect?: Prisma.ScrapingPolicyWhereInput | boolean
-  delete?: Prisma.ScrapingPolicyWhereInput | boolean
-  connect?: Prisma.ScrapingPolicyWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.ScrapingPolicyUpdateToOneWithWhereWithoutLinkedInAccountInput, Prisma.ScrapingPolicyUpdateWithoutLinkedInAccountInput>, Prisma.ScrapingPolicyUncheckedUpdateWithoutLinkedInAccountInput>
-}
-
-export type ScrapingPolicyUncheckedUpdateOneWithoutLinkedInAccountNestedInput = {
-  create?: Prisma.XOR<Prisma.ScrapingPolicyCreateWithoutLinkedInAccountInput, Prisma.ScrapingPolicyUncheckedCreateWithoutLinkedInAccountInput>
-  connectOrCreate?: Prisma.ScrapingPolicyCreateOrConnectWithoutLinkedInAccountInput
-  upsert?: Prisma.ScrapingPolicyUpsertWithoutLinkedInAccountInput
-  disconnect?: Prisma.ScrapingPolicyWhereInput | boolean
-  delete?: Prisma.ScrapingPolicyWhereInput | boolean
-  connect?: Prisma.ScrapingPolicyWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.ScrapingPolicyUpdateToOneWithWhereWithoutLinkedInAccountInput, Prisma.ScrapingPolicyUpdateWithoutLinkedInAccountInput>, Prisma.ScrapingPolicyUncheckedUpdateWithoutLinkedInAccountInput>
-}
-
-export type ScrapingPolicyCreateWithoutLinkedInAccountInput = {
-  id?: string
-  stepDelayMinMs?: number
-  stepDelayMaxMs?: number
-  profileDelayMinMs?: number
-  profileDelayMaxMs?: number
-  pageDelayMinMs?: number
-  pageDelayMaxMs?: number
-  sessionBreakAfter?: number
-  sessionBreakMinMs?: number
-  sessionBreakMaxMs?: number
-  maxProfilesPerDay?: number
-  maxSearchPagesPerDay?: number
-  maxProfilesPerWeek?: number
-  activeHoursStart?: number
-  activeHoursEnd?: number
-  activeOnWeekends?: boolean
-  useProxy?: boolean
-  headless?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-}
-
-export type ScrapingPolicyUncheckedCreateWithoutLinkedInAccountInput = {
-  id?: string
-  stepDelayMinMs?: number
-  stepDelayMaxMs?: number
-  profileDelayMinMs?: number
-  profileDelayMaxMs?: number
-  pageDelayMinMs?: number
-  pageDelayMaxMs?: number
-  sessionBreakAfter?: number
-  sessionBreakMinMs?: number
-  sessionBreakMaxMs?: number
-  maxProfilesPerDay?: number
-  maxSearchPagesPerDay?: number
-  maxProfilesPerWeek?: number
-  activeHoursStart?: number
-  activeHoursEnd?: number
-  activeOnWeekends?: boolean
-  useProxy?: boolean
-  headless?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-}
-
-export type ScrapingPolicyCreateOrConnectWithoutLinkedInAccountInput = {
-  where: Prisma.ScrapingPolicyWhereUniqueInput
-  create: Prisma.XOR<Prisma.ScrapingPolicyCreateWithoutLinkedInAccountInput, Prisma.ScrapingPolicyUncheckedCreateWithoutLinkedInAccountInput>
-}
-
-export type ScrapingPolicyUpsertWithoutLinkedInAccountInput = {
-  update: Prisma.XOR<Prisma.ScrapingPolicyUpdateWithoutLinkedInAccountInput, Prisma.ScrapingPolicyUncheckedUpdateWithoutLinkedInAccountInput>
-  create: Prisma.XOR<Prisma.ScrapingPolicyCreateWithoutLinkedInAccountInput, Prisma.ScrapingPolicyUncheckedCreateWithoutLinkedInAccountInput>
-  where?: Prisma.ScrapingPolicyWhereInput
-}
-
-export type ScrapingPolicyUpdateToOneWithWhereWithoutLinkedInAccountInput = {
-  where?: Prisma.ScrapingPolicyWhereInput
-  data: Prisma.XOR<Prisma.ScrapingPolicyUpdateWithoutLinkedInAccountInput, Prisma.ScrapingPolicyUncheckedUpdateWithoutLinkedInAccountInput>
-}
-
-export type ScrapingPolicyUpdateWithoutLinkedInAccountInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  stepDelayMinMs?: Prisma.IntFieldUpdateOperationsInput | number
-  stepDelayMaxMs?: Prisma.IntFieldUpdateOperationsInput | number
-  profileDelayMinMs?: Prisma.IntFieldUpdateOperationsInput | number
-  profileDelayMaxMs?: Prisma.IntFieldUpdateOperationsInput | number
-  pageDelayMinMs?: Prisma.IntFieldUpdateOperationsInput | number
-  pageDelayMaxMs?: Prisma.IntFieldUpdateOperationsInput | number
-  sessionBreakAfter?: Prisma.IntFieldUpdateOperationsInput | number
-  sessionBreakMinMs?: Prisma.IntFieldUpdateOperationsInput | number
-  sessionBreakMaxMs?: Prisma.IntFieldUpdateOperationsInput | number
-  maxProfilesPerDay?: Prisma.IntFieldUpdateOperationsInput | number
-  maxSearchPagesPerDay?: Prisma.IntFieldUpdateOperationsInput | number
-  maxProfilesPerWeek?: Prisma.IntFieldUpdateOperationsInput | number
-  activeHoursStart?: Prisma.IntFieldUpdateOperationsInput | number
-  activeHoursEnd?: Prisma.IntFieldUpdateOperationsInput | number
-  activeOnWeekends?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  useProxy?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  headless?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type ScrapingPolicyUncheckedUpdateWithoutLinkedInAccountInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  stepDelayMinMs?: Prisma.IntFieldUpdateOperationsInput | number
-  stepDelayMaxMs?: Prisma.IntFieldUpdateOperationsInput | number
-  profileDelayMinMs?: Prisma.IntFieldUpdateOperationsInput | number
-  profileDelayMaxMs?: Prisma.IntFieldUpdateOperationsInput | number
-  pageDelayMinMs?: Prisma.IntFieldUpdateOperationsInput | number
-  pageDelayMaxMs?: Prisma.IntFieldUpdateOperationsInput | number
-  sessionBreakAfter?: Prisma.IntFieldUpdateOperationsInput | number
-  sessionBreakMinMs?: Prisma.IntFieldUpdateOperationsInput | number
-  sessionBreakMaxMs?: Prisma.IntFieldUpdateOperationsInput | number
-  maxProfilesPerDay?: Prisma.IntFieldUpdateOperationsInput | number
-  maxSearchPagesPerDay?: Prisma.IntFieldUpdateOperationsInput | number
-  maxProfilesPerWeek?: Prisma.IntFieldUpdateOperationsInput | number
-  activeHoursStart?: Prisma.IntFieldUpdateOperationsInput | number
-  activeHoursEnd?: Prisma.IntFieldUpdateOperationsInput | number
-  activeOnWeekends?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  useProxy?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  headless?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  fallbackProxyUrlKeyVer?: Prisma.SortOrder
 }
 
 
 
 export type ScrapingPolicySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  linkedInAccountId?: boolean
   stepDelayMinMs?: boolean
   stepDelayMaxMs?: boolean
   profileDelayMinMs?: boolean
@@ -948,14 +850,15 @@ export type ScrapingPolicySelect<ExtArgs extends runtime.Types.Extensions.Intern
   activeOnWeekends?: boolean
   useProxy?: boolean
   headless?: boolean
+  fallbackProxyUrlSealed?: boolean
+  fallbackProxyUrlKeyVer?: boolean
+  proxyCountry?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  linkedInAccount?: boolean | Prisma.LinkedInAccountDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["scrapingPolicy"]>
 
 export type ScrapingPolicySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  linkedInAccountId?: boolean
   stepDelayMinMs?: boolean
   stepDelayMaxMs?: boolean
   profileDelayMinMs?: boolean
@@ -973,14 +876,15 @@ export type ScrapingPolicySelectCreateManyAndReturn<ExtArgs extends runtime.Type
   activeOnWeekends?: boolean
   useProxy?: boolean
   headless?: boolean
+  fallbackProxyUrlSealed?: boolean
+  fallbackProxyUrlKeyVer?: boolean
+  proxyCountry?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  linkedInAccount?: boolean | Prisma.LinkedInAccountDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["scrapingPolicy"]>
 
 export type ScrapingPolicySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  linkedInAccountId?: boolean
   stepDelayMinMs?: boolean
   stepDelayMaxMs?: boolean
   profileDelayMinMs?: boolean
@@ -998,14 +902,15 @@ export type ScrapingPolicySelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   activeOnWeekends?: boolean
   useProxy?: boolean
   headless?: boolean
+  fallbackProxyUrlSealed?: boolean
+  fallbackProxyUrlKeyVer?: boolean
+  proxyCountry?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  linkedInAccount?: boolean | Prisma.LinkedInAccountDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["scrapingPolicy"]>
 
 export type ScrapingPolicySelectScalar = {
   id?: boolean
-  linkedInAccountId?: boolean
   stepDelayMinMs?: boolean
   stepDelayMaxMs?: boolean
   profileDelayMinMs?: boolean
@@ -1023,29 +928,20 @@ export type ScrapingPolicySelectScalar = {
   activeOnWeekends?: boolean
   useProxy?: boolean
   headless?: boolean
+  fallbackProxyUrlSealed?: boolean
+  fallbackProxyUrlKeyVer?: boolean
+  proxyCountry?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ScrapingPolicyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "linkedInAccountId" | "stepDelayMinMs" | "stepDelayMaxMs" | "profileDelayMinMs" | "profileDelayMaxMs" | "pageDelayMinMs" | "pageDelayMaxMs" | "sessionBreakAfter" | "sessionBreakMinMs" | "sessionBreakMaxMs" | "maxProfilesPerDay" | "maxSearchPagesPerDay" | "maxProfilesPerWeek" | "activeHoursStart" | "activeHoursEnd" | "activeOnWeekends" | "useProxy" | "headless" | "createdAt" | "updatedAt", ExtArgs["result"]["scrapingPolicy"]>
-export type ScrapingPolicyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  linkedInAccount?: boolean | Prisma.LinkedInAccountDefaultArgs<ExtArgs>
-}
-export type ScrapingPolicyIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  linkedInAccount?: boolean | Prisma.LinkedInAccountDefaultArgs<ExtArgs>
-}
-export type ScrapingPolicyIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  linkedInAccount?: boolean | Prisma.LinkedInAccountDefaultArgs<ExtArgs>
-}
+export type ScrapingPolicyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "stepDelayMinMs" | "stepDelayMaxMs" | "profileDelayMinMs" | "profileDelayMaxMs" | "pageDelayMinMs" | "pageDelayMaxMs" | "sessionBreakAfter" | "sessionBreakMinMs" | "sessionBreakMaxMs" | "maxProfilesPerDay" | "maxSearchPagesPerDay" | "maxProfilesPerWeek" | "activeHoursStart" | "activeHoursEnd" | "activeOnWeekends" | "useProxy" | "headless" | "fallbackProxyUrlSealed" | "fallbackProxyUrlKeyVer" | "proxyCountry" | "createdAt" | "updatedAt", ExtArgs["result"]["scrapingPolicy"]>
 
 export type $ScrapingPolicyPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "ScrapingPolicy"
-  objects: {
-    linkedInAccount: Prisma.$LinkedInAccountPayload<ExtArgs>
-  }
+  objects: {}
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    linkedInAccountId: string
     stepDelayMinMs: number
     stepDelayMaxMs: number
     profileDelayMinMs: number
@@ -1063,6 +959,9 @@ export type $ScrapingPolicyPayload<ExtArgs extends runtime.Types.Extensions.Inte
     activeOnWeekends: boolean
     useProxy: boolean
     headless: boolean
+    fallbackProxyUrlSealed: runtime.Bytes | null
+    fallbackProxyUrlKeyVer: number | null
+    proxyCountry: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["scrapingPolicy"]>
@@ -1459,7 +1358,6 @@ readonly fields: ScrapingPolicyFieldRefs;
  */
 export interface Prisma__ScrapingPolicyClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  linkedInAccount<T extends Prisma.LinkedInAccountDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LinkedInAccountDefaultArgs<ExtArgs>>): Prisma.Prisma__LinkedInAccountClient<runtime.Types.Result.GetResult<Prisma.$LinkedInAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1490,7 +1388,6 @@ export interface Prisma__ScrapingPolicyClient<T, Null = never, ExtArgs extends r
  */
 export interface ScrapingPolicyFieldRefs {
   readonly id: Prisma.FieldRef<"ScrapingPolicy", 'String'>
-  readonly linkedInAccountId: Prisma.FieldRef<"ScrapingPolicy", 'String'>
   readonly stepDelayMinMs: Prisma.FieldRef<"ScrapingPolicy", 'Int'>
   readonly stepDelayMaxMs: Prisma.FieldRef<"ScrapingPolicy", 'Int'>
   readonly profileDelayMinMs: Prisma.FieldRef<"ScrapingPolicy", 'Int'>
@@ -1508,6 +1405,9 @@ export interface ScrapingPolicyFieldRefs {
   readonly activeOnWeekends: Prisma.FieldRef<"ScrapingPolicy", 'Boolean'>
   readonly useProxy: Prisma.FieldRef<"ScrapingPolicy", 'Boolean'>
   readonly headless: Prisma.FieldRef<"ScrapingPolicy", 'Boolean'>
+  readonly fallbackProxyUrlSealed: Prisma.FieldRef<"ScrapingPolicy", 'Bytes'>
+  readonly fallbackProxyUrlKeyVer: Prisma.FieldRef<"ScrapingPolicy", 'Int'>
+  readonly proxyCountry: Prisma.FieldRef<"ScrapingPolicy", 'String'>
   readonly createdAt: Prisma.FieldRef<"ScrapingPolicy", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"ScrapingPolicy", 'DateTime'>
 }
@@ -1527,10 +1427,6 @@ export type ScrapingPolicyFindUniqueArgs<ExtArgs extends runtime.Types.Extension
    */
   omit?: Prisma.ScrapingPolicyOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ScrapingPolicyInclude<ExtArgs> | null
-  /**
    * Filter, which ScrapingPolicy to fetch.
    */
   where: Prisma.ScrapingPolicyWhereUniqueInput
@@ -1549,10 +1445,6 @@ export type ScrapingPolicyFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Ex
    */
   omit?: Prisma.ScrapingPolicyOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ScrapingPolicyInclude<ExtArgs> | null
-  /**
    * Filter, which ScrapingPolicy to fetch.
    */
   where: Prisma.ScrapingPolicyWhereUniqueInput
@@ -1570,10 +1462,6 @@ export type ScrapingPolicyFindFirstArgs<ExtArgs extends runtime.Types.Extensions
    * Omit specific fields from the ScrapingPolicy
    */
   omit?: Prisma.ScrapingPolicyOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ScrapingPolicyInclude<ExtArgs> | null
   /**
    * Filter, which ScrapingPolicy to fetch.
    */
@@ -1623,10 +1511,6 @@ export type ScrapingPolicyFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Ext
    */
   omit?: Prisma.ScrapingPolicyOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ScrapingPolicyInclude<ExtArgs> | null
-  /**
    * Filter, which ScrapingPolicy to fetch.
    */
   where?: Prisma.ScrapingPolicyWhereInput
@@ -1674,10 +1558,6 @@ export type ScrapingPolicyFindManyArgs<ExtArgs extends runtime.Types.Extensions.
    * Omit specific fields from the ScrapingPolicy
    */
   omit?: Prisma.ScrapingPolicyOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ScrapingPolicyInclude<ExtArgs> | null
   /**
    * Filter, which ScrapingPolicies to fetch.
    */
@@ -1727,10 +1607,6 @@ export type ScrapingPolicyCreateArgs<ExtArgs extends runtime.Types.Extensions.In
    */
   omit?: Prisma.ScrapingPolicyOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ScrapingPolicyInclude<ExtArgs> | null
-  /**
    * The data needed to create a ScrapingPolicy.
    */
   data: Prisma.XOR<Prisma.ScrapingPolicyCreateInput, Prisma.ScrapingPolicyUncheckedCreateInput>
@@ -1764,10 +1640,6 @@ export type ScrapingPolicyCreateManyAndReturnArgs<ExtArgs extends runtime.Types.
    */
   data: Prisma.ScrapingPolicyCreateManyInput | Prisma.ScrapingPolicyCreateManyInput[]
   skipDuplicates?: boolean
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ScrapingPolicyIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1782,10 +1654,6 @@ export type ScrapingPolicyUpdateArgs<ExtArgs extends runtime.Types.Extensions.In
    * Omit specific fields from the ScrapingPolicy
    */
   omit?: Prisma.ScrapingPolicyOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ScrapingPolicyInclude<ExtArgs> | null
   /**
    * The data needed to update a ScrapingPolicy.
    */
@@ -1838,10 +1706,6 @@ export type ScrapingPolicyUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.
    * Limit how many ScrapingPolicies to update.
    */
   limit?: number
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ScrapingPolicyIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1856,10 +1720,6 @@ export type ScrapingPolicyUpsertArgs<ExtArgs extends runtime.Types.Extensions.In
    * Omit specific fields from the ScrapingPolicy
    */
   omit?: Prisma.ScrapingPolicyOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ScrapingPolicyInclude<ExtArgs> | null
   /**
    * The filter to search for the ScrapingPolicy to update in case it exists.
    */
@@ -1886,10 +1746,6 @@ export type ScrapingPolicyDeleteArgs<ExtArgs extends runtime.Types.Extensions.In
    * Omit specific fields from the ScrapingPolicy
    */
   omit?: Prisma.ScrapingPolicyOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ScrapingPolicyInclude<ExtArgs> | null
   /**
    * Filter which ScrapingPolicy to delete.
    */
@@ -1922,8 +1778,4 @@ export type ScrapingPolicyDefaultArgs<ExtArgs extends runtime.Types.Extensions.I
    * Omit specific fields from the ScrapingPolicy
    */
   omit?: Prisma.ScrapingPolicyOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ScrapingPolicyInclude<ExtArgs> | null
 }

@@ -2,7 +2,6 @@ import { logger } from "@/server/logger";
 import { sealSecret } from "@/server/crypto/secretBox";
 import { ok, err, type Result } from "@/server/result";
 import * as accountRepo from "../repository/linkedInAccount.repository";
-import * as policyRepo from "../repository/scrapingPolicy.repository";
 import * as auditRepo from "../../audit/repository/auditEvent.repository";
 import { createAccountSchema, type CreateAccountInput } from "../domain/schema";
 import { deriveInitialFingerprint } from "../domain/fingerprint";
@@ -26,7 +25,7 @@ export async function createAccount(
   if (!parsed.success) {
     return err({ kind: "invalid_input", issues: parsed.error.issues.map((i) => i.message) });
   }
-  const { email, password, label, timezone } = parsed.data;
+  const { email, password, label, timezone, proxyId } = parsed.data;
 
   const existing = await accountRepo.findByEmail(email);
   if (existing) {
@@ -35,15 +34,22 @@ export async function createAccount(
 
   const { sealed } = sealSecret(password);
   const fingerprint = deriveInitialFingerprint(email);
-  const account = await accountRepo.create({ email, label, passwordSealed: sealed, fingerprint });
+  const account = await accountRepo.create({
+    email,
+    label,
+    passwordSealed: sealed,
+    fingerprint,
+    proxyId: proxyId ?? null,
+  });
   await accountRepo.updateMeta(account.id, { timezone });
-  await policyRepo.upsertDefaultForAccount(account.id);
+  // No per-account policy row to create — ScrapingPolicy is a global singleton (see
+  // prisma/schema/account.prisma), always the one seeded row.
   await auditRepo.record({
     actorId,
     action: "linkedin_account.created",
     entity: "LinkedInAccount",
     entityId: account.id,
-    data: { email, label },
+    data: { email, label, proxyId: proxyId ?? null },
   });
 
   log.info({ accountId: account.id, email }, "account created via /config");
