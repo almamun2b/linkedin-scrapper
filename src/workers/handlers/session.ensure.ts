@@ -1,6 +1,11 @@
 import { logger } from "@/server/logger";
 import { unsealSecret } from "@/server/crypto/secretBox";
-import { FatalError, RescheduleError } from "@/modules/jobs/domain/errors";
+import {
+  FatalError,
+  RescheduleError,
+  RetryableError,
+  RiskSignalError,
+} from "@/modules/jobs/domain/errors";
 import { sessionEnsurePayloadSchema } from "@/modules/jobs/domain/payloads";
 import { enqueueJob } from "@/modules/jobs/service/queue.service";
 import { hourBucketKey } from "@/modules/jobs/domain/idempotency";
@@ -10,8 +15,9 @@ import { withAccountLock } from "@/scraper/guards/accountLock";
 import { launchContextForAccount } from "@/scraper/browser/launch";
 import { sealStorageState, unsealStorageState } from "@/scraper/session/storageState";
 import { ensureSession } from "@/scraper/session/ensureSession";
+import { LoginInteractionError } from "@/scraper/pages/login.page";
 import { prepareAccountSession } from "./shared/prepareAccountSession";
-import { handleRiskSignal } from "./shared/handleRiskSignal";
+import { handleRiskSignal, captureEvidence } from "./shared/handleRiskSignal";
 import type { ClaimedJob } from "@/modules/jobs/repository/jobs.repository";
 
 const log = logger.child({ handler: "session.ensure" });
@@ -103,6 +109,29 @@ async function runSession(
     } else {
       log.warn({ accountId }, "logged in but could not discover own profile URL");
     }
+  } catch (error) {
+    if (
+      error instanceof FatalError ||
+      error instanceof RiskSignalError ||
+      error instanceof RetryableError ||
+      error instanceof RescheduleError
+    ) {
+      throw error;
+    }
+    if (error instanceof LoginInteractionError) {
+      await captureEvidence(jobId, error.page, {
+        kind: "login_interaction_error",
+        details: error.message,
+      });
+    }
+    // A bare Error out of ensureSession/login (e.g. a selector not found) is permanent for
+    // this payload, not transient — classify it as fatal so it goes to DEAD instead of
+    // retrying indefinitely against the real login page (errors.ts: "selector broke ...
+    // goes to DEAD immediately").
+    throw new FatalError(
+      error instanceof Error ? error.message : "session.ensure failed",
+      { cause: error },
+    );
   } finally {
     await browser.close().catch((error: unknown) => {
       log.error({ err: error }, "failed to close browser");

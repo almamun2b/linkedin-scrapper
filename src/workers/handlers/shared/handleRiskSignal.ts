@@ -12,12 +12,18 @@ import type { RiskSignal } from "@/scraper/session/detect";
 const log = logger.child({ module: "handleRiskSignal" });
 
 /**
- * Best-effort evidence capture — a screenshot and the page's HTML, so a human can tell a
- * real LinkedIn challenge apart from a stale selector without spending another login
- * attempt to find out (invariant #7's "replay offline" philosophy, applied to the session
- * path). Never throws: a capture failure must not stop the breaker from tripping.
+ * Best-effort evidence capture — a screenshot and the page's HTML, so a human (or a later
+ * fix) can tell a real LinkedIn challenge apart from a stale selector without spending
+ * another login attempt to find out (invariant #7's "replay offline" philosophy, applied to
+ * the session path). Never throws: a capture failure must not stop the caller's own error
+ * handling. `label` isn't restricted to `RiskSignal` — session.ensure also calls this for a
+ * plain `login()` failure (selector drift, a UI timeout) that isn't a confirmed risk signal.
  */
-async function captureEvidence(jobId: string, page: Page, risk: RiskSignal): Promise<void> {
+export async function captureEvidence(
+  jobId: string,
+  page: Page,
+  label: { kind: string; details: string },
+): Promise<void> {
   try {
     const [screenshot, html, title] = await Promise.all([
       page.screenshot({ type: "png" }).catch(() => null),
@@ -43,11 +49,11 @@ async function captureEvidence(jobId: string, page: Page, risk: RiskSignal): Pro
     await jobsRepo.writeLog({
       jobId,
       level: "WARN",
-      message: `Risk signal: ${risk.kind}`,
-      data: { url: page.url(), title, selectorsVersion: SELECTORS_VERSION, risk },
+      message: `${label.kind}: ${label.details}`,
+      data: { url: page.url(), title, selectorsVersion: SELECTORS_VERSION, label },
     });
   } catch (error) {
-    log.error({ err: error, jobId }, "failed to capture risk-signal evidence");
+    log.error({ err: error, jobId }, "failed to capture evidence");
   }
 }
 

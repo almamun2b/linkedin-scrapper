@@ -11,7 +11,7 @@
  * never from a fresh linkedin.com request — and bump SELECTORS_VERSION when you do.
  */
 
-export const SELECTORS_VERSION = "2026-09-14-unverified";
+export const SELECTORS_VERSION = "2026-09-18-feed-nav-verified";
 
 export const SELECTORS = {
   login: {
@@ -21,11 +21,46 @@ export const SELECTORS = {
       "input[name='session_password']",
       "input[autocomplete='current-password']",
     ],
-    submit: ["button[type='submit']", "button[data-litms-control-urn='login-submit']"],
+    // verified 2026-09-18 (user-supplied DOM capture): current button is `type="button"`
+    // with only hashed classes and a per-render `componentkey` — none stable. Kept as
+    // trailing fallbacks in case an older/other-locale form still renders them; the
+    // text-anchor entry is what actually matches today's markup.
+    //
+    // Two pitfalls confirmed against a reproduction of the real markup:
+    // 1. `:text-is()` only matches an element's *direct* text node, not aggregated
+    //    descendant text — LinkedIn wraps "Sign in" in two nested `<span>`s, so
+    //    `button:text-is('Sign in')` never matches the button itself.
+    // 2. This page variant also renders "Sign in with Apple"/"Sign in with Google" SSO
+    //    buttons above the real one — a loose `:has-text('Sign in')` substring-matches
+    //    those instead, which is worse than not matching at all.
+    // `:has-text()` aggregates descendant text (fixing #1) combined with a `:not()`
+    // exclusion on the SSO buttons' distinguishing " with " suffix (fixing #2).
+    submit: [
+      "button[type='submit']",
+      "button[data-litms-control-urn='login-submit']",
+      "button:has-text('Sign in'):not(:has-text('Sign in with'))",
+    ],
   },
+  // verified 2026-09-18 (replayed offline against a real successful login's captured
+  // evidence — never a fresh linkedin.com request): the old `#global-nav` id no longer
+  // exists at all — LinkedIn now marks the same top bar with `data-testid="primary-nav"`
+  // instead. This was a real false positive: `isLoggedIn` couldn't find `#global-nav` on a
+  // page that WAS the authenticated feed, so session.ensure synthesized a bogus
+  // `login_redirect` risk and tripped the breaker on a working login.
   feed: {
-    globalNav: ["#global-nav", "nav[aria-label='Primary Navigation']"],
+    globalNav: [
+      "[data-testid='primary-nav']",
+      "#global-nav",
+      "nav[aria-label='Primary Navigation']",
+    ],
+    // Still best-effort, NOT verified: the top nav's "Me" icon is only a dropdown trigger
+    // (`href="#"`) in the static DOM — the real profile link isn't there until it's clicked
+    // open. The link does exist elsewhere (sidebar card), but every occurrence found in a
+    // real capture had only hashed classes or the account's own slug (not something
+    // selectors.ts can hardcode generically). Kept as a best-effort chain; a null result
+    // here is handled gracefully by `discoverOwnProfileUrl`'s caller, not fatal.
     meNavLink: [
+      "[data-testid='primary-nav'] a[href*='/in/']",
       "a[href*='/in/'][data-control-name='identity_welcome_message']",
       "#global-nav a[href*='/in/']",
     ],
